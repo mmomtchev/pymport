@@ -1,0 +1,78 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch unit testing (gdb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/bin/node",
+            "args": [
+                "--expose-gc",
+                "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js",
+                "--timeout",
+                "0"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Launch unit testing (lldb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/local/bin/node",
+            "args": [
+                "--expose-gc",
+                "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js",
+                "--timeout",
+                "0"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+        },
+        {
+            "name": "Launch unit testing (vsdbg)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "node.exe",
+            "args": [
+                "--expose-gc",
+                "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js",
+                "--timeout",
+                "0"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "externalTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch unit testing (JS)",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "args": [
+                "--expose-gc",
+                "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js"
+            ],
+            "program": "${workspaceFolder}/node_modules/.bin/mocha"
+        }
+    ]
+}

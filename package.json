@@ -1,0 +1,40 @@
+{
+    "main": "lib/binding.js",
+    "dependencies": {
+        "node-addon-api": "^5.0.0"
+    },
+    "scripts": {},
+    "gypfile": true,
+    "name": "pymport",
+    "version": "0.0.1",
+    "description": "Use Python libraries from Node.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mmomtchev/pymport.git"
+    },
+    "keywords": [
+        "python",
+        "node.js",
+        "import",
+        "require"
+    ],
+    "author": "Momtchil Momtchev <momtchil@momtchev.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/mmomtchev/pymport/issues"
+    },
+    "homepage": "https://github.com/mmomtchev/pymport#readme",
+    "devDependencies": {
+        "@types/chai": "^4.3.3",
+        "@types/mocha": "^10.0.0",
+        "@types/node": "^18.11.0",
+        "chai": "^4.3.6",
+        "mocha": "^10.1.0",
+        "ts-node": "^10.9.1",
+        "tsconfig-paths": "^4.1.0",
+        "typescript": "^4.8.4"
+    },
+    "engines": {
+        "node": ">= 14.0.0"
+    }
+}

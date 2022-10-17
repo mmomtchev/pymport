@@ -1,0 +1,10 @@
+{
+  "spec": "test/*.test.[tj]s",
+  "require": [
+    "ts-node/register",
+    "tsconfig-paths/register"
+  ],
+  "timeout": "20000",
+  "reporter": "tap",
+  "v8-expose-gc": true
+}
