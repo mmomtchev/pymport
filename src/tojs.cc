@@ -29,14 +29,15 @@ Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
     if (PyUnicode_Check(py)) {
         PyStackObject utf16 = PyUnicode_AsUTF16String(py);
         auto raw = PyBytes_AsString(utf16);
-        return scope.Escape(String::New(env, reinterpret_cast<char16_t *>(raw + 2),
-                           PyUnicode_GET_LENGTH(py)));
+        return scope.Escape(String::New(env,
+                                        reinterpret_cast<char16_t *>(raw + 2),
+                                        PyUnicode_GET_LENGTH(py)));
     }
 
     if (PyDict_Check(py)) {
         auto obj = Object::New(env);
 
-        PyObject* key, * value;
+        PyObject *key, *value;
         Py_ssize_t pos = 0;
         while (PyDict_Next(py, &pos, &key, &value)) {
             auto jsKey = ToJS(env, key);
@@ -44,6 +45,18 @@ Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
             obj.Set(jsKey, jsValue);
         }
         return scope.Escape(obj);
+    }
+
+    if (PyTuple_Check(py)) {
+        Napi::Array r = Array::New(env);
+        size_t len = PyTuple_Size(py);
+
+        for (size_t i = 0; i < len; i++) {
+            PyObject *v = PyTuple_GetItem(py, i);
+            Napi::Value js = PyObj::ToJS(env, v);
+            r.Set(i, js);
+        }
+        return scope.Escape(r);
     }
 
     // Everything else is kept as a PyObject

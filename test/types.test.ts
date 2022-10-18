@@ -74,6 +74,38 @@ describe('types', () => {
             const a = PyObject.fromJS([1, 2.1, 'hello']);
             assert.equal(a.toString(), "[1, 2.1, 'hello']");
         });
+
+        it('list()', () => {
+            const a = PyObject.list([1, 2.1, 'hello']);
+            assert.deepEqual(a.toJS(), [1, 2.1, 'hello']);
+        });
+
+        it('throws on invalid value', () => {
+            assert.throws(() => PyObject.list({ b: 12 } as unknown as number[]), /Argument must be/);
+        });
+    });
+
+    describe('tuple', () => {
+        const array = [1, 'a', { name: 'text' }];
+
+        it('toJS()', () => {
+            const t = PyObject.tuple(array);
+            assert.deepEqual(t.toJS(), array);
+        });
+
+        it('fromJS()', () => {
+            const t = PyObject.fromJS(array);
+            assert.deepEqual(t.toJS(), array);
+        });
+
+        it('toString()', () => {
+            const t = PyObject.fromJS(array);
+            assert.equal(t.toString(), "[1, 'a', {'name': 'text'}]");
+        });
+
+        it('throws on invalid value', () => {
+            assert.throws(() => PyObject.list({ b: 12 } as unknown as number[]), /Argument must be/);
+        });
     });
 
     describe('string', () => {

@@ -78,6 +78,29 @@ Value PyObj::List(const CallbackInfo &info) {
     return New(env, list);
 }
 
+PyObject *PyObj::_Tuple(Napi::Array array) {
+    Napi::Env env = array.Env();
+    size_t len = array.Length();
+    auto py = PyTuple_New(len);
+    THROW_IF_NULL(py);
+
+    for (size_t i = 0; i < len; i++) {
+        auto el = FromJS(array.Get(i));
+        PyTuple_SetItem(py, i, el);
+    }
+
+    return py;
+}
+
+Value PyObj::Tuple(const CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    auto raw = NAPI_ARG_ARRAY(0);
+    auto list = _Tuple(raw);
+
+    return New(env, list);
+}
+
 Value PyObj::FromJS(const CallbackInfo &info) {
     Napi::Env env = info.Env();
 

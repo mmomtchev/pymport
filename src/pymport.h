@@ -30,6 +30,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
     static Napi::Value List(const Napi::CallbackInfo &);
     static PyObject* _Dictionary(Napi::Object);
     static PyObject *_List(Napi::Array);
+    static PyObject *_Tuple(Napi::Array);
 
     static PyObject* FromJS(Napi::Value);
 
