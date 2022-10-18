@@ -1,4 +1,5 @@
 #include "pymport.h"
+#include "pystackobject.h"
 
 using namespace Napi;
 
@@ -21,7 +22,8 @@ PyObj::~PyObj() {
 
 Function PyObj::GetClass(Napi::Env env) {
     return DefineClass(env, "PyObject",
-                       {PyObj::InstanceMethod("get", &PyObj::Get),
+                       {PyObj::InstanceMethod("toString", &PyObj::ToString),
+                        PyObj::InstanceMethod("get", &PyObj::Get),
                         PyObj::InstanceMethod("call", &PyObj::Call),
                         PyObj::InstanceMethod("toJS", &PyObj::ToJS),
                         PyObj::StaticMethod("fromJS", &PyObj::FromJS),
@@ -29,6 +31,14 @@ Function PyObj::GetClass(Napi::Env env) {
                         PyObj::StaticMethod("string", &PyObj::String),
                         PyObj::StaticMethod("float", &PyObj::Float),
                         PyObj::StaticMethod("int", &PyObj::Integer)});
+}
+
+Value PyObj::ToString(const CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    PyStackObject r = PyObject_Str(self);
+    THROW_IF_NULL(r);
+    return ToJS(env, r);
 }
 
 Value PyObj::Get(const CallbackInfo &info) {
