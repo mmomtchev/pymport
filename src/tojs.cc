@@ -29,7 +29,8 @@ Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
     if (PyUnicode_Check(py)) {
         PyStackObject utf16 = PyUnicode_AsUTF16String(py);
         auto raw = PyBytes_AsString(utf16);
-        return String::New(env, reinterpret_cast<char16_t*>(raw + 2));
+        return String::New(env, reinterpret_cast<char16_t *>(raw + 2),
+                           PyUnicode_GET_LENGTH(py));
     }
 
     throw Error::New(env, "Unsupported Python type");
