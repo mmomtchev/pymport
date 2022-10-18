@@ -28,7 +28,7 @@ Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
 
     if (PyUnicode_Check(py)) {
         PyStackObject utf16 = PyUnicode_AsUTF16String(py);
-        auto raw = PyBytes_AS_STRING((PyObject *)utf16);
+        auto raw = PyBytes_AsString(utf16);
         return String::New(env, reinterpret_cast<char16_t*>(raw + 2));
     }
 
