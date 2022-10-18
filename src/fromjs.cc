@@ -1,4 +1,6 @@
 #include "pymport.h"
+#include "pystackobject.h"
+#include "values.h"
 
 using namespace Napi;
 
@@ -26,6 +28,22 @@ Value PyObj::Integer(const CallbackInfo &info) {
     auto raw = NAPI_ARG_NUMBER(0).Int64Value();
     auto obj = PyLong_FromLong(raw);
     return New(env, obj);
+}
+
+Value PyObj::Dictionary(const CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    auto raw = NAPI_ARG_OBJECT(0).ToObject();
+    auto dict = PyDict_New();
+
+    for (auto const &el : raw.GetPropertyNames()) {
+        auto key = ((Napi::Value)el.second).ToString().Utf8Value();
+        PyStackObject item = FromJS(raw.Get(key));
+        THROW_IF_NULL(item);
+        PyDict_SetItemString(dict, key.c_str(), item);
+    }
+    
+    return New(env, dict);
 }
 
 Value PyObj::FromJS(const CallbackInfo &info) {
@@ -67,10 +85,22 @@ PyObject *PyObj::FromJS(Napi::Value v) {
     }
     if (v.IsObject()) {
         FunctionReference *cons = env.GetInstanceData<FunctionReference>();
-        if (v.ToObject().InstanceOf(cons->Value())) {
+        auto obj = v.ToObject();
+        if (obj.ToObject().InstanceOf(cons->Value())) {
             auto py = ObjectWrap::Unwrap(v.ToObject());
             return py->self;
         }
+
+        auto dict = PyDict_New();
+
+        for (auto const &el : obj.GetPropertyNames()) {
+            auto key = ((Napi::Value)el.second).ToString().Utf8Value();
+            PyStackObject item = FromJS(obj.Get(key));
+            THROW_IF_NULL(item);
+            PyDict_SetItemString(dict, key.c_str(), item);
+        }
+
+        return dict;
     }
 
     return nullptr;

@@ -5,7 +5,7 @@ class PyStackObject {
 
   public:
     PyStackObject(PyObject *v) : self(v){};
-    virtual ~PyStackObject() { Py_DECREF(self); }
+    virtual ~PyStackObject() { if (self != nullptr) Py_DECREF(self); }
     operator PyObject *() { return self; }
     PyObject *operator*() { return self; }
 };

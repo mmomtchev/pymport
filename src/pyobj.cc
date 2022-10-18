@@ -1,5 +1,6 @@
 #include "pymport.h"
 #include "pystackobject.h"
+#include "values.h"
 
 using namespace Napi;
 
@@ -30,6 +31,7 @@ Function PyObj::GetClass(Napi::Env env) {
                         PyObj::StaticMethod("import", &PyObj::Import),
                         PyObj::StaticMethod("string", &PyObj::String),
                         PyObj::StaticMethod("float", &PyObj::Float),
+                        PyObj::StaticMethod("dict", &PyObj::Dictionary),
                         PyObj::StaticMethod("int", &PyObj::Integer)});
 }
 

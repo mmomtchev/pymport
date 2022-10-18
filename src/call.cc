@@ -1,5 +1,6 @@
 #include "pymport.h"
 #include "pystackobject.h"
+#include "values.h"
 
 using namespace Napi;
 

@@ -26,7 +26,7 @@ describe('types', () => {
         });
 
         it('throws on invalid value', () => {
-            assert.throws(() => PyObject.float('a' as unknown as number));
+            assert.throws(() => PyObject.float('a' as unknown as number), /Argument must be/);
         });
     });
 
@@ -49,7 +49,7 @@ describe('types', () => {
         });
 
         it('throws on invalid value', () => {
-            assert.throws(() => PyObject.float({b: 12} as unknown as number));
+            assert.throws(() => PyObject.float({ b: 12 } as unknown as number), /Argument must be/);
         });
     });
 
@@ -88,6 +88,36 @@ describe('types', () => {
         it('toString()', () => {
             const f = PyObject.fromJS('hello');
             assert.equal(f.toString(), 'hello');
+        });
+
+        it('throws on invalid value', () => {
+            assert.throws(() => PyObject.string({ b: 12 } as unknown as string), /Argument must be/);
+        });
+    });
+
+    describe('dictionary', () => {
+        const o = { text: 'hello', number: 42, obj: { text: 'garga' } };
+
+        it('toJS()', () => {
+            const d = PyObject.dict(o);
+            assert.instanceOf(d, PyObject);
+            assert.deepEqual(d.toJS(), o);
+        });
+
+        it('fromJS()', () => {
+            const d = PyObject.fromJS(o);
+            assert.instanceOf(d, PyObject);
+            assert.deepEqual(d.toJS(), o);
+        });
+
+        it('toString()', () => {
+            const d = PyObject.dict(o);
+            assert.instanceOf(d, PyObject);
+            assert.equal(d.toString(), "{'text': 'hello', 'number': 42, 'obj': {'text': 'garga'}}");
+        });
+
+        it('throws on invalid value', () => {
+            assert.throws(() => PyObject.dict(12 as unknown as {t: string}), /Argument must be/);
         });
     });
 

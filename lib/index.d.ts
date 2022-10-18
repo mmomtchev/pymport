@@ -3,6 +3,7 @@ declare module pymport {
         static int: (v: number) => PyObject;
         static float: (v: number) => PyObject;
         static string: (v: string) => PyObject;
+        static dict: (v: Record<string, unknown>) => PyObject;
         static fromJS: (v: any) => PyObject;
         
         get: (name: string) => PyObject;
