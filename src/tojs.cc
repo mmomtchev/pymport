@@ -3,12 +3,14 @@
 using namespace Napi;
 
 Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
+    EscapableHandleScope scope(env);
+
     if (PyLong_Check(py)) {
-        return Number::New(env, PyLong_AsLong(py));
+        return scope.Escape(Number::New(env, PyLong_AsLong(py)));
     }
 
     if (PyFloat_Check(py)) {
-        return Number::New(env, PyFloat_AsDouble(py));
+        return scope.Escape(Number::New(env, PyFloat_AsDouble(py)));
     }
 
     if (PyList_Check(py)) {
@@ -20,7 +22,7 @@ Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
             Napi::Value js = PyObj::ToJS(env, v);
             r.Set(i, js);
         }
-        return r;
+        return scope.Escape(r);
     }
 
     throw Error::New(env, "Unsupported Python type");

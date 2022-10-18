@@ -1,4 +1,4 @@
-import { pymport, PyObject } from '../lib/binding';
+import { pymport, PyObject } from '../lib';
 import { assert } from 'chai';
 
 describe('pymport', () => {

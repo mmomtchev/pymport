@@ -30,6 +30,8 @@ Value PyObj::Integer(const CallbackInfo &info) {
 }
 
 PyObject* PyObj::FromJS(Napi::Value v) {
+    Napi::Env env = v.Env();
+
     if (v.IsNumber()) {
         auto raw = v.ToNumber().DoubleValue();
         return PyFloat_FromDouble(raw);
@@ -40,8 +42,20 @@ PyObject* PyObj::FromJS(Napi::Value v) {
             PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()),
                                   raw.size(), nullptr, nullptr);
     }
+    if (v.IsArray()) {
+        auto js = v.As<Array>();
+        size_t len = js.Length();
+        auto py = PyList_New(len);
+        THROW_IF_NULL(py);
+
+        for (size_t i = 0; i < len; i++) {
+            auto el = FromJS(js.Get(i));
+            PyList_SetItem(py, i, el);
+        }
+
+        return py;
+    }
     if (v.IsObject()) {
-        Napi::Env env = v.Env();
         FunctionReference *cons = env.GetInstanceData<FunctionReference>();
         if (v.ToObject().InstanceOf(cons->Value())) {
             auto py = ObjectWrap::Unwrap(v.ToObject());
