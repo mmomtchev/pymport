@@ -28,8 +28,10 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
     static Napi::Value Dictionary(const Napi::CallbackInfo &);
     static Napi::Value Tuple(const Napi::CallbackInfo &);
     static Napi::Value List(const Napi::CallbackInfo &);
+    static PyObject* _Dictionary(Napi::Object);
+    static PyObject *_List(Napi::Array);
 
-    static PyObject *FromJS(Napi::Value);
+    static PyObject* FromJS(Napi::Value);
 
     static Napi::Value New(Napi::Env, PyObject *);
     static Napi::Function GetClass(Napi::Env);

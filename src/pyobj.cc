@@ -32,6 +32,7 @@ Function PyObj::GetClass(Napi::Env env) {
                         PyObj::StaticMethod("string", &PyObj::String),
                         PyObj::StaticMethod("float", &PyObj::Float),
                         PyObj::StaticMethod("dict", &PyObj::Dictionary),
+                        PyObj::StaticMethod("list", &PyObj::List),
                         PyObj::StaticMethod("int", &PyObj::Integer)});
 }
 

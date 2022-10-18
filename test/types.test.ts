@@ -53,17 +53,21 @@ describe('types', () => {
         });
     });
 
-    describe('arrays', () => {
+    describe('list', () => {
         it('toJS()', () => {
             const a = np.get('arange').call(15).get('reshape').call(3, 5);
 
             assert.deepEqual(a.get('tolist').call().toJS(), [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]);
         });
 
-        it('fromJS()', () => {
+        it('automatic from array argument', () => {
             const a = np.get('array').call([[1, 2, 3], [4, 5, 6]]).get('reshape').call(3, 2);
-
             assert.deepEqual(a.get('tolist').call().toJS(), [[1, 2], [3, 4], [5, 6]]);
+        });
+
+        it('fromJS()', () => {
+            const a = PyObject.fromJS([1, 2.1, 'hello']);
+            assert.deepEqual(a.toJS(), [1, 2.1, 'hello']);
         });
 
         it('toString()', () => {

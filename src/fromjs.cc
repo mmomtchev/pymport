@@ -30,20 +30,52 @@ Value PyObj::Integer(const CallbackInfo &info) {
     return New(env, obj);
 }
 
-Value PyObj::Dictionary(const CallbackInfo &info) {
-    Napi::Env env = info.Env();
+PyObject* PyObj::_Dictionary(Napi::Object object) {
+    Napi::Env env = object.Env();
 
-    auto raw = NAPI_ARG_OBJECT(0).ToObject();
     auto dict = PyDict_New();
+    THROW_IF_NULL(dict);
 
-    for (auto const &el : raw.GetPropertyNames()) {
+    for (auto const &el : object.GetPropertyNames()) {
         auto key = ((Napi::Value)el.second).ToString().Utf8Value();
-        PyStackObject item = FromJS(raw.Get(key));
+        PyStackObject item = FromJS(object.Get(key));
         THROW_IF_NULL(item);
         PyDict_SetItemString(dict, key.c_str(), item);
     }
+
+    return dict;
+}
+
+Value PyObj::Dictionary(const CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    auto raw = NAPI_ARG_OBJECT(0);
+    auto dict = _Dictionary(raw);
     
     return New(env, dict);
+}
+
+PyObject *PyObj::_List(Napi::Array array) {
+    Napi::Env env = array.Env();
+    size_t len = array.Length();
+    auto py = PyList_New(len);
+    THROW_IF_NULL(py);
+
+    for (size_t i = 0; i < len; i++) {
+        auto el = FromJS(array.Get(i));
+        PyList_SetItem(py, i, el);
+    }
+
+    return py;
+}
+
+Value PyObj::List(const CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    auto raw = NAPI_ARG_ARRAY(0);
+    auto list = _List(raw);
+
+    return New(env, list);
 }
 
 Value PyObj::FromJS(const CallbackInfo &info) {
@@ -71,17 +103,9 @@ PyObject *PyObj::FromJS(Napi::Value v) {
             nullptr);
     }
     if (v.IsArray()) {
-        auto js = v.As<Array>();
-        size_t len = js.Length();
-        auto py = PyList_New(len);
-        THROW_IF_NULL(py);
-
-        for (size_t i = 0; i < len; i++) {
-            auto el = FromJS(js.Get(i));
-            PyList_SetItem(py, i, el);
-        }
-
-        return py;
+        auto array = v.As<Array>();
+        auto list = _List(array);
+        return list;
     }
     if (v.IsObject()) {
         FunctionReference *cons = env.GetInstanceData<FunctionReference>();
@@ -91,15 +115,7 @@ PyObject *PyObj::FromJS(Napi::Value v) {
             return py->self;
         }
 
-        auto dict = PyDict_New();
-
-        for (auto const &el : obj.GetPropertyNames()) {
-            auto key = ((Napi::Value)el.second).ToString().Utf8Value();
-            PyStackObject item = FromJS(obj.Get(key));
-            THROW_IF_NULL(item);
-            PyDict_SetItemString(dict, key.c_str(), item);
-        }
-
+        auto dict = _Dictionary(obj);
         return dict;
     }
 

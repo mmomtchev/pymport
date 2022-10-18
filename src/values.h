@@ -22,6 +22,14 @@
         info[arg].ToObject();                                                  \
     })
 
+#define NAPI_ARG_ARRAY(arg)                                                    \
+    ({                                                                         \
+        if (info.Length() <= arg || !info[arg].IsArray()) {                    \
+            throw Napi::TypeError::New(env, "Argument must be an array");      \
+        }                                                                      \
+        info[arg].As<Napi::Array>();                                           \
+    })
+
 #define THROW_IF_NULL(val)                                                     \
     if ((PyObject *)val == nullptr) {                                          \
         auto err = PyErr_Occurred();                                           \
