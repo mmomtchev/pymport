@@ -13,7 +13,7 @@ Not ready
 const np = pymport('numpy');
 
 // a = np.arange(15).reshape(3, 5)
-const a = np.get('arange').call(15).get('reshape').call(PyObject.int(3), PyObject.int(5));
+const a = np.get('arange').call(15).get('reshape').call(3, 5);
 
 // print(a.tolist())
 console.log(a.get('tolist').call().toJS());

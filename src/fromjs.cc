@@ -34,7 +34,10 @@ PyObject* PyObj::FromJS(Napi::Value v) {
 
     if (v.IsNumber()) {
         auto raw = v.ToNumber().DoubleValue();
-        return PyFloat_FromDouble(raw);
+        if (fmod(raw, 1) == 0)
+            return PyLong_FromLong(v.ToNumber().Int64Value());
+        else
+            return PyFloat_FromDouble(raw);
     }
     if (v.IsString()) {
         auto raw = v.ToString().Utf16Value();
