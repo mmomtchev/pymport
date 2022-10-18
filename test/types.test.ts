@@ -70,4 +70,23 @@ describe('types', () => {
             assert.equal(s.toJS(), 'hello');
         });
     });
+
+    describe('PyObject pass-through', () => {
+        it('creating PyObject w/o conversion', () => {
+            const a = np.get('array').call([1, 2, 3]);
+
+            const b = PyObject.fromJS(a);
+
+            assert.deepEqual(b.get('tolist').call().toJS(), [1, 2, 3]);
+        });
+        
+        it('passing PyObject arguments w/o conversion', () => {
+            const a = np.get('array').call([1, 2, 3]);
+
+            const b = np.get('array').call([a, a]);
+
+            assert.deepEqual(b.get('tolist').call().toJS(), [[1, 2, 3], [1, 2, 3]]);
+        });
+    });
+
 });
