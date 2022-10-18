@@ -8,13 +8,12 @@ Value PyObj::String(const CallbackInfo &info) {
     auto raw = NAPI_ARG_STRING(0).Utf16Value();
     auto obj =
         PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()),
-                              raw.size(), nullptr, nullptr);
+                              raw.size() * 2, nullptr, nullptr);
     return New(env, obj);
 }
 
 Value PyObj::Float(const CallbackInfo &info) {
     Napi::Env env = info.Env();
-
 
     auto raw = NAPI_ARG_NUMBER(0).DoubleValue();
     auto obj = PyFloat_FromDouble(raw);
@@ -29,7 +28,15 @@ Value PyObj::Integer(const CallbackInfo &info) {
     return New(env, obj);
 }
 
-PyObject* PyObj::FromJS(Napi::Value v) {
+Value PyObj::FromJS(const CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 1)
+        throw Error::New(env, "Missing argument");
+    return New(info.Env(), FromJS(info[0]));
+}
+
+PyObject *PyObj::FromJS(Napi::Value v) {
     Napi::Env env = v.Env();
 
     if (v.IsNumber()) {
@@ -41,9 +48,9 @@ PyObject* PyObj::FromJS(Napi::Value v) {
     }
     if (v.IsString()) {
         auto raw = v.ToString().Utf16Value();
-        return
-            PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()),
-                                  raw.size(), nullptr, nullptr);
+        return PyUnicode_DecodeUTF16(
+            reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr,
+            nullptr);
     }
     if (v.IsArray()) {
         auto js = v.As<Array>();

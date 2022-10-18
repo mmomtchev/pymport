@@ -9,6 +9,7 @@
 class PyObj : public Napi::ObjectWrap<PyObj> {
   public:
     PyObj(const Napi::CallbackInfo &);
+    virtual ~PyObj();
 
     Napi::Value Get(const Napi::CallbackInfo &);
     Napi::Value Call(const Napi::CallbackInfo &);
@@ -61,3 +62,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
         }                                                                      \
         throw Napi::TypeError::New(env, "Failed converting value");            \
     }
+
+#if PY_MAJOR_VERSION < 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 3)
+#error Python 3.3 is required
+#endif

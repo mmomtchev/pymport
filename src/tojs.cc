@@ -1,4 +1,5 @@
 #include "pymport.h"
+#include "pystackobject.h"
 
 using namespace Napi;
 
@@ -23,6 +24,12 @@ Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
             r.Set(i, js);
         }
         return scope.Escape(r);
+    }
+
+    if (PyUnicode_Check(py)) {
+        PyStackObject utf16 = PyUnicode_AsUTF16String(py);
+        auto raw = PyBytes_AS_STRING((PyObject *)utf16);
+        return String::New(env, reinterpret_cast<char16_t*>(raw + 2));
     }
 
     throw Error::New(env, "Unsupported Python type");

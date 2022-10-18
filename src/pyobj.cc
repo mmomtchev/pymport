@@ -15,11 +15,16 @@ PyObj::PyObj(const CallbackInfo &info) : ObjectWrap(info) {
     }
 }
 
+PyObj::~PyObj() {
+    Py_DECREF(self);
+}
+
 Function PyObj::GetClass(Napi::Env env) {
     return DefineClass(env, "PyObject",
                        {PyObj::InstanceMethod("get", &PyObj::Get),
                         PyObj::InstanceMethod("call", &PyObj::Call),
                         PyObj::InstanceMethod("toJS", &PyObj::ToJS),
+                        PyObj::StaticMethod("fromJS", &PyObj::FromJS),
                         PyObj::StaticMethod("import", &PyObj::Import),
                         PyObj::StaticMethod("string", &PyObj::String),
                         PyObj::StaticMethod("float", &PyObj::Float),
@@ -39,9 +44,7 @@ Value PyObj::Import(const CallbackInfo &info) {
 
     std::string name = NAPI_ARG_STRING(0).Utf8Value();
     PyObject *pyname = PyUnicode_DecodeFSDefault(name.c_str());
-    if (pyname == nullptr) {
-        throw TypeError::New(env, "Cannot decode filename");
-    }
+    THROW_IF_NULL(pyname);
 
     auto obj = PyImport_Import(pyname);
     Py_DECREF(pyname);
@@ -49,10 +52,8 @@ Value PyObj::Import(const CallbackInfo &info) {
     return New(env, obj);
 }
 
+// New steals the py reference
 Value PyObj::New(Napi::Env env, PyObject *obj) {
-    if (obj == nullptr) {
-        throw Napi::RangeError::New(env, "Value not found");
-    }
     THROW_IF_NULL(obj);
     Napi::FunctionReference *cons =
         env.GetInstanceData<Napi::FunctionReference>();
