@@ -3,6 +3,7 @@
 #include "values.h"
 
 using namespace Napi;
+using namespace pymport;
 
 PyObj::PyObj(const CallbackInfo &info) : ObjectWrap(info) {
   Napi::Env env = info.Env();
@@ -17,6 +18,7 @@ PyObj::PyObj(const CallbackInfo &info) : ObjectWrap(info) {
 }
 
 PyObj::~PyObj() {
+  Release();
   Py_DECREF(self);
 }
 
@@ -65,11 +67,4 @@ Value PyObj::Import(const CallbackInfo &info) {
   Py_DECREF(pyname);
 
   return New(env, obj);
-}
-
-// New steals the py reference
-Value PyObj::New(Napi::Env env, PyObject *obj) {
-  THROW_IF_NULL(obj);
-  Napi::FunctionReference *cons = env.GetInstanceData<Napi::FunctionReference>();
-  return cons->New({External<PyObject>::New(env, obj)});
 }

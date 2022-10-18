@@ -11,7 +11,8 @@
         'src/pyobj.cc',
         'src/call.cc',
         'src/fromjs.cc',
-        'src/tojs.cc'
+        'src/tojs.cc',
+        'src/objstore.cc'
       ],
       'include_dirs': [
         '/usr/include/python3.8',

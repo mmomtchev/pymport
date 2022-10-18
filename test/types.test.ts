@@ -7,6 +7,8 @@ describe('types', () => {
         np = pymport('numpy');
     });
 
+    afterEach('gc', global.gc);
+
     describe('float', () => {
         it('toJS()', () => {
             const f = PyObject.float(2.3);
@@ -159,11 +161,11 @@ describe('types', () => {
 
     describe('PyObject pass-through', () => {
         it('creating PyObject w/o conversion', () => {
-            const a = np.get('array').call([1, 2, 3]);
+            const a = np.get('array').call([1, 2, 3.5]);
 
             const b = PyObject.fromJS(a);
 
-            assert.deepEqual(b.get('tolist').call().toJS(), [1, 2, 3]);
+            assert.deepEqual(b.get('tolist').call().toJS(), [1, 2, 3.5]);
         });
         
         it('passing PyObject arguments w/o conversion', () => {

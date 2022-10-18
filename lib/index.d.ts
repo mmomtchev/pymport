@@ -10,6 +10,6 @@ declare namespace pymport {
         
         get: (name: string) => PyObject;
         call: (...args: any[]) => PyObject;
-        toJS: () => unknown;
+        toJS: () => any;
     }
 }

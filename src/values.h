@@ -45,3 +45,10 @@
     throw Napi::TypeError::New(                                                                                        \
       env, std::string("Failed converting value at ") + std::string(__FILE__) + ":" + std::to_string(__LINE__));       \
   }
+
+#define DEBUG_PY_PRINT(o, msg)                                                                                         \
+  {                                                                                                                    \
+    printf("%s %p: ", msg, o);                                                                                         \
+    PyObject_Print(o, stdout, 0);                                                                                      \
+    printf("\n\n");                                                                                                    \
+  }

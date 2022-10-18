@@ -3,6 +3,7 @@
 #include "values.h"
 
 using namespace Napi;
+using namespace pymport;
 
 Value PyObj::String(const CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -106,6 +107,7 @@ Value PyObj::FromJS(const CallbackInfo &info) {
   return New(info.Env(), FromJS(info[0]));
 }
 
+// Returns a strong reference
 PyObject *PyObj::FromJS(Napi::Value v) {
   Napi::Env env = v.Env();
 
@@ -130,6 +132,8 @@ PyObject *PyObj::FromJS(Napi::Value v) {
     auto obj = v.ToObject();
     if (obj.ToObject().InstanceOf(cons->Value())) {
       auto py = ObjectWrap::Unwrap(v.ToObject());
+      // We must return a strong reference
+      Py_INCREF(py->self);
       return py->self;
     }
 

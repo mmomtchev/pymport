@@ -3,6 +3,7 @@
 #include "values.h"
 
 using namespace Napi;
+using namespace pymport;
 
 Value PyObj::Call(const CallbackInfo &info) {
   Napi::Env env = info.Env();

@@ -1,6 +1,7 @@
 #include "pymport.h"
 
 using namespace Napi;
+using namespace pymport;
 
 Napi::Object Init(Env env, Object exports) {
   Function pyObjCons = PyObj::GetClass(env);

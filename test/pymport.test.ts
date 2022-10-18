@@ -10,5 +10,28 @@ describe('pymport', () => {
 
             assert.deepEqual(a.get('tolist').call().toJS(), [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]);
         });
+
+        it('toJS() expansion', () => {
+            const np = pymport('numpy').toJS();
+            const a = np.arange.call(3);
+            assert.deepEqual(a.get('tolist').call().toJS(), [0, 1, 2]);
+        });
+    });
+
+    describe('object store', () => {
+        it('retrieves existing objects from the store', () => {
+            const np = pymport('numpy');
+
+            const a = np.get('arange');
+            const b = np.get('arange');
+            assert.equal(a, b);
+        });
+
+        it('objects obtained by different means are still identical', () => {
+            const np = pymport('numpy');
+            const npJS = pymport('numpy').toJS();
+
+            assert.equal(np.get('arange'), npJS.arange);
+        });
     });
 });
