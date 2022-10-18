@@ -1,4 +1,4 @@
-declare module pymport {
+declare namespace pymport {
     export class PyObject {
         static int: (v: number) => PyObject;
         static float: (v: number) => PyObject;

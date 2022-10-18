@@ -1,0 +1,46 @@
+{
+  "env": {
+    "mocha": true,
+    "node": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:array-func/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "mocha",
+    "prefer-arrow"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "rules": {
+    "max-len": [
+      1,
+      {
+        "code": 120,
+        "tabWidth": 2
+      }
+    ],
+    "mocha/no-exclusive-tests": "error",
+    "mocha/no-identical-title": "error",
+    "mocha/no-nested-tests": "error",
+    "semi": [
+      2,
+      "always"
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": "off"
+  }
+}
