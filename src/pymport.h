@@ -11,6 +11,8 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
     PyObj(const Napi::CallbackInfo &);
     virtual ~PyObj();
 
+    Napi::Value ToString(const Napi::CallbackInfo &);
+
     Napi::Value Get(const Napi::CallbackInfo &);
     Napi::Value Call(const Napi::CallbackInfo &);
 
@@ -50,17 +52,21 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
     })
 
 #define THROW_IF_NULL(val)                                                     \
-    if (val == nullptr) {                                                      \
+    if ((PyObject *)val == nullptr) {                                          \
         auto err = PyErr_Occurred();                                           \
         if (err != nullptr) {                                                  \
             PyObject *type, *v, *trace;                                        \
                                                                                \
             PyErr_Fetch(&type, &v, &trace);                                    \
             PyObject *pstr = PyObject_Str(v);                                  \
-            const char *err_msg = PyUnicode_AsUTF8(pstr);                      \
-            printf("Python exception: %s\n", err_msg);                         \
+            const char *py_err_msg = PyUnicode_AsUTF8(pstr);                   \
+            std::string err_msg =                                              \
+                std::string("Python exception: ") + py_err_msg;                \
+            throw Napi::Error::New(env, err_msg);                              \
         }                                                                      \
-        throw Napi::TypeError::New(env, "Failed converting value");            \
+        throw Napi::TypeError::New(                                            \
+            env, std::string("Failed converting value at ") +                  \
+                     std::string(__FILE__) + ":" + std::to_string(__LINE__));  \
     }
 
 #if PY_MAJOR_VERSION < 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 3)
