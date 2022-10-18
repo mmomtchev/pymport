@@ -3,7 +3,13 @@
     "dependencies": {
         "node-addon-api": "^5.0.0"
     },
-    "scripts": {},
+    "scripts": {
+        "test": "mocha",
+        "build": "npx node-gyp configure --debug && npx node-gyp build",
+        "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport-native/src ../src/*",
+        "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
+        "codecov": "cd coverage && curl -s https://codecov.io/bash | bash"
+    },
     "gypfile": true,
     "name": "pymport",
     "version": "0.0.1",

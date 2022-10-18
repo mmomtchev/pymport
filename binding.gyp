@@ -1,4 +1,8 @@
 {
+  'variables': {
+    'enable_asan%': 'false',
+    'enable_coverage%': 'false'
+  },
   'targets': [
     {
       'target_name': 'pymport-native',
@@ -17,6 +21,16 @@
         '-lpython3.8'
       ],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
+      'conditions': [
+        ['enable_asan == "true"', {
+          'cflags_cc': [ '-fsanitize=address' ],
+          'ldflags' : [ '-fsanitize=address' ]
+        }],
+        ['enable_coverage == "true"', {
+          'cflags_cc': [ '-fprofile-arcs', '-ftest-coverage' ],
+          'ldflags' : [ '-lgcov', '--coverage' ]
+        }]
+      ],
       'cflags!': [ '-fno-exceptions' ],
       'cflags_cc!': [ '-fno-exceptions' ],
       'xcode_settings': {
