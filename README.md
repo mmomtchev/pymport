@@ -8,15 +8,27 @@ Not ready
 
 # Usage
 
+Without module conversion
+
 ```js
 // import numpy as np
-const np = pymport('numpy');
+const np = pymport("numpy"); // np is a PyObject
 
 // a = np.arange(15).reshape(3, 5)
-const a = np.get('arange').call(15).get('reshape').call(3, 5);
+const a = np.get("arange").call(15).get("reshape").call(3, 5); // a is a PyObject
 
 // print(a.tolist())
-console.log(a.get('tolist').call().toJS());
+console.log(a.get("tolist").call().toJS()); // PyObject.toJS() converts to JS
+```
+
+With module conversion
+
+```js
+const np = pymport("numpy").toJS(); // np is a normal JS object;
+
+const a = np.arange(15); // a is a PyObject
+
+console.log(a.get("tolist").call().toJS());
 ```
 
 # Alternatives

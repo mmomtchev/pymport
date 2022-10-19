@@ -76,6 +76,8 @@ Napi::Value PyObj::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &store) {
   if (py == Py_False) { return Boolean::New(env, false); }
   if (py == Py_True) { return Boolean::New(env, true); }
 
+  if (PyCallable_Check(py)) { return NewCallable(env, py); }
+
   // Everything else is kept as a PyObject
   // (New expects a strong reference and steals it)
   Py_INCREF(py);

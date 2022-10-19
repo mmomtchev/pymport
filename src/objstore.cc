@@ -53,6 +53,26 @@ Value PyObj::New(Napi::Env env, PyObject *obj) {
   return js;
 }
 
+Value PyObj::NewCallable(Napi::Env env, PyObject *py) {
+  THROW_IF_NULL(py);
+
+  auto context = env.GetInstanceData<EnvContext>();
+  auto it = context->function_store.find(py);
+  Function js;
+  if (it == context->function_store.end()) {
+    js = Function::New(env, _CallableTrampoline, "[Python_func]", py);
+    FunctionReference *jsRef = new FunctionReference;
+    // Functions never expire (for now)
+    *jsRef = Napi::Persistent(js);
+    context->function_store.insert({py, jsRef});
+  } else {
+    assert(!it->second->Value().IsEmpty());
+    js = it->second->Value();
+  }
+
+  return js;
+}
+
 // This is triggered by the JS GC which destroys the JS PyObject
 // -> the mapping is removed from the object store
 // -> the C-API PyObject reference is decreased

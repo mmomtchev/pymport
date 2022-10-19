@@ -13,7 +13,7 @@ describe('pymport', () => {
 
         it('toJS() expansion', () => {
             const np = pymport('numpy').toJS();
-            const a = np.arange.call(3);
+            const a = np.arange(3);
             assert.deepEqual(a.get('tolist').call().toJS(), [0, 1, 2]);
         });
     });
@@ -27,11 +27,16 @@ describe('pymport', () => {
             assert.equal(a, b);
         });
 
+        it('functions share the same reference', () => {
+            const arange1 = pymport('numpy').toJS().arange;
+            const arange2 = pymport('numpy').toJS().arange;
+            assert.equal(arange1, arange2);
+        });
+
         it('objects obtained by different means are still identical', () => {
             const np = pymport('numpy');
             const npJS = pymport('numpy').toJS();
-
-            assert.equal(np.get('arange'), npJS.arange);
+            assert.equal(np.get('__loader__'), npJS.__loader__);
         });
     });
 });

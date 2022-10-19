@@ -33,6 +33,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static PyObject *FromJS(Napi::Value);
 
   static Napi::Value New(Napi::Env, PyObject *);
+  static Napi::Value NewCallable(Napi::Env, PyObject *);
   void Release();
   static Napi::Function GetClass(Napi::Env);
 
@@ -45,6 +46,8 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static PyObject *_Dictionary(Napi::Object, PyObject *, PyObjectStore &);
   static PyObject *_List(Napi::Array, PyObject *, PyObjectStore &);
   static PyObject *_Tuple(Napi::Array, PyObject *, PyObjectStore &);
+  static Napi::Value _Call(PyObject *, const Napi::CallbackInfo &info);
+  static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
 
   PyObject *self;
 };
@@ -52,6 +55,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
 struct EnvContext {
   Napi::FunctionReference *pyObj;
   std::map<PyObject *, PyObj *> object_store;
+  std::map<PyObject *, Napi::FunctionReference *> function_store;
 };
 
 }; // namespace pymport
