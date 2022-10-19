@@ -221,4 +221,18 @@ describe('types', () => {
         });
     });
 
+    describe('bool', () => {
+        it('True is equivalent to true', () => {
+            const bool = PyObject.fromJS(true);
+            assert.equal(bool.toString(), 'True');
+            assert.equal(bool.toJS(), true);
+        });
+
+        it('False is equivalent to false', () => {
+            const bool = PyObject.fromJS(false);
+            assert.equal(bool.toString(), 'False');
+            assert.equal(bool.toJS(), false);
+        });
+    });
+
 });

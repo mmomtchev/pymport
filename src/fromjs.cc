@@ -174,5 +174,10 @@ PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
   }
   if (v.IsNull() || v.IsUndefined()) { return Py_None; }
 
+  if (v.IsBoolean()) {
+    if (v.ToBoolean() == true) return Py_True;
+    if (v.ToBoolean() == false) return Py_False;
+  }
+
   return nullptr;
 }
