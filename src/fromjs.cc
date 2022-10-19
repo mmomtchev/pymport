@@ -135,7 +135,9 @@ PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
 
   if (v.IsNumber()) {
     auto raw = v.ToNumber().DoubleValue();
-    if (fabs(fmod(raw, 1)) < std::numeric_limits<float>::epsilon())
+    double integer;
+    double fract = fabs(modf(raw, &integer));
+    if (fract < std::numeric_limits<float>::epsilon() || fract > 1 - std::numeric_limits<float>::epsilon())
       return PyLong_FromLong(v.ToNumber().Int64Value());
     else
       return PyFloat_FromDouble(raw);

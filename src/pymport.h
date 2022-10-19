@@ -51,7 +51,6 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
 
 struct EnvContext {
   Napi::FunctionReference *pyObj;
-  double epsilon;
   std::map<PyObject *, PyObj *> object_store;
 };
 
