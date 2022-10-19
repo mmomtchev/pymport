@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <list>
 #include <Python.h>
 #include <napi.h>
 
@@ -28,6 +29,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static Napi::Value Dictionary(const Napi::CallbackInfo &);
   static Napi::Value Tuple(const Napi::CallbackInfo &);
   static Napi::Value List(const Napi::CallbackInfo &);
+  static Napi::Value Bug(const Napi::CallbackInfo &);
 
   static PyObject *FromJS(Napi::Value);
 
@@ -35,16 +37,15 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   void Release();
   static Napi::Function GetClass(Napi::Env);
 
-
     private:
   typedef std::map<PyObject *, Napi::Value> NapiObjectStore;
-  //typedef std::map<Napi::Value, PyObject *> PyObjectStore;
+  typedef std::list<std::pair<Napi::Value, PyObject *>> PyObjectStore;
 
   static Napi::Value _ToJS(Napi::Env, PyObject *, NapiObjectStore &);
-  //static PyObject *_FromJS(Napi::Value, PyObjectStore &);
-  static PyObject *_Dictionary(Napi::Object);
-  static PyObject *_List(Napi::Array);
-  static PyObject *_Tuple(Napi::Array);
+  static PyObject *_FromJS(Napi::Value, PyObjectStore &);
+  static PyObject *_Dictionary(Napi::Object, PyObject *, PyObjectStore &);
+  static PyObject *_List(Napi::Array, PyObject *, PyObjectStore &);
+  static PyObject *_Tuple(Napi::Array, PyObject *, PyObjectStore &);
 
   PyObject *self;
 };

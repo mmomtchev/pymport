@@ -85,6 +85,15 @@ describe('types', () => {
         it('throws on invalid value', () => {
             assert.throws(() => PyObject.list({ b: 12 } as unknown as number[]), /Argument must be/);
         });
+
+        it('circular references', () => {
+            const circular: any[] = [];
+            circular[0] = circular;
+            const d = PyObject.fromJS(circular);
+            assert.instanceOf(d, PyObject);
+            assert.deepEqual(circular, d.toJS());
+            assert.equal(d.toString(), '[[...]]');
+        });
     });
 
     describe('tuple', () => {
@@ -107,6 +116,15 @@ describe('types', () => {
 
         it('throws on invalid value', () => {
             assert.throws(() => PyObject.list({ b: 12 } as unknown as number[]), /Argument must be/);
+        });
+
+        it('circular references', () => {
+            const circular: any[] = [];
+            circular[0] = circular;
+            const t = PyObject.tuple(circular);
+            assert.instanceOf(t, PyObject);
+            assert.deepEqual(circular, t.toJS());
+            assert.equal(t.toString(), '([[...]],)');
         });
     });
 
@@ -157,15 +175,24 @@ describe('types', () => {
         it('throws on invalid value', () => {
             assert.throws(() => PyObject.dict(12 as unknown as {t: string}), /Argument must be/);
         });
+
+        it('circular references', () => {
+            const circular = {} as Record<string, any>;
+            circular['circular'] = circular;
+            const d = PyObject.fromJS(circular);
+            assert.instanceOf(d, PyObject);
+            assert.deepEqual(circular, d.toJS());
+            assert.equal(d.toString(), "{'circular': {...}}");
+        });
     });
 
     describe('PyObject pass-through', () => {
         it('creating PyObject w/o conversion', () => {
-            const a = np.get('array').call([1, 2, 3.5]);
+            const a = np.get('array').call([1, 2, 3]);
 
             const b = PyObject.fromJS(a);
 
-            assert.deepEqual(b.get('tolist').call().toJS(), [1, 2, 3.5]);
+            assert.deepEqual(b.get('tolist').call().toJS(), [1, 2, 3]);
         });
         
         it('passing PyObject arguments w/o conversion', () => {
