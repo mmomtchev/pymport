@@ -172,6 +172,7 @@ PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
     _Dictionary(obj, dict, store);
     return dict;
   }
+  if (v.IsNull() || v.IsUndefined()) { return Py_None; }
 
   return nullptr;
 }

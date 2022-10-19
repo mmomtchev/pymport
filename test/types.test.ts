@@ -173,7 +173,7 @@ describe('types', () => {
         });
 
         it('throws on invalid value', () => {
-            assert.throws(() => PyObject.dict(12 as unknown as {t: string}), /Argument must be/);
+            assert.throws(() => PyObject.dict(12 as unknown as { t: string; }), /Argument must be/);
         });
 
         it('circular references', () => {
@@ -194,13 +194,30 @@ describe('types', () => {
 
             assert.deepEqual(b.get('tolist').call().toJS(), [1, 2, 3]);
         });
-        
+
         it('passing PyObject arguments w/o conversion', () => {
             const a = np.get('array').call([1, 2, 3]);
 
             const b = np.get('array').call([a, a]);
 
             assert.deepEqual(b.get('tolist').call().toJS(), [[1, 2, 3], [1, 2, 3]]);
+        });
+    });
+
+    describe('None', () => {
+        it('undefined is equivalent to None', () => {
+            const undef = PyObject.fromJS(undefined);
+            assert.equal(undef.toString(), 'None');
+        });
+
+        it('null is equivalent to None', () => {
+            const undef = PyObject.fromJS(null);
+            assert.equal(undef.toString(), 'None');
+        });
+
+        it('None is equivalent to null', () => {
+            const undef = PyObject.fromJS(null);
+            assert.isNull(undef.toJS());
         });
     });
 
