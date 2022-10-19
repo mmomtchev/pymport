@@ -70,3 +70,10 @@ Value PyObj::Import(const CallbackInfo &info) {
   auto obj = PyImport_Import(pyname);
   return New(env, obj);
 }
+
+bool PyObj::_InstanceOf(Napi::Value v) {
+  Napi::Env env = v.Env();
+  FunctionReference *cons = env.GetInstanceData<EnvContext>()->pyObj;
+  auto obj = v.ToObject();
+  return obj.ToObject().InstanceOf(cons->Value());
+}

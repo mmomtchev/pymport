@@ -10,14 +10,22 @@ Value PyObj::_Call(PyObject *py, const CallbackInfo &info) {
 
   if (!PyCallable_Check(py)) { throw Napi::TypeError::New(env, "Value not callable"); }
 
-  PyStackObject args = PyTuple_New(info.Length());
-  for (size_t i = 0; i < info.Length(); i++) {
+  PyStackObject kwargs = PyDict_New();
+  size_t argc = info.Length();
+  if (argc > 0 && info[argc - 1].IsObject() && !info[argc - 1].IsArray() && !_InstanceOf(info[argc - 1])) {
+    PyObjectStore store;
+    _Dictionary((info[argc - 1]).ToObject(), kwargs, store);
+    argc--;
+  }
+
+  PyStackObject args = PyTuple_New(argc);
+  for (size_t i = 0; i < argc; i++) {
     PyObject *v = FromJS(info[i]);
     THROW_IF_NULL(v);
     PyTuple_SetItem(args, i, v);
   }
 
-  PyObject *r = PyObject_CallObject(py, args);
+  PyObject *r = PyObject_Call(py, args, kwargs);
   THROW_IF_NULL(r);
 
   return New(env, r);

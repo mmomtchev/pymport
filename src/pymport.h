@@ -48,6 +48,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static PyObject *_Tuple(Napi::Array, PyObject *, PyObjectStore &);
   static Napi::Value _Call(PyObject *, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
+  static bool _InstanceOf(Napi::Value);
 
   PyObject *self;
 };

@@ -39,4 +39,11 @@ describe('pymport', () => {
             assert.equal(np.get('__loader__'), npJS.__loader__);
         });
     });
+
+    it('named arguments', () => {
+        const np = pymport('numpy');
+
+        const a = np.get('ones').call([2, 3], { dtype: np.get('int16') });
+        assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
+    });
 });

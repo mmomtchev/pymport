@@ -157,10 +157,9 @@ PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
     return list;
   }
   if (v.IsObject()) {
-    FunctionReference *cons = env.GetInstanceData<EnvContext>()->pyObj;
     auto obj = v.ToObject();
-    if (obj.ToObject().InstanceOf(cons->Value())) {
-      auto py = ObjectWrap::Unwrap(v.ToObject());
+    if (_InstanceOf(obj)) {
+      auto py = ObjectWrap::Unwrap(obj);
       // We must return a strong reference
       Py_INCREF(py->self);
       return py->self;
