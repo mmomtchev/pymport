@@ -118,15 +118,6 @@ PyObject *PyObj::FromJS(Napi::Value v) {
   return _FromJS(v, store);
 }
 
-Napi::Value PyObj::Bug(const CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  auto a = info[0].ToObject().Get("circular");
-  auto b = info[0].ToObject().Get("circular").ToObject().Get("circular");
-  
-  return Boolean::New(env, a == b);
-}
-
 // Returns a strong reference
 PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
   Napi::Env env = v.Env();

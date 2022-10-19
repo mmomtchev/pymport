@@ -30,7 +30,6 @@ Function PyObj::GetClass(Napi::Env env) {
      PyObj::InstanceMethod("get", &PyObj::Get),
      PyObj::InstanceMethod("call", &PyObj::Call),
      PyObj::InstanceMethod("toJS", &PyObj::ToJS),
-     PyObj::StaticMethod("Bug", &PyObj::Bug),
      PyObj::StaticMethod("fromJS", &PyObj::FromJS),
      PyObj::StaticMethod("import", &PyObj::Import),
      PyObj::StaticMethod("string", &PyObj::String),

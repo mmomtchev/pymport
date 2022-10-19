@@ -48,7 +48,6 @@ Napi::Value PyObj::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &store) {
       auto jsKey = _ToJS(env, key, store);
       auto jsValue = _ToJS(env, value, store);
       obj.Set(jsKey, jsValue);
-      //printf("%s\n", jsKey.ToString().Utf8Value().c_str());
     }
     return obj;
   }
