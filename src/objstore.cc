@@ -27,14 +27,24 @@ Value PyObj::New(Napi::Env env, PyObject *obj) {
 
   Object js;
   auto it = context->object_store.find(obj);
-  if (it == context->object_store.end()) {
-    OSDEBUG("Objstore: create %p (%d)\n", obj, (int)obj->ob_refcnt);
+  if (it == context->object_store.end() || it->second->Value().IsEmpty()) {
+    // This IsEmpty() situation is pending an award for most cumbersome API of the decade
+    // (a JS object can be marked for deletion with a deferred destruction)
+    if (it != context->object_store.end()) {
+      // prevent the dying object from deleting the entry of the new one
+      // as they share the same PyObject
+      OSDEBUG("Objstore (%p): is dying %p (%d)\n", context, obj, (int)obj->ob_refcnt);
+      context->object_store.erase(it->second->self);
+      Py_DECREF(it->second->self);
+      it->second->self = nullptr;
+    }
+    OSDEBUG("Objstore (%p): create %p (%d)\n", context, obj, (int)obj->ob_refcnt);
     js = context->pyObj->New({External<PyObject>::New(env, obj)});
     auto result = ObjectWrap::Unwrap(js);
     context->object_store.insert({obj, result});
   } else {
     // Retrieve the existing object from the store
-    OSDEBUG("Objstore: retrieve %p (%d)\n", obj, (int)obj->ob_refcnt);
+    OSDEBUG("Objstore (%p): retrieve %p (%d)\n", context, obj, (int)obj->ob_refcnt);
     js = it->second->Value();
     // New must steal the reference
     Py_DECREF(obj);
@@ -52,8 +62,7 @@ void PyObj::Release() {
   auto context = env.GetInstanceData<EnvContext>();
 
   auto it = context->object_store.find(self);
-  if (it != context->object_store.end()) {
-    OSDEBUG("Objstore: delete %p (%d)\n", self, (int)self->ob_refcnt);
-    context->object_store.erase(self);
-  }
+  assert(it != context->object_store.end());
+  OSDEBUG("Objstore: delete %p (%d)\n", self, (int)self->ob_refcnt);
+  context->object_store.erase(self);
 }

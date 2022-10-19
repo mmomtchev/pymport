@@ -60,3 +60,9 @@
     PyObject_Print(o, stdout, 0);                                                                                      \
     printf("\n\n");                                                                                                    \
   }
+
+#ifdef DEBUG
+#define LOG(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define LOG(...)
+#endif

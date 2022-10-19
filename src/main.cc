@@ -17,15 +17,19 @@ Napi::Object Init(Env env, Object exports) {
   *context->pyObj = Persistent(pyObjCons);
 
   env.SetInstanceData<EnvContext>(context);
-  env.AddCleanupHook([](EnvContext *context) {
-    active_environments--;
-    context->pyObj->Reset();
-    delete context->pyObj;
-    if (active_environments == 0) { Py_Finalize(); }
-    // context will be deleted by the NAPI Finalizer
-  }, context);
+  env.AddCleanupHook(
+    [](EnvContext *context) {
+      active_environments--;
+      context->pyObj->Reset();
+      delete context->pyObj;
+      if (active_environments == 0) { Py_Finalize(); }
+      // context will be deleted by the NAPI Finalizer
+      LOG("destroyed env\n");
+    },
+    context);
   if (active_environments == 0) { Py_Initialize(); }
   active_environments++;
+  LOG("created env\n");
   return exports;
 }
 

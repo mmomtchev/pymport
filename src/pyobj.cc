@@ -18,8 +18,12 @@ PyObj::PyObj(const CallbackInfo &info) : ObjectWrap(info) {
 }
 
 PyObj::~PyObj() {
-  Release();
-  Py_DECREF(self);
+  // self == nullptr when the object has been evicted from the ObjectStore
+  // because it was dying - refer to the comments there
+  if (self != nullptr) {
+    Release();
+    Py_DECREF(self);
+  }
 }
 
 Function PyObj::GetClass(Napi::Env env) {
