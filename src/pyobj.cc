@@ -60,11 +60,9 @@ Value PyObj::Import(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
-  PyObject *pyname = PyUnicode_DecodeFSDefault(name.c_str());
+  PyStackObject pyname = PyUnicode_DecodeFSDefault(name.c_str());
   THROW_IF_NULL(pyname);
 
   auto obj = PyImport_Import(pyname);
-  Py_DECREF(pyname);
-
   return New(env, obj);
 }
