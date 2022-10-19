@@ -113,7 +113,7 @@ PyObject *PyObj::FromJS(Napi::Value v) {
 
   if (v.IsNumber()) {
     auto raw = v.ToNumber().DoubleValue();
-    if (fmod(raw, 1) == 0)
+    if (fabs(fmod(raw, 1)) < std::numeric_limits<float>::epsilon())
       return PyLong_FromLong(v.ToNumber().Int64Value());
     else
       return PyFloat_FromDouble(raw);
@@ -128,7 +128,7 @@ PyObject *PyObj::FromJS(Napi::Value v) {
     return list;
   }
   if (v.IsObject()) {
-    FunctionReference *cons = env.GetInstanceData<FunctionReference>();
+    FunctionReference *cons = env.GetInstanceData<EnvContext>()->pyObj;
     auto obj = v.ToObject();
     if (obj.ToObject().InstanceOf(cons->Value())) {
       auto py = ObjectWrap::Unwrap(v.ToObject());

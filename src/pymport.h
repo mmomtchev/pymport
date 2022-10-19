@@ -1,8 +1,5 @@
 #pragma once
 
-#define NAPI_EXPERIMENTAL
-#define NAPI_VERSION 6
-
 #include <map>
 #include <Python.h>
 #include <napi.h>
@@ -50,6 +47,12 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static PyObject *_Tuple(Napi::Array);
 
   PyObject *self;
+};
+
+struct EnvContext {
+  Napi::FunctionReference *pyObj;
+  double epsilon;
+  std::map<PyObject *, PyObj *> object_store;
 };
 
 }; // namespace pymport

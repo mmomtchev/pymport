@@ -18,6 +18,10 @@
         '/usr/include/python3.8',
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
+      'defines': [
+        'NAPI_EXPERIMENTAL'
+        'NAPI_VERSION=6'
+      ],
       'libraries': [
         '-lpython3.8'
       ],

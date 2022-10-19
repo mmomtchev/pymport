@@ -30,6 +30,14 @@
     info[arg].As<Napi::Array>();                                                                                       \
   })
 
+#define NAPI_ARG_FUNC(arg)                                                                                             \
+  ({                                                                                                                   \
+    if (info.Length() <= arg || !info[arg].IsFunction()) {                                                             \
+      throw Napi::TypeError::New(env, "Argument must be a function");                                                  \
+    }                                                                                                                  \
+    info[arg].As<Napi::Function>();                                                                                    \
+  })
+
 #define THROW_IF_NULL(val)                                                                                             \
   if ((PyObject *)val == nullptr) {                                                                                    \
     auto err = PyErr_Occurred();                                                                                       \

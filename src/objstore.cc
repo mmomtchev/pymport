@@ -11,30 +11,32 @@ using namespace pymport;
 #define OSDEBUG(...)
 #endif
 
+// This the Object Store - it is stored per Environment
+// in the environment instance data
 // Credit goes to Brandon Reavis <brandon@naturalatlas.com>
 // from whom I learned this trick
-// All JS PyObjects created from C-API PyObjects are stored here
+// All JS PyObjects created from C-API PyObjects are stored there
 // The goal is to be able to reuse them when Python returns references
 // This is the only way to avoid infinite loops when dealing with recursive structures
-
-// TODO support multiple environments
-std::map<PyObject *, PyObj *> object_store;
 
 // New steals the py reference
 Value PyObj::New(Napi::Env env, PyObject *obj) {
   THROW_IF_NULL(obj);
 
+  auto context = env.GetInstanceData<EnvContext>();
+
   Object js;
-  auto it = object_store.find(obj);
-  if (it == object_store.end()) {
+  auto it = context->object_store.find(obj);
+  if (it == context->object_store.end()) {
     OSDEBUG("Objstore: create %p (%d)\n", obj, (int)obj->ob_refcnt);
-    FunctionReference *cons = env.GetInstanceData<FunctionReference>();
-    js = cons->New({External<PyObject>::New(env, obj)});
+    js = context->pyObj->New({External<PyObject>::New(env, obj)});
     auto result = ObjectWrap::Unwrap(js);
-    object_store.insert({obj, result});
+    context->object_store.insert({obj, result});
   } else {
+    // Retrieve the existing object from the store
     OSDEBUG("Objstore: retrieve %p (%d)\n", obj, (int)obj->ob_refcnt);
     js = it->second->Value();
+    // New must steal the reference
     Py_DECREF(obj);
   }
 
@@ -46,9 +48,12 @@ Value PyObj::New(Napi::Env env, PyObject *obj) {
 // -> the C-API PyObject reference is decreased
 // -> the Python GC can free the underlying object
 void PyObj::Release() {
-  auto it = object_store.find(self);
-  if (it != object_store.end()) {
+  Napi::Env env = Env();
+  auto context = env.GetInstanceData<EnvContext>();
+
+  auto it = context->object_store.find(self);
+  if (it != context->object_store.end()) {
     OSDEBUG("Objstore: delete %p (%d)\n", self, (int)self->ob_refcnt);
-    object_store.erase(self);
+    context->object_store.erase(self);
   }
 }
