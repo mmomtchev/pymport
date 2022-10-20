@@ -38,6 +38,12 @@ describe('pymport', () => {
             const npJS = pymport('numpy').toJS();
             assert.equal(np.get('__loader__'), npJS.__loader__);
         });
+
+        it('functions obtained by different means are still identical', () => {
+            const np = pymport('numpy');
+            const npJS = pymport('numpy').toJS();
+            assert.equal(np.get('ones').toJS(), npJS.ones);
+        });
     });
 
     describe('named arguments', () => {

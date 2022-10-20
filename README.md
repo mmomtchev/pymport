@@ -55,6 +55,7 @@ const np = pymport("numpy");
 const npJS = pymport("numpy").toJS();
 
 assert(np.get("__loader__") === npJS.__loader__);
+assert(np.get("arange").toJS() === npJS.arange);
 npJS.ones([2, 3], { dtype: np.get("int16") });
 np.get("ones").call([2, 3], { dtype: np.int16 });
 ```
