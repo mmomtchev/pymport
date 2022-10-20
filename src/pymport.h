@@ -12,10 +12,14 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   PyObj(const Napi::CallbackInfo &);
   virtual ~PyObj();
 
+  /**
+  * Convert the PyObject to string using the str Python built-in
+  */
   Napi::Value ToString(const Napi::CallbackInfo &);
 
   Napi::Value Get(const Napi::CallbackInfo &);
   Napi::Value Call(const Napi::CallbackInfo &);
+  Napi::Value TypeOf(const Napi::CallbackInfo &);
 
   static Napi::Value Import(const Napi::CallbackInfo &);
 
@@ -34,13 +38,13 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
 
   static Napi::Value New(Napi::Env, PyObject *);
   static Napi::Value NewCallable(Napi::Env, PyObject *);
-  void Release();
   static Napi::Function GetClass(Napi::Env);
 
     private:
   typedef std::map<PyObject *, Napi::Value> NapiObjectStore;
   typedef std::list<std::pair<Napi::Value, PyObject *>> PyObjectStore;
 
+  void Release();
   static Napi::Value _ToJS(Napi::Env, PyObject *, NapiObjectStore &);
   static PyObject *_FromJS(Napi::Value, PyObjectStore &);
   static PyObject *_Dictionary(Napi::Object, PyObject *, PyObjectStore &);

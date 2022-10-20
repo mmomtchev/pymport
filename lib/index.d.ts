@@ -12,5 +12,6 @@ declare namespace pymport {
         call: (...args: any[]) => PyObject;
         toJS: () => any;
         toString: () => string;
+        typeOf: () => string;
     }
 }

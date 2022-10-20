@@ -13,12 +13,14 @@ describe('types', () => {
         it('toJS()', () => {
             const f = PyObject.float(2.3);
             assert.instanceOf(f, PyObject);
+            assert.equal(f.typeOf(), 'float');
             assert.equal(f.toJS(), 2.3);
         });
 
         it('fromJS()', () => {
             const f = PyObject.fromJS(2.3);
             assert.instanceOf(f, PyObject);
+            assert.equal(f.typeOf(), 'float');
             assert.equal(f.toJS(), 2.3);
         });
 
@@ -36,12 +38,14 @@ describe('types', () => {
         it('toJS()', () => {
             const f = PyObject.int(2.3);
             assert.instanceOf(f, PyObject);
+            assert.equal(f.typeOf(), 'int');
             assert.equal(f.toJS(), 2);
         });
 
         it('fromJS()', () => {
             const f = PyObject.fromJS(2);
             assert.instanceOf(f, PyObject);
+            assert.equal(f.typeOf(), 'int');
             assert.equal(f.toJS(), 2);
         });
 
@@ -56,6 +60,8 @@ describe('types', () => {
     });
 
     describe('list', () => {
+        const array = [1, 2.1, 'hello'];
+
         it('toJS()', () => {
             const a = np.get('arange').call(15).get('reshape').call(3, 5);
 
@@ -68,18 +74,20 @@ describe('types', () => {
         });
 
         it('fromJS()', () => {
-            const a = PyObject.fromJS([1, 2.1, 'hello']);
-            assert.deepEqual(a.toJS(), [1, 2.1, 'hello']);
+            const a = PyObject.fromJS(array);
+            assert.equal(a.typeOf(), 'list');
+            assert.deepEqual(a.toJS(), array);
         });
 
         it('toString()', () => {
-            const a = PyObject.fromJS([1, 2.1, 'hello']);
+            const a = PyObject.fromJS(array);
             assert.equal(a.toString(), "[1, 2.1, 'hello']");
         });
 
         it('list()', () => {
-            const a = PyObject.list([1, 2.1, 'hello']);
-            assert.deepEqual(a.toJS(), [1, 2.1, 'hello']);
+            const a = PyObject.list(array);
+            assert.equal(a.typeOf(), 'list');
+            assert.deepEqual(a.toJS(), array);
         });
 
         it('throws on invalid value', () => {
@@ -101,11 +109,7 @@ describe('types', () => {
 
         it('toJS()', () => {
             const t = PyObject.tuple(array);
-            assert.deepEqual(t.toJS(), array);
-        });
-
-        it('fromJS()', () => {
-            const t = PyObject.fromJS(array);
+            assert.equal(t.typeOf(), 'tuple');
             assert.deepEqual(t.toJS(), array);
         });
 
@@ -132,12 +136,14 @@ describe('types', () => {
         it('toJS()', () => {
             const s = PyObject.string('hello');
             assert.instanceOf(s, PyObject);
+            assert.equal(s.typeOf(), 'str');
             assert.equal(s.toJS(), 'hello');
         });
 
         it('fromJS()', () => {
             const s = PyObject.fromJS('hello');
             assert.instanceOf(s, PyObject);
+            assert.equal(s.typeOf(), 'str');
             assert.equal(s.toJS(), 'hello');
         });
 
@@ -157,12 +163,14 @@ describe('types', () => {
         it('toJS()', () => {
             const d = PyObject.dict(o);
             assert.instanceOf(d, PyObject);
+            assert.equal(d.typeOf(), 'dict');
             assert.deepEqual(d.toJS(), o);
         });
 
         it('fromJS()', () => {
             const d = PyObject.fromJS(o);
             assert.instanceOf(d, PyObject);
+            assert.equal(d.typeOf(), 'dict');
             assert.deepEqual(d.toJS(), o);
         });
 
@@ -207,11 +215,13 @@ describe('types', () => {
     describe('None', () => {
         it('undefined is equivalent to None', () => {
             const undef = PyObject.fromJS(undefined);
+            assert.equal(undef.typeOf(), 'NoneType');
             assert.equal(undef.toString(), 'None');
         });
 
         it('null is equivalent to None', () => {
             const undef = PyObject.fromJS(null);
+            assert.equal(undef.typeOf(), 'NoneType');
             assert.equal(undef.toString(), 'None');
         });
 
@@ -224,18 +234,26 @@ describe('types', () => {
     describe('bool', () => {
         it('True is equivalent to true', () => {
             const bool = PyObject.fromJS(true);
+            assert.equal(bool.typeOf(), 'bool');
             assert.equal(bool.toString(), 'True');
             assert.equal(bool.toJS(), true);
         });
 
         it('False is equivalent to false', () => {
             const bool = PyObject.fromJS(false);
+            assert.equal(bool.typeOf(), 'bool');
             assert.equal(bool.toString(), 'False');
             assert.equal(bool.toJS(), false);
         });
     });
 
     describe('functions', () => {
+        it('typeOf', () => {
+            const fn = np.get('ones');
+            assert.instanceOf(fn, PyObject);
+            assert.equal(fn.typeOf(), 'bool');
+        });
+
         it('toJS()', () => {
             const fn = np.get('ones').toJS();
             assert.typeOf(fn, 'function');
