@@ -7,19 +7,22 @@ const pymportProxy = {
     if (target[prop]) {
       if (typeof target[prop] === 'function') {
         r = () => target[prop]();
+        Object.defineProperty(r, 'name', { value: prop, writable: false });
       } else {
         r = target[prop];
       }
     } else {
       const attr = target.get(prop);
 
-      if (attr.callable)
+      if (attr.callable) {
         r = (...args: any[]) => {
           const r = attr.call(...args);
           return new Proxy(r, pymportProxy);
         };
-      else
+        Object.defineProperty(r, 'name', { value: prop, writable: false });
+      } else {
         r = attr;
+      }
     }
 
     target.__pymport_proxy__[prop] = r;

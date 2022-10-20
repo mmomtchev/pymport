@@ -16,6 +16,7 @@ describe('proxy', () => {
     const a = np.arange;
     const b = np.arange;
 
-    assert.strictEqual(a, b);
+    assert.equal(a, b);
+    assert.equal(a.name, 'arange');
   });
 });
