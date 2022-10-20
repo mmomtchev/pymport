@@ -54,8 +54,16 @@ Both modes are usable interchangeably and fully compatible with each other:
 const np = pymport("numpy");
 const npJS = pymport("numpy").toJS();
 
+// np.__loader__ is a type without JS equivalence that is always a PyObject
 assert(np.get("__loader__") === npJS.__loader__);
+assert(np.get("__loader__").toJS() === npJS.__loader__);
+
+// np.get("arange") is a PyObject with a call method
+// npJS.arange is a callable PyFunction
 assert(np.get("arange").toJS() === npJS.arange);
+
+// np.get("int16") is a PyObject that represents a Python type
+// np.int16 is a callable PyFunction
 npJS.ones([2, 3], { dtype: np.get("int16") });
 np.get("ones").call([2, 3], { dtype: np.int16 });
 ```

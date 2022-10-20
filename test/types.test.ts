@@ -266,4 +266,11 @@ describe('types', () => {
         });
     });
 
+    describe('types w/o equivalence', () => {
+        it('loader', () => {
+            const loader = np.get('__loader__');
+            assert.instanceOf(loader, PyObject);
+            assert.equal(loader, loader.toJS());
+        });
+    });
 });
