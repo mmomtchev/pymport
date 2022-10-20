@@ -8,9 +8,11 @@ Not ready
 
 # Usage
 
-Without module conversion
+Directly use the raw `PyObject` object:
 
 ```js
+import { pymport } from "pymport";
+
 // Python: import numpy as np
 // np is a PyObject
 const np = pymport("numpy");
@@ -28,44 +30,24 @@ const b = np.get("ones").call([2, 3], { dtype: np.get("int16") });
 console.log(a.get("tolist").call().toJS());
 ```
 
-With module conversion (AKA Full JS mode)
+With `proxify`:
 
 ```js
+import { pymport, proxify } from "pymport";
+
 // Python: import numpy as np
 // np is a normal JS object
-const np = pymport("numpy").toJS();
+const np = proxify(pymport("numpy"));
 
-// Python: a = np.arange(15)
+// Python: a = np.arange(15).reshape(3, 5)
 // a is a PyObject
-const a = np.arange(15);
+const a = np.arange(15).reshape(3, 5);
 
 // Python: a = np.ones((2, 3), dtype=int16)
 // np.int16 is a callable PyFunction
 const b = np.ones([2, 3], { dtype: np.int16 });
 
-console.log(a.get("tolist").call().toJS());
-```
-
-_(classes and class methods still do not work in Full JS mode)_
-
-Both modes are usable interchangeably and fully compatible with each other:
-
-```js
-const np = pymport("numpy");
-const npJS = pymport("numpy").toJS();
-
-// np.__loader__ is a type without JS equivalence that is always a PyObject
-assert(np.get("__loader__") === npJS.__loader__);
-assert(np.get("__loader__").toJS() === npJS.__loader__);
-
-// np.get("arange") is a PyObject with a call method
-// npJS.arange is a callable PyFunction
-assert(np.get("arange").toJS() === npJS.arange);
-
-// np.get("int16") is a PyObject that represents a Python type
-// np.int16 is a callable PyFunction (with implicit casting to PyObject)
-npJS.ones([2, 3], { dtype: np.get("int16") });
-np.get("ones").call([2, 3], { dtype: np.int16 });
+console.log(a.tolist().toJS());
 ```
 
 # Alternatives
@@ -74,4 +56,4 @@ There is an alternative package that is more mature but with slightly different 
 
 `node-calls-python` is geared towards calling large monolithic Python subroutines. It supports asynchronous calling as it is expected that those will take significant amount of CPU time. `node-calls-python` does type conversions on each call.
 
-`pymport` is geared towards intensive use of Python libraries in Node.js. It may support asynchronous calling in the future. `pymport` keeps the `PyObject` objects visible in JavaScript. For example, it allows creating a `numpy` array, then using various `numpy` methods without converting the array back to JavaScript.
+`pymport` is geared towards intensive use of Python libraries in Node.js. It may support asynchronous calling in the future. The main difference is that `pymport` keeps the `PyObject` objects visible in JavaScript. For example, it allows creating a `numpy` array, then using the various `numpy` methods without converting the array back to JavaScript.

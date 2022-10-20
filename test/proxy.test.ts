@@ -1,9 +1,8 @@
-import { pymport } from '../lib';
-import pymportProxy from '../lib/proxy';
+import { pymport, proxify, PyObject } from '../lib';
 import { assert } from 'chai';
 
 describe('proxy', () => {
-  const np = new Proxy(pymport('numpy'), pymportProxy);
+  const np = proxify(pymport('numpy'));
 
   it('basic access', () => {
     const a = np.arange(15).reshape(3, 5);
@@ -18,5 +17,24 @@ describe('proxy', () => {
 
     assert.equal(a, b);
     assert.equal(a.name, 'arange');
+  });
+
+  it('toString()', () => {
+    const a = np.arange(2).reshape(1, 2);
+
+    assert.equal(a.toString(), '[object [[0 1]]]');
+  });
+
+  it('PyObject pass-through', () => {
+    const a = np.ones([2, 3], { dtype: np.int16 });
+
+    assert.deepEqual(a.tolist().toJS(), [[1, 1, 1], [1, 1, 1]]);
+  });
+
+  it('PyObject constructors', () => {
+    const d = proxify(PyObject.int(12));
+
+    assert.equal(d.typeOf(), 'int');
+    assert.equal(d.toJS(), 12);
   });
 });
