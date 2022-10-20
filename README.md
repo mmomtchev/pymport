@@ -63,7 +63,7 @@ assert(np.get("__loader__").toJS() === npJS.__loader__);
 assert(np.get("arange").toJS() === npJS.arange);
 
 // np.get("int16") is a PyObject that represents a Python type
-// np.int16 is a callable PyFunction
+// np.int16 is a callable PyFunction (with implicit casting to PyObject)
 npJS.ones([2, 3], { dtype: np.get("int16") });
 np.get("ones").call([2, 3], { dtype: np.int16 });
 ```

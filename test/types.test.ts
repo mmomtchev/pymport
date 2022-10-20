@@ -251,7 +251,7 @@ describe('types', () => {
         it('typeOf', () => {
             const fn = np.get('ones');
             assert.instanceOf(fn, PyObject);
-            assert.equal(fn.typeOf(), 'bool');
+            assert.equal(fn.typeOf(), 'function');
         });
 
         it('toJS()', () => {
