@@ -8,10 +8,9 @@ import * as os from 'os';
 (process as any).dlopen(module, './build/Debug/pymport-native.node',
     (os.constants as any).dlopen.RTLD_NOW | (os.constants as any).dlopen.RTLD_GLOBAL);
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const addon = require('../build/Debug/pymport-native') as {
+const typedAddon = module.exports as {
     pymport: (name: string) => pymport.PyObject,
     PyObject: typeof pymport.PyObject;
 };
 
-export = addon;
+export = typedAddon;

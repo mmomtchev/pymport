@@ -22,14 +22,14 @@ Napi::Object Init(Env env, Object exports) {
       active_environments--;
       context->pyObj->Reset();
       delete context->pyObj;
-      if (active_environments == 0) { Py_Finalize(); }
+      // We can't finalize the Python environment until there is
+      // a solution for https://github.com/nodejs/node/issues/45088
+      //if (active_environments == 0) { Py_Finalize(); }
       // context will be deleted by the NAPI Finalizer
-      LOG("destroyed env\n");
     },
     context);
   if (active_environments == 0) { Py_Initialize(); }
   active_environments++;
-  LOG("created env\n");
   return exports;
 }
 
