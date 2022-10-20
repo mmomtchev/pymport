@@ -39,3 +39,9 @@ Value PyObj::_CallableTrampoline(const CallbackInfo &info) {
   PyObject *py = reinterpret_cast<PyObject *>(info.Data());
   return _Call(py, info);
 }
+
+Value PyObj::Callable(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  return Boolean::New(env, PyCallable_Check(self));
+}

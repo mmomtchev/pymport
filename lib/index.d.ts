@@ -8,6 +8,8 @@ declare namespace pymport {
         static tuple: (v: any[]) => PyObject;
         static fromJS: (v: any) => PyObject;
 
+        callable: boolean;
+
         get: (name: string) => PyObject;
         call: (...args: any[]) => PyObject;
         toJS: () => any;
