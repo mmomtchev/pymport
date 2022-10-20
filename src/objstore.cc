@@ -53,6 +53,7 @@ Value PyObj::New(Napi::Env env, PyObject *obj) {
   return js;
 }
 
+// NewCallable steals the reference
 Value PyObj::NewCallable(Napi::Env env, PyObject *py) {
   THROW_IF_NULL(py);
 
@@ -60,7 +61,8 @@ Value PyObj::NewCallable(Napi::Env env, PyObject *py) {
   auto it = context->function_store.find(py);
   Function js;
   if (it == context->function_store.end()) {
-    js = Function::New(env, _CallableTrampoline, "[Python_func]", py);
+    js = Function::New(env, _CallableTrampoline, "[PyFunction]", py);
+    js.DefineProperty(Napi::PropertyDescriptor::Value("__PyObject__", New(env, py), napi_default));
     FunctionReference *jsRef = new FunctionReference;
     // Functions never expire (for now)
     *jsRef = Napi::Persistent(js);
@@ -68,6 +70,8 @@ Value PyObj::NewCallable(Napi::Env env, PyObject *py) {
   } else {
     assert(!it->second->Value().IsEmpty());
     js = it->second->Value();
+    // NewCallable must steal the reference
+    Py_DECREF(py);
   }
 
   return js;

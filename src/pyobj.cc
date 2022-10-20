@@ -73,7 +73,17 @@ Value PyObj::Import(const CallbackInfo &info) {
 
 bool PyObj::_InstanceOf(Napi::Value v) {
   Napi::Env env = v.Env();
-  FunctionReference *cons = env.GetInstanceData<EnvContext>()->pyObj;
+  if (!v.IsObject()) return false;
   auto obj = v.ToObject();
+  FunctionReference *cons = env.GetInstanceData<EnvContext>()->pyObj;
+  return obj.ToObject().InstanceOf(cons->Value());
+}
+
+bool PyObj::_FunctionOf(Napi::Value v) {
+  Napi::Env env = v.Env();
+  if (!v.IsObject()) return false;
+  auto obj = v.ToObject().Get("__PyObject__");
+  if (!obj.IsObject()) return false;
+  FunctionReference *cons = env.GetInstanceData<EnvContext>()->pyObj;
   return obj.ToObject().InstanceOf(cons->Value());
 }

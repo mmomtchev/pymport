@@ -164,6 +164,13 @@ PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
       Py_INCREF(py->self);
       return py->self;
     }
+    if (_FunctionOf(obj)) {
+      auto wrap = obj.Get("__PyObject__").ToObject();
+      auto py = ObjectWrap::Unwrap(wrap);
+      // We must return a strong reference
+      Py_INCREF(py->self);
+      return py->self;
+    }
 
     auto dict = PyDict_New();
     THROW_IF_NULL(dict);

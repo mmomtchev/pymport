@@ -40,10 +40,19 @@ describe('pymport', () => {
         });
     });
 
-    it('named arguments', () => {
-        const np = pymport('numpy');
+    describe('named arguments', () => {
+        it('PyObject mode', () => {
+            const np = pymport('numpy');
 
-        const a = np.get('ones').call([2, 3], { dtype: np.get('int16') });
-        assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
+            const a = np.get('ones').call([2, 3], { dtype: np.get('int16') });
+            assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
+        });
+
+        it('JS mode', () => {
+            const np = pymport('numpy').toJS();
+
+            const a = np.ones([2, 3], { dtype: np.int16 });
+            assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
+        });
     });
 });

@@ -11,24 +11,52 @@ Not ready
 Without module conversion
 
 ```js
-// import numpy as np
-const np = pymport("numpy"); // np is a PyObject
+// Python: import numpy as np
+// np is a PyObject
+const np = pymport("numpy");
 
-// a = np.arange(15).reshape(3, 5)
-const a = np.get("arange").call(15).get("reshape").call(3, 5); // a is a PyObject
+// Python: a = np.arange(15).reshape(3, 5)
+// a is a PyObject
+const a = np.get("arange").call(15).get("reshape").call(3, 5);
 
-// print(a.tolist())
-console.log(a.get("tolist").call().toJS()); // PyObject.toJS() converts to JS
+// Python: a = np.ones((2, 3), dtype=int16)
+// np.get('int16') is a PyObject
+const b = np.get("ones").call([2, 3], { dtype: np.get("int16") });
+
+// Python: print(a.tolist())
+// PyObject.toJS() converts to JS
+console.log(a.get("tolist").call().toJS());
 ```
 
-With module conversion
+With module conversion (AKA Full JS mode)
 
 ```js
-const np = pymport("numpy").toJS(); // np is a normal JS object;
+// Python: import numpy as np
+// np is a normal JS object
+const np = pymport("numpy").toJS();
 
-const a = np.arange(15); // a is a PyObject
+// Python: a = np.arange(15)
+// a is a PyObject
+const a = np.arange(15);
+
+// Python: a = np.ones((2, 3), dtype=int16)
+// np.int16 is a callable PyFunction
+const b = np.ones([2, 3], { dtype: np.int16 });
 
 console.log(a.get("tolist").call().toJS());
+```
+
+_(classes and class methods still do not work in Full JS mode)_
+
+Both modes are usable interchangeably and fully compatible with each other:
+
+```js
+const np = pymport("numpy");
+const npJS = pymport("numpy").toJS();
+
+assert(np.get("__loader__") === npJS.__loader__);
+npJS.ones([2, 3], { dtype: np.get("int16") });
+np.get("ones").call([2, 3], { dtype: np.int16 });
 ```
 
 # Alternatives
