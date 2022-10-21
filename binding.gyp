@@ -15,7 +15,6 @@
         'src/objstore.cc'
       ],
       'include_dirs': [
-        '/usr/include/python3.8',
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
       'defines': [
@@ -24,7 +23,7 @@
         'NAPI_VERSION=6'
       ],
       'libraries': [
-        '-lpython3.8'
+        '<!@(pkg-config --libs python3-embed)'
       ],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
       'conditions': [
@@ -36,6 +35,9 @@
           'cflags_cc': [ '-fprofile-arcs', '-ftest-coverage' ],
           'ldflags' : [ '-lgcov', '--coverage' ]
         }]
+      ],
+      'cflags': [
+        '<!@(pkg-config --cflags python3-embed)',
       ],
       'cflags!': [ '-fno-exceptions' ],
       'cflags_cc!': [ '-fno-exceptions' ],
