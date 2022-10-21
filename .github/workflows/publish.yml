@@ -4,25 +4,35 @@ on: workflow_dispatch
 
 jobs:
   publish:
-
-    runs-on: ${{ matrix.platforms }}
+    runs-on: ${{ matrix.platform }}
 
     strategy:
       matrix:
-        platforms: [ ubuntu-18.04, windows-2019, macos-11 ]
+        platform: [ubuntu-20.04, windows-2019, macos-11]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - run: npm i -g npm@latest
-    - run: npm install --ignore-scripts
-    - run: npx @mapbox/node-pre-gyp configure
-    - run: npx @mapbox/node-pre-gyp build -j max
-    - run: npm test
-    - run: npx @mapbox/node-pre-gyp package
-    - run: npx @mmomtchev/node-pre-gyp-github publish
-      env:
-        NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.NODE_PRE_GYP_GITHUB_TOKEN }}
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - uses: kanga333/variable-mapper@master
+        with:
+          key: "${{ matrix.platform }}"
+          map: |
+            {
+              "ubuntu-20.04": {
+                "static_python": "'/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8-pic.a -lutil -lexpat'"
+              },
+              "macos-11": {
+                "static_python": "libpython3.10.a"
+              }
+            }
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --static_python=${{ env.static_python }}
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: npm test
+      - run: npx @mapbox/node-pre-gyp package
+      - run: npx @mmomtchev/node-pre-gyp-github publish
+        env:
+          NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.NODE_PRE_GYP_GITHUB_TOKEN }}
