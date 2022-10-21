@@ -2,12 +2,16 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "install": "node-pre-gyp install --fallback-to-build",
     "test": "mocha",
+    "doc": "documentation readme --section=API --config=documentation.yml lib/index.d.ts",
     "build": "npx node-gyp configure --debug && npx node-gyp build",
     "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
     "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport-native/src ../src/*",
     "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
-    "codecov": "cd coverage && curl -s https://codecov.io/bash | bash"
+    "codecov": "cd coverage && curl -s https://codecov.io/bash | bash",
+    "preversion": "npm run lint && npm run test && npm run doc && git add README.md",
+    "postversion": "git push && git push --tags && node ./scripts/publish-packages.js && node ./scripts/publish-docs.js "
   },
   "name": "pymport",
   "version": "0.0.1",
@@ -28,6 +32,17 @@
     "url": "https://github.com/mmomtchev/pymport/issues"
   },
   "homepage": "https://github.com/mmomtchev/pymport#readme",
+  "binary": {
+    "module_name": "pymport-native",
+    "module_path": "./lib/binding/{platform}-{arch}",
+    "remote_path": "v{version}",
+    "host": "https://github.com/mmomtchev/pymport/releases/download/",
+    "package_name": "{platform}-{arch}.tar.gz",
+    "hosting": {
+      "provider": "github",
+      "repo": "mmomtchev/pymport"
+    }
+  },
   "devDependencies": {
     "@types/chai": "^4.3.3",
     "@types/mocha": "^10.0.0",
@@ -35,17 +50,23 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "chai": "^4.3.6",
+    "documentation": "^14.0.0",
     "eslint": "^8.25.0",
     "eslint-plugin-array-func": "^3.1.7",
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "mocha": "^10.1.0",
     "node-addon-api": "^5.0.0",
+    "node-gyp": "^9.3.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
     "typescript": "^4.8.4"
   },
   "engines": {
     "node": ">= 14.0.0"
+  },
+  "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.10",
+    "@mmomtchev/node-pre-gyp-github": "^2.0.6"
   }
 }

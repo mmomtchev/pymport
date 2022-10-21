@@ -47,6 +47,19 @@
       'msvs_settings': {
         'VCCLCompilerTool': { 'ExceptionHandling': 1 },
       }
+    },
+    {
+      'target_name': 'action_after_build',
+      'type': 'none',
+      'dependencies': [ '<(module_name)' ],
+      'copies': [
+        {
+          'files': [
+            '<(PRODUCT_DIR)/pymport-native.node',
+          ],
+          'destination': '<(module_path)'
+        }
+      ]
     }
   ]
 }

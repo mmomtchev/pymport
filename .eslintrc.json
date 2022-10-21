@@ -12,7 +12,7 @@
     "prefer-arrow"
   ],
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2019
   },
   "rules": {
     "max-len": [
