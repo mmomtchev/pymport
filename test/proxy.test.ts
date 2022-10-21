@@ -3,12 +3,21 @@ import { assert } from 'chai';
 
 describe('proxy', () => {
   const np = proxify(pymport('numpy'));
+  const pd = proxify(pymport('pandas'));
 
-  it('basic access', () => {
+  it('numpy', () => {
     const a = np.arange(15).reshape(3, 5);
     const r = a.tolist().toJS();
 
     assert.deepEqual(r, [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]);
+  });
+
+  it('pandas', () => {
+    const df = pd.DataFrame(np.arange(15).reshape(5, 3), { columns: PyObject.list(['A', 'B', 'C']) });
+    const df2 = df.__getitem__(PyObject.slice([2, 3, null]));
+
+    assert.deepEqual(df2.values.tolist().toJS(), [[6, 7, 8]]);
+    assert.deepEqual(df2.columns.tolist().toJS(), ['A', 'B', 'C']);
   });
 
   it('unique references', () => {

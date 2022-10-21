@@ -18,6 +18,43 @@ describe('pymport', () => {
     });
   });
 
+  describe('pandas', () => {
+    it('basic pyimport', () => {
+      const pd = pymport('pandas');
+      const d = pd.get('Series').call([1, 3, 5, NaN, 6, 8]);
+      assert.deepEqual(d.get('tolist').call().toJS(), [1, 3, 5, NaN, 6, 8]);
+    });
+
+    it('to_numpy()', () => {
+      const pd = pymport('pandas');
+      const d = pd.get('Series').call([1, 3, 5, NaN, 6, 8]);
+      assert.deepEqual(d.get('to_numpy').call().get('tolist').call().toJS(), [1, 3, 5, NaN, 6, 8]);
+    });
+
+    it('named arguments', () => {
+      const pd = pymport('pandas');
+      const d = pd.get('date_range').call('20130101', { periods: 6 });
+      assert.deepEqual(d.get('tolist').call().toJS().map((e) => e.toString()), [
+        '2013-01-01 00:00:00',
+        '2013-01-02 00:00:00',
+        '2013-01-03 00:00:00',
+        '2013-01-04 00:00:00',
+        '2013-01-05 00:00:00',
+        '2013-01-06 00:00:00'
+      ]);
+    });
+
+    it('custom subscripting', () => {
+      const pd = pymport('pandas');
+      const np = pymport('numpy');
+
+      const df = pd.get('DataFrame').call(np.get('ones').call([8, 2]), { columns: ['A', 'B'] });
+      const df2 = df.get('__getitem__').call('A');
+      assert.deepEqual(df2.get('tolist').call().toJS(), [1, 1, 1, 1, 1, 1, 1, 1]);
+    });
+
+  });
+
   describe('object store', () => {
     it('retrieves existing objects from the store', () => {
       const np = pymport('numpy');
