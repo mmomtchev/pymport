@@ -1,7 +1,8 @@
 {
   'variables': {
     'enable_asan%': 'false',
-    'enable_coverage%': 'false'
+    'enable_coverage%': 'false',
+    'static_python%': 'false'
   },
   'targets': [
     {
@@ -36,22 +37,36 @@
           'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
           'msvs_settings': {
             'VCCLCompilerTool': { 'ExceptionHandling': 1 },
-            'VCLinkerTool': { 'AdditionalLibraryDirectories': '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/libs' }
-          }
+          },
+          'conditions': [
+            ['static_python == "false"', {
+              'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
+              'msvs_settings': {
+                'VCLinkerTool': { 'AdditionalLibraryDirectories': '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/libs' }
+              },
+            }]]
         }],
         ['OS != "win"', {
-          'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
-          'libraries': [ '<!@(pkg-config --libs python3-embed)' ],
+          'conditions': [
+            ['static_python == "false"', {
+              'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
+              'libraries': [ '<!@(pkg-config --libs python3-embed)' ]
+            }],
+            ['static_python != "false"', {
+              'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
+              'libraries': [ '<(static_python)' ]
+            }]
+          ],
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
             'CLANG_CXX_LIBRARY': 'libc++',
             'MACOSX_DEPLOYMENT_TARGET': '10.7',
             'OTHER_CFLAGS': [ '<!@(pkg-config --cflags python3-embed)' ],
           },
+          'cflags!': [ '-fno-exceptions' ],
+          'cflags_cc!': [ '-fno-exceptions' ],
         }]
-      ],
-      'cflags!': [ '-fno-exceptions' ],
-      'cflags_cc!': [ '-fno-exceptions' ]
+      ]
     },
     {
       'target_name': 'action_after_build',
