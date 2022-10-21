@@ -6,13 +6,9 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:array-func/recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:array-func/recommended"
   ],
   "plugins": [
-    "@typescript-eslint",
-    "mocha",
     "prefer-arrow"
   ],
   "parserOptions": {
@@ -42,5 +38,27 @@
       }
     ],
     "@typescript-eslint/no-explicit-any": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "./test/*",
+        "lib/index.d.ts"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "plugin:array-func/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "plugins": [
+        "@typescript-eslint",
+        "mocha",
+        "prefer-arrow"
+      ],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
 }
