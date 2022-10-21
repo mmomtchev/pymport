@@ -50,6 +50,24 @@ const b = np.ones([2, 3], { dtype: np.int16 });
 console.log(a.tolist().toJS());
 ```
 
+Even the most perverted pandas syntax can be achieved:
+
+```js
+// df = pd.DataFrame(np.arange(15).reshape(5, 3), columns=list(['ABC']) })
+const df = pd.DataFrame(np.arange(15).reshape(5, 3), {
+  columns: PyObject.list(["A", "B", "C"]),
+});
+assert.deepEqual(df.columns.tolist().toJS(), ["A", "B", "C"]);
+
+// df[2:3]
+const df2 = df.__getitem__(PyObject.slice([2, 3, null]));
+assert.deepEqual(df2.values.tolist().toJS(), [[6, 7, 8]]);
+
+// df[df["C"] <= 3]
+const df3 = df.__getitem__(df.__getitem__("C").__le__(3));
+assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
+```
+
 # Alternatives
 
 There is an alternative package that is more mature but with slightly different target use called [`node-calls-python`](https://github.com/hmenyus/node-calls-python).

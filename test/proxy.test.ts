@@ -16,10 +16,15 @@ describe('proxy', () => {
 
   it('pandas', () => {
     const df = pd.DataFrame(np.arange(15).reshape(5, 3), { columns: PyObject.list(['A', 'B', 'C']) });
-    const df2 = df.__getitem__(PyObject.slice([2, 3, null]));
+    assert.deepEqual(df.columns.tolist().toJS(), ['A', 'B', 'C']);
 
+    // df[2:3]
+    const df2 = df.__getitem__(PyObject.slice([2, 3, null]));
     assert.deepEqual(df2.values.tolist().toJS(), [[6, 7, 8]]);
-    assert.deepEqual(df2.columns.tolist().toJS(), ['A', 'B', 'C']);
+
+    // df[df["C"] <= 3]
+    const df3 = df.__getitem__(df.__getitem__('C').__le__(3));
+    assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
   });
 
   it('unique references', () => {
