@@ -34,7 +34,7 @@ describe('proxy', () => {
   it('PyObject constructors', () => {
     const d = proxify(PyObject.int(12));
 
-    assert.equal(d.typeOf(), 'int');
+    assert.equal(d.type, 'int');
     assert.equal(d.toJS(), 12);
   });
 

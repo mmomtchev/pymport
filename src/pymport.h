@@ -12,9 +12,6 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   PyObj(const Napi::CallbackInfo &);
   virtual ~PyObj();
 
-  /**
-  * Convert the PyObject to string using the str Python built-in
-  */
   Napi::Value ToString(const Napi::CallbackInfo &);
 
   Napi::Value Get(const Napi::CallbackInfo &);
