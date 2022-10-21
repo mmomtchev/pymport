@@ -10,7 +10,7 @@ on:
     branches: ["*"]
 
 jobs:
-  build:
+  build_shared:
     runs-on: ${{ matrix.platforms }}
 
     strategy:
@@ -26,6 +26,39 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install --ignore-scripts
       - run: npm run build
+      - run: python3 -m pip install --upgrade pip
+      - run: pip3 install -r test/requirements.txt
+      - run: npm test
+
+  build_static:
+    runs-on: ${{ matrix.platforms }}
+
+    strategy:
+      matrix:
+        platforms: [ubuntu-20.04, macos-10.16]
+        node-version: [12.x, 14.x, 16.x, 18.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: kanga333/variable-mapper@master
+        with:
+          key: "${{ matrix.platform }}"
+          map: |
+            {
+              "ubuntu-20.04": {
+                "static_python": "/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8-pic.a"
+              },
+              "macos-11": {
+                "static_python": "libpython3.9.a"
+              }
+            }
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --static_python=${{ env.static_python }}
+      - run: npx @mapbox/node-pre-gyp build
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npm test

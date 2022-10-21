@@ -42,7 +42,9 @@
             ['static_python == "false"', {
               'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
               'msvs_settings': {
-                'VCLinkerTool': { 'AdditionalLibraryDirectories': '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/libs' }
+                'VCLinkerTool': {
+                  'AdditionalLibraryDirectories': '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/libs'
+                }
               },
             }]]
         }],
@@ -54,7 +56,7 @@
             }],
             ['static_python != "false"', {
               'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
-              'libraries': [ '<(static_python)' ]
+              'libraries': [ '<!@(pkg-config --static --libs-only-L python3-embed)', '<(static_python)' ]
             }]
           ],
           'xcode_settings': {
