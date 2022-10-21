@@ -1,3 +1,4 @@
+import { platform } from 'os';
 import { pymport } from '../lib';
 import { assert } from 'chai';
 
@@ -10,9 +11,13 @@ describe('pymport', () => {
     });
 
     it('toJS() expansion', () => {
-      const np = pymport('numpy').toJS();
-      const a = np.arange(3);
-      assert.deepEqual(a.get('tolist').call().toJS(), [0, 1, 2]);
+      if (platform() != 'win32') {
+        const np = pymport('numpy').toJS();
+        const a = np.arange(3);
+        assert.deepEqual(a.get('tolist').call().toJS(), [0, 1, 2]);
+      } else {
+        assert.throws(() => pymport('numpy').toJS(), /on Windows/);
+      }
     });
   });
 
@@ -62,23 +67,25 @@ describe('pymport', () => {
       assert.equal(a, b);
     });
 
-    it('functions share the same reference', () => {
-      const arange1 = pymport('numpy').toJS().arange;
-      const arange2 = pymport('numpy').toJS().arange;
-      assert.equal(arange1, arange2);
-    });
+    if (platform() != 'win32') {
+      it('functions share the same reference', () => {
+        const arange1 = pymport('numpy').toJS().arange;
+        const arange2 = pymport('numpy').toJS().arange;
+        assert.equal(arange1, arange2);
+      });
 
-    it('objects obtained by different means are still identical', () => {
-      const np = pymport('numpy');
-      const npJS = pymport('numpy').toJS();
-      assert.equal(np.get('__loader__'), npJS.__loader__);
-    });
+      it('objects obtained by different means are still identical', () => {
+        const np = pymport('numpy');
+        const npJS = pymport('numpy').toJS();
+        assert.equal(np.get('__loader__'), npJS.__loader__);
+      });
 
-    it('functions obtained by different means are still identical', () => {
-      const np = pymport('numpy');
-      const npJS = pymport('numpy').toJS();
-      assert.equal(np.get('ones').toJS(), npJS.ones);
-    });
+      it('functions obtained by different means are still identical', () => {
+        const np = pymport('numpy');
+        const npJS = pymport('numpy').toJS();
+        assert.equal(np.get('ones').toJS(), npJS.ones);
+      });
+    }
   });
 
   describe('named arguments', () => {
@@ -89,11 +96,13 @@ describe('pymport', () => {
       assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
     });
 
-    it('JS mode', () => {
-      const np = pymport('numpy').toJS();
+    if (platform() != 'win32') {
+      it('JS mode', () => {
+        const np = pymport('numpy').toJS();
 
-      const a = np.ones([2, 3], { dtype: np.int16 });
-      assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
-    });
+        const a = np.ones([2, 3], { dtype: np.int16 });
+        assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
+      });
+    }
   });
 });

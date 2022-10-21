@@ -1,16 +1,27 @@
 {
-    "configurations": [
-        {
-            "name": "Linux",
-            "includePath": [
-                "/usr/include/node",
-                "${workspaceFolder}/node_modules/node-addon-api",
-                "/usr/include/python3.8"
-            ],
-            "compilerPath": "/usr/bin/g++",
-            "cStandard": "c17",
-            "cppStandard": "c++14"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "/usr/include/node",
+        "${workspaceFolder}/node_modules/node-addon-api",
+        "/usr/include/python3.8"
+      ],
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "c17",
+      "cppStandard": "c++14"
+    },
+    {
+      "name": "Windows",
+      "includePath": [
+        "${workspaceFolder}/node_modules/node-addon-api",
+        "C:/Program Files/Python310/include",
+        "~/AppData/Local/node-gyp/Cache/16.10.0/include/node"
+      ],
+      "compilerPath": "cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
 }

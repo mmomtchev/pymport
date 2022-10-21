@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        platforms: [ ubuntu-20.04, macos-10.16 ]
+        platforms: [ubuntu-20.04, macos-10.16, windows-2019]
         node-version: [12.x, 14.x, 16.x, 18.x]
 
     steps:

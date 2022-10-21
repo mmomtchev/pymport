@@ -66,9 +66,13 @@ Napi::Value PyObj::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &store) {
   }
 
   if (PyModule_Check(py)) {
+#ifdef WIN32
+    throw Error::New(env, "toJS() on Python module objects is still not supported on Windows");
+#else
     auto dict = PyModule_GetDict(py);
     auto r = _ToJS(env, dict, store);
     return r;
+#endif
   }
 
   if (py == Py_None) { return env.Null(); }

@@ -1,42 +1,23 @@
 #define NAPI_ARG_STRING(arg)                                                                                           \
-  ({                                                                                                                   \
-    if (info.Length() <= arg || !info[arg].IsString()) {                                                               \
-      throw Napi::TypeError::New(env, "Argument must be a string");                                                    \
-    }                                                                                                                  \
-    info[arg].ToString();                                                                                              \
-  })
+  (info.Length() <= arg || !info[arg].IsString() ? throw Napi::TypeError::New(env, "Argument must be a string")        \
+                                                 : info[arg].ToString())
 
 #define NAPI_ARG_NUMBER(arg)                                                                                           \
-  ({                                                                                                                   \
-    if (info.Length() <= arg || !info[arg].IsNumber()) {                                                               \
-      throw Napi::TypeError::New(env, "Argument must be a number");                                                    \
-    }                                                                                                                  \
-    info[arg].ToNumber();                                                                                              \
-  })
+  (info.Length() <= arg || !info[arg].IsNumber() ? throw Napi::TypeError::New(env, "Argument must be a number")        \
+                                                 : info[arg].ToNumber())
 
 #define NAPI_ARG_OBJECT(arg)                                                                                           \
-  ({                                                                                                                   \
-    if (info.Length() <= arg || !info[arg].IsObject()) {                                                               \
-      throw Napi::TypeError::New(env, "Argument must be an object");                                                   \
-    }                                                                                                                  \
-    info[arg].ToObject();                                                                                              \
-  })
+                                                                                                                       \
+  (info.Length() <= arg || !info[arg].IsObject() ? throw Napi::TypeError::New(env, "Argument must be an object")       \
+                                                 : info[arg].ToObject())
 
 #define NAPI_ARG_ARRAY(arg)                                                                                            \
-  ({                                                                                                                   \
-    if (info.Length() <= arg || !info[arg].IsArray()) {                                                                \
-      throw Napi::TypeError::New(env, "Argument must be an array");                                                    \
-    }                                                                                                                  \
-    info[arg].As<Napi::Array>();                                                                                       \
-  })
+  (info.Length() <= arg || !info[arg].IsArray() ? throw Napi::TypeError::New(env, "Argument must be an array")         \
+                                                : info[arg].As<Napi::Array>())
 
 #define NAPI_ARG_FUNC(arg)                                                                                             \
-  ({                                                                                                                   \
-    if (info.Length() <= arg || !info[arg].IsFunction()) {                                                             \
-      throw Napi::TypeError::New(env, "Argument must be a function");                                                  \
-    }                                                                                                                  \
-    info[arg].As<Napi::Function>();                                                                                    \
-  })
+  ((info.Length() <= arg || !info[arg].IsFunction()) ? throw Napi::TypeError::New(env, "Argument must be a function"); \
+                                                     : info[arg].As<Napi::Function>())
 
 #define THROW_IF_NULL(val)                                                                                             \
   if ((PyObject *)val == nullptr) {                                                                                    \
