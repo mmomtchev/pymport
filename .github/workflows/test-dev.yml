@@ -44,7 +44,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: find /usr -name libpython*.a
       - uses: kanga333/variable-mapper@master
         with:
           key: "${{ matrix.platform }}"
@@ -54,7 +53,7 @@ jobs:
                 "static_python": "'/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8-pic.a -lutil -lexpat'"
               },
               "macos-11": {
-                "static_python": "libpython3.9.a"
+                "static_python": "libpython3.10.a"
               }
             }
       - run: npm install --ignore-scripts
