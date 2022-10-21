@@ -186,6 +186,8 @@ PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
       Py_INCREF(py->self);
       return py->self;
     }
+    // A Proxy is an instance of the underlying object, so this
+    // must come after the previous block
     if (_InstanceOf(obj)) {
       auto py = ObjectWrap::Unwrap(obj);
       // We must return a strong reference
