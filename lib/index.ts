@@ -9,7 +9,9 @@ import * as os from 'os';
     (os.constants as any).dlopen.RTLD_NOW | (os.constants as any).dlopen.RTLD_GLOBAL);
 
 function proxify(v: pymport.PyObject) {
-    return new Proxy(v, proxy);
+    if (v instanceof typedAddon.PyObject)
+        return new Proxy(v, proxy);
+    return v;
 }
 
 const typedAddon = module.exports as {
@@ -20,7 +22,9 @@ const typedAddon = module.exports as {
 
 const proxy = {
     get(target: any, prop: string | symbol): any {
-        if (!target.__pymport_proxy__) target.__pymport_proxy__ = {};
+        if (!target.__pymport_proxy__) {
+            Object.defineProperty(target, '__pymport_proxy__', { value: {}, enumerable: false });
+        }
         if (target.__pymport_proxy__[prop]) return target.__pymport_proxy__[prop];
         if (prop === Symbol.toStringTag) return target.toString();
 
@@ -29,13 +33,11 @@ const proxy = {
             if (typeof target[prop] === 'function') {
                 r = () => {
                     const result = target[prop]();
-                    if (result instanceof typedAddon.PyObject)
-                        return new Proxy(result, proxy);
-                    return result;
+                    return proxify(result);
                 };
                 Object.defineProperty(r, 'name', { value: prop, writable: false });
             } else {
-                r = target[prop];
+                r = proxify(target[prop]);
             }
         } else {
             const attr = target.get(prop);
@@ -43,14 +45,12 @@ const proxy = {
             if (attr.callable) {
                 r = (...args: any[]) => {
                     const result = attr.call(...args);
-                    if (result instanceof typedAddon.PyObject)
-                        return new Proxy(result, proxy);
-                    return result;
+                    return proxify(result);
                 };
                 Object.defineProperty(r, 'name', { value: prop, writable: false });
                 Object.defineProperty(r, '__PyObject__', { value: target, enumerable: false });
             } else {
-                r = attr;
+                r = proxify(attr);
             }
         }
 

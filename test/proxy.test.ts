@@ -37,4 +37,10 @@ describe('proxy', () => {
     assert.equal(d.typeOf(), 'int');
     assert.equal(d.toJS(), 12);
   });
+
+  it('chaining getters', () => {
+    const a = np.arange(2).reshape(1, 2);
+
+    assert.deepEqual(a.T.T.tolist().toJS(), [[0, 1]]);
+  });
 });
