@@ -76,85 +76,90 @@ assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
 
 ### Table of Contents
 
-*   [callable](#callable)
-*   [type](#type)
-*   [get](#get)
-    *   [Parameters](#parameters)
-*   [has](#has)
-    *   [Parameters](#parameters-1)
-*   [call](#call)
-    *   [Parameters](#parameters-2)
-*   [toJS](#tojs)
-*   [toString](#tostring)
-*   [int](#int)
-    *   [Parameters](#parameters-3)
-*   [float](#float)
-    *   [Parameters](#parameters-4)
-*   [string](#string)
-    *   [Parameters](#parameters-5)
-*   [dict](#dict)
-    *   [Parameters](#parameters-6)
-*   [list](#list)
-    *   [Parameters](#parameters-7)
-*   [tuple](#tuple)
-    *   [Parameters](#parameters-8)
-*   [slice](#slice)
-*   [fromJS](#fromjs)
-    *   [Parameters](#parameters-9)
+*   [PyObject](#pyobject)
+    *   [callable](#callable)
+    *   [type](#type)
+    *   [get](#get)
+        *   [Parameters](#parameters)
+    *   [has](#has)
+        *   [Parameters](#parameters-1)
+    *   [call](#call)
+        *   [Parameters](#parameters-2)
+    *   [toJS](#tojs)
+    *   [toString](#tostring)
+    *   [int](#int)
+        *   [Parameters](#parameters-3)
+    *   [float](#float)
+        *   [Parameters](#parameters-4)
+    *   [string](#string)
+        *   [Parameters](#parameters-5)
+    *   [dict](#dict)
+        *   [Parameters](#parameters-6)
+    *   [list](#list)
+        *   [Parameters](#parameters-7)
+    *   [tuple](#tuple)
+        *   [Parameters](#parameters-8)
+    *   [slice](#slice)
+    *   [fromJS](#fromjs)
+        *   [Parameters](#parameters-9)
 *   [pymport](#pymport)
     *   [Parameters](#parameters-10)
 *   [proxify](#proxify)
     *   [Parameters](#parameters-11)
 
-## callable
+## PyObject
+
+JavaScript representation of a Python object
+
+### callable
 
 Is the property callable
 
 Type: boolean
 
-## type
+### type
 
 The underlying Python type
 
 Type: string
 
-## get
+### get
 
 Get a property from the object
 
-Type: function (name: string): PyObject
+Type: function (name: string): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `name` **string** property name
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## has
+### has
 
 Check if a property exists
 
 Type: function (name: string): boolean
 
-### Parameters
+#### Parameters
 
 *   `name` **string** property name
 
 Returns **boolean**&#x20;
 
-## call
+### call
 
 Call a callable property from the object
 
-Type: function (...args: Array\<any>): PyObject
+Type: function (...args: Array\<any>): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `args` **...Array\<any>** function arguments
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## toJS
+### toJS
 
 Transform the PyObject to a plain JS object
 
@@ -162,7 +167,7 @@ Type: function (): any
 
 Returns **any**&#x20;
 
-## toString
+### toString
 
 Use the Python str() built-in on the object
 
@@ -170,97 +175,97 @@ Type: function (): string
 
 Returns **string**&#x20;
 
-## int
+### int
 
 Construct a PyObject integer from a JS number
 
-Type: function (v: number): PyObject
+Type: function (v: number): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `number` **number**&#x20;
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## float
+### float
 
 Construct a PyObject float from a JS number
 
-Type: function (v: number): PyObject
+Type: function (v: number): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `number` **number**&#x20;
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## string
+### string
 
 Construct a PyObject string from a JS string
 
-Type: function (v: string): PyObject
+Type: function (v: string): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `string` **string**&#x20;
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## dict
+### dict
 
 Construct a PyObject dictionary from a JS object
 
-Type: function (v: Record\<string, any>): PyObject
+Type: function (v: Record\<string, any>): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `object` **Record\<string, any>**&#x20;
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## list
+### list
 
 Construct a PyObject list from a JS array
 
-Type: function (v: Array\<any>): PyObject
+Type: function (v: Array\<any>): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `array` **Array\<any>**&#x20;
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## tuple
+### tuple
 
 Construct a PyObject tuple from a JS array
 
-Type: function (v: Array\<any>): PyObject
+Type: function (v: Array\<any>): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `array` **Array\<any>**&#x20;
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## slice
+### slice
 
 Construct a PyObject slice from three elements (start, stop, step)
 
-Type: function (v: any): PyObject
+Type: function (v: any): [PyObject](#pyobject)
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
-## fromJS
+### fromJS
 
 Construct an automatically typed PyObject from a plain JS value
 
-Type: function (v: any): PyObject
+Type: function (v: any): [PyObject](#pyobject)
 
-### Parameters
+#### Parameters
 
 *   `value` **any**&#x20;
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
 ## pymport
 
@@ -270,7 +275,7 @@ Import a Python module
 
 *   `name` **string** Python module name
 
-Returns **PyObject**&#x20;
+Returns **[PyObject](#pyobject)**&#x20;
 
 ## proxify
 
@@ -279,8 +284,8 @@ that works like a native Python object
 
 ### Parameters
 
-*   `v` **PyObject**&#x20;
-*   `object` **PyObject** object to proxify
+*   `v` **[PyObject](#pyobject)**&#x20;
+*   `object` **[PyObject](#pyobject)** object to proxify
 
 Returns **any**&#x20;
 

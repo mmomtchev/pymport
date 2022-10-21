@@ -13,7 +13,8 @@ PyObj::PyObj(const CallbackInfo &info) : ObjectWrap(info) {
   if (info[0].IsExternal()) {
     self = info[0].As<External<PyObject>>().Data();
   } else {
-    throw Error::New(env, "Not implemented");
+    // Reference unicity cannot be achieved with a constructor
+    throw Error::New(env, "Use PyObject.fromJS() to create PyObjects");
   }
 }
 

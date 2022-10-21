@@ -1,3 +1,6 @@
+/**
+ * JavaScript representation of a Python object
+ */
 export class PyObject {
   /**
    * Construct a PyObject integer from a JS number
