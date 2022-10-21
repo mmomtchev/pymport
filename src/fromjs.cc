@@ -105,6 +105,27 @@ Value PyObj::Tuple(const CallbackInfo &info) {
   return New(env, tuple);
 }
 
+Value PyObj::Slice(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  auto raw = NAPI_ARG_ARRAY(0);
+  if (raw.Length() != 3) throw RangeError::New(env, "Slices must have exactly three arguments - start, stop and step");
+  PyObjectStore store;
+  auto slice = _Slice(raw, store);
+
+  return New(env, slice);
+}
+
+PyObject *PyObj::_Slice(Array array, PyObjectStore &store) {
+  Napi::Env env = array.Env();
+
+  if (array.Length() != 3)
+    throw RangeError::New(env, "Slices must have exactly three arguments - start, stop and step");
+  auto slice = PySlice_New(_FromJS(array[(uint32_t)0], store), _FromJS(array[1], store), _FromJS(array[2], store));
+  THROW_IF_NULL(slice);
+  return slice;
+}
+
 Value PyObj::FromJS(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 

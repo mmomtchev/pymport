@@ -42,6 +42,13 @@ export class PyObject {
   static tuple: (v: any[]) => PyObject;
 
   /**
+   * Construct a PyObject slice from three elements (start, stop, step)
+   * @param {any[3]} array
+   * @returns {PyObject}
+   */
+  static slice: (v: any[3]) => PyObject;
+
+  /**
    * Construct an automatically typed PyObject from a plain JS value
    * @param {any} value
    * @returns {PyObject}

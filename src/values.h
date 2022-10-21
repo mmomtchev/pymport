@@ -56,7 +56,7 @@
 
 #define DEBUG_PY_PRINT(o, msg)                                                                                         \
   {                                                                                                                    \
-    printf("%s %p: ", msg, o);                                                                                         \
+    printf("%s %p: ", msg, (PyObject *)o);                                                                             \
     PyObject_Print(o, stdout, 0);                                                                                      \
     printf("\n\n");                                                                                                    \
   }

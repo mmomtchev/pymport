@@ -260,7 +260,7 @@ describe('types', () => {
     });
   });
 
-  describe('functions', () => {
+  describe('function', () => {
     it('type', () => {
       const fn = np.get('ones');
       assert.instanceOf(fn, PyObject);
@@ -278,6 +278,33 @@ describe('types', () => {
       assert.instanceOf(fn.__PyObject__, PyObject);
       assert.equal(fn.__PyObject__, np.get('ones'));
     });
+  });
+
+  describe('slice', () => {
+    it('full arguments', () => {
+      const slice = PyObject.slice([1, 5, 2]);
+      const list = PyObject.list([0, 1, 2, 3, 4, 5, 6, 7]);
+
+      assert.instanceOf(slice, PyObject);
+      assert.isFalse(slice.callable);
+      assert.equal(slice.type, 'slice');
+
+      const cut = list.get('__getitem__').call(slice);
+      assert.deepEqual(cut.toJS(), [1, 3]);
+    });
+
+    it('partial arguments', () => {
+      const slice = PyObject.slice([null, 3, null]);
+      const list = PyObject.list([0, 1, 2, 3, 4, 5, 6, 7]);
+
+      assert.instanceOf(slice, PyObject);
+      assert.isFalse(slice.callable);
+      assert.equal(slice.type, 'slice');
+
+      const cut = list.get('__getitem__').call(slice);
+      assert.deepEqual(cut.toJS(), [0, 1, 2]);
+    });
+
   });
 
   describe('types w/o equivalence', () => {

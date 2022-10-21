@@ -30,6 +30,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static Napi::Value Dictionary(const Napi::CallbackInfo &);
   static Napi::Value Tuple(const Napi::CallbackInfo &);
   static Napi::Value List(const Napi::CallbackInfo &);
+  static Napi::Value Slice(const Napi::CallbackInfo &);
 
   Napi::Value Callable(const Napi::CallbackInfo &);
 
@@ -49,6 +50,7 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static PyObject *_Dictionary(Napi::Object, PyObject *, PyObjectStore &);
   static PyObject *_List(Napi::Array, PyObject *, PyObjectStore &);
   static PyObject *_Tuple(Napi::Array, PyObject *, PyObjectStore &);
+  static PyObject *_Slice(Napi::Array, PyObjectStore &);
   static Napi::Value _Call(PyObject *, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
   static bool _InstanceOf(Napi::Value);
