@@ -50,7 +50,7 @@ jobs:
           map: |
             {
               "ubuntu-20.04": {
-                "static_python": "/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8-pic.a -lexpat"
+                "static_python": "'/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8-pic.a -lexpat'"
               },
               "macos-11": {
                 "static_python": "libpython3.9.a"
