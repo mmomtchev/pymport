@@ -25,7 +25,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install --ignore-scripts
-      - run: npm i node-gyp
       - run: npm run build
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
@@ -41,7 +40,6 @@ jobs:
         with:
           node-version: 16.x
       - run: npm install --ignore-scripts
-      - run: npm i node-gyp
       - run: npx node-pre-gyp configure --debug --enable_coverage
       - run: npx node-pre-gyp build
       - run: python3 -m pip install --upgrade pip
