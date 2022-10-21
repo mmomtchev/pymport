@@ -56,7 +56,10 @@
             }],
             ['static_python != "false"', {
               'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
-              'libraries': [ '<!@(pkg-config --static --libs-only-L python3-embed)', '<(static_python)' ]
+              'libraries': [
+                '-lexpat',
+                '<!@(pkg-config --static --libs-only-L python3-embed)', '<(static_python)'
+              ]
             }]
           ],
           'xcode_settings': {
