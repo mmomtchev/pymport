@@ -32,9 +32,10 @@ Function PyObj::GetClass(Napi::Env env) {
     "PyObject",
     {PyObj::InstanceMethod("toString", &PyObj::ToString),
      PyObj::InstanceMethod("get", &PyObj::Get),
+     PyObj::InstanceMethod("has", &PyObj::Has),
      PyObj::InstanceMethod("call", &PyObj::Call),
      PyObj::InstanceMethod("toJS", &PyObj::ToJS),
-     PyObj::InstanceAccessor("type", &PyObj::TypeOf, nullptr),
+     PyObj::InstanceAccessor("type", &PyObj::Type, nullptr),
      PyObj::InstanceAccessor("callable", &PyObj::Callable, nullptr),
      PyObj::StaticMethod("fromJS", &PyObj::FromJS),
      PyObj::StaticMethod("import", &PyObj::Import),
@@ -74,7 +75,15 @@ Value PyObj::Import(const CallbackInfo &info) {
   return New(env, obj);
 }
 
-Value PyObj::TypeOf(const CallbackInfo &info) {
+Value PyObj::Has(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  std::string name = NAPI_ARG_STRING(0).Utf8Value();
+  auto r = PyObject_HasAttrString(self, name.c_str());
+  return Boolean::New(env, r);
+}
+
+Value PyObj::Type(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   return String::New(env, self->ob_type->tp_name);

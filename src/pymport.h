@@ -16,7 +16,10 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
 
   Napi::Value Get(const Napi::CallbackInfo &);
   Napi::Value Call(const Napi::CallbackInfo &);
-  Napi::Value TypeOf(const Napi::CallbackInfo &);
+
+  Napi::Value Has(const Napi::CallbackInfo &);
+  Napi::Value Type(const Napi::CallbackInfo &);
+  Napi::Value Callable(const Napi::CallbackInfo &);
 
   static Napi::Value Import(const Napi::CallbackInfo &);
 
@@ -31,8 +34,6 @@ class PyObj : public Napi::ObjectWrap<PyObj> {
   static Napi::Value Tuple(const Napi::CallbackInfo &);
   static Napi::Value List(const Napi::CallbackInfo &);
   static Napi::Value Slice(const Napi::CallbackInfo &);
-
-  Napi::Value Callable(const Napi::CallbackInfo &);
 
   static PyObject *FromJS(Napi::Value);
 

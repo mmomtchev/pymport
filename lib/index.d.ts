@@ -74,6 +74,14 @@ export class PyObject {
   get: (name: string) => PyObject;
 
   /**
+   * Check if a property exists
+   * @param {string} name property name
+   * @returns {boolean}
+   */
+  has: (name: string) => boolean;
+
+
+  /**
    * Call a callable property from the object
    * @param {...any[]} args function arguments
    * @returns {PyObject}
