@@ -11,10 +11,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platforms }}
 
     strategy:
       matrix:
+        platforms: [ ubuntu-20.04, macos-10.16 ]
         node-version: [12.x, 14.x, 16.x, 18.x]
 
     steps:
@@ -27,7 +28,7 @@ jobs:
       - run: npm i node-gyp
       - run: npm run build
       - run: python3 -m pip install --upgrade pip
-      - run: pip install -r test/requirements.txt
+      - run: pip3 install -r test/requirements.txt
       - run: npm test
 
   codecov:
@@ -41,10 +42,10 @@ jobs:
           node-version: 16.x
       - run: npm install --ignore-scripts
       - run: npm i node-gyp
-      - run: npx node-gyp configure --debug --enable_coverage
-      - run: npx node-gyp build
+      - run: npx node-pre-gyp configure --debug --enable_coverage
+      - run: npx node-pre-gyp build
       - run: python3 -m pip install --upgrade pip
-      - run: pip install -r test/requirements.txt
+      - run: pip3 install -r test/requirements.txt
       - run: npx c8 npm test
       - run: npm run gcov
       - run: npm run lcov

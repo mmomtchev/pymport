@@ -5,7 +5,7 @@
     "install": "node-pre-gyp install --fallback-to-build",
     "test": "mocha",
     "doc": "documentation readme --section=API --config=documentation.yml lib/index.d.ts",
-    "build": "npx node-gyp configure --debug && npx node-gyp build",
+    "build": "npx node-gyp configure && npx node-gyp build",
     "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
     "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport-native/src ../src/*",
     "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
