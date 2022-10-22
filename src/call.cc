@@ -5,7 +5,7 @@
 using namespace Napi;
 using namespace pymport;
 
-Value PyObj::_Call(PyObject *py, const CallbackInfo &info) {
+Value PyObjectWrap::_Call(PyObject *py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   if (!PyCallable_Check(py)) { throw Napi::TypeError::New(env, "Value not callable"); }
@@ -31,16 +31,16 @@ Value PyObj::_Call(PyObject *py, const CallbackInfo &info) {
   return New(env, r);
 }
 
-Value PyObj::Call(const CallbackInfo &info) {
+Value PyObjectWrap::Call(const CallbackInfo &info) {
   return _Call(self, info);
 }
 
-Value PyObj::_CallableTrampoline(const CallbackInfo &info) {
+Value PyObjectWrap::_CallableTrampoline(const CallbackInfo &info) {
   PyObject *py = reinterpret_cast<PyObject *>(info.Data());
   return _Call(py, info);
 }
 
-Value PyObj::Callable(const CallbackInfo &info) {
+Value PyObjectWrap::Callable(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   return Boolean::New(env, PyCallable_Check(self));

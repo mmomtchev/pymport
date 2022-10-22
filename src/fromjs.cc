@@ -5,7 +5,7 @@
 using namespace Napi;
 using namespace pymport;
 
-Value PyObj::String(const CallbackInfo &info) {
+Value PyObjectWrap::String(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_STRING(0).Utf16Value();
@@ -13,7 +13,7 @@ Value PyObj::String(const CallbackInfo &info) {
   return New(env, obj);
 }
 
-Value PyObj::Float(const CallbackInfo &info) {
+Value PyObjectWrap::Float(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_NUMBER(0).DoubleValue();
@@ -21,7 +21,7 @@ Value PyObj::Float(const CallbackInfo &info) {
   return New(env, obj);
 }
 
-Value PyObj::Integer(const CallbackInfo &info) {
+Value PyObjectWrap::Integer(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_NUMBER(0).Int64Value();
@@ -30,7 +30,7 @@ Value PyObj::Integer(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-PyObject *PyObj::_Dictionary(Napi::Object object, PyObject *target, PyObjectStore &store) {
+PyObject *PyObjectWrap::_Dictionary(Napi::Object object, PyObject *target, PyObjectStore &store) {
   Napi::Env env = object.Env();
 
   for (auto const &el : object.GetPropertyNames()) {
@@ -45,7 +45,7 @@ PyObject *PyObj::_Dictionary(Napi::Object object, PyObject *target, PyObjectStor
   return target;
 }
 
-Value PyObj::Dictionary(const CallbackInfo &info) {
+Value PyObjectWrap::Dictionary(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_OBJECT(0);
@@ -58,7 +58,7 @@ Value PyObj::Dictionary(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-PyObject *PyObj::_List(Napi::Array array, PyObject *target, PyObjectStore &store) {
+PyObject *PyObjectWrap::_List(Napi::Array array, PyObject *target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {
@@ -69,7 +69,7 @@ PyObject *PyObj::_List(Napi::Array array, PyObject *target, PyObjectStore &store
   return target;
 }
 
-Value PyObj::List(const CallbackInfo &info) {
+Value PyObjectWrap::List(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_ARRAY(0);
@@ -82,7 +82,7 @@ Value PyObj::List(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-PyObject *PyObj::_Tuple(Napi::Array array, PyObject *target, PyObjectStore &store) {
+PyObject *PyObjectWrap::_Tuple(Napi::Array array, PyObject *target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {
@@ -93,7 +93,7 @@ PyObject *PyObj::_Tuple(Napi::Array array, PyObject *target, PyObjectStore &stor
   return target;
 }
 
-Value PyObj::Tuple(const CallbackInfo &info) {
+Value PyObjectWrap::Tuple(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_ARRAY(0);
@@ -105,7 +105,7 @@ Value PyObj::Tuple(const CallbackInfo &info) {
   return New(env, tuple);
 }
 
-Value PyObj::Slice(const CallbackInfo &info) {
+Value PyObjectWrap::Slice(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_ARRAY(0);
@@ -116,7 +116,7 @@ Value PyObj::Slice(const CallbackInfo &info) {
   return New(env, slice);
 }
 
-PyObject *PyObj::_Slice(Array array, PyObjectStore &store) {
+PyObject *PyObjectWrap::_Slice(Array array, PyObjectStore &store) {
   Napi::Env env = array.Env();
 
   if (array.Length() != 3)
@@ -126,7 +126,7 @@ PyObject *PyObj::_Slice(Array array, PyObjectStore &store) {
   return slice;
 }
 
-Value PyObj::FromJS(const CallbackInfo &info) {
+Value PyObjectWrap::FromJS(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   if (info.Length() < 1) throw Error::New(env, "Missing argument");
@@ -134,13 +134,13 @@ Value PyObj::FromJS(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-PyObject *PyObj::FromJS(Napi::Value v) {
+PyObject *PyObjectWrap::FromJS(Napi::Value v) {
   PyObjectStore store;
   return _FromJS(v, store);
 }
 
 // Returns a strong reference
-PyObject *PyObj::_FromJS(Napi::Value v, PyObjectStore &store) {
+PyObject *PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
   Napi::Env env = v.Env();
 
   // Break recursion on circular references

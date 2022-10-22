@@ -6,7 +6,7 @@ using namespace Napi;
 using namespace pymport;
 
 // _ToJS expects a borrowed reference
-Napi::Value PyObj::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &store) {
+Napi::Value PyObjectWrap::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &store) {
   // This is a temporary store that breaks recursion, it keeps tracks of the locally
   // created Napi::Objects for each PyObject and if one is encountered multiple times,
   // then it is replaced by the same reference
@@ -87,13 +87,13 @@ Napi::Value PyObj::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &store) {
   return New(env, py);
 }
 
-Napi::Value PyObj::ToJS(Napi::Env env, PyObject *py) {
+Napi::Value PyObjectWrap::ToJS(Napi::Env env, PyObject *py) {
   NapiObjectStore store;
   return _ToJS(env, py, store);
 }
 
-Napi::Value PyObj::ToJS(const CallbackInfo &info) {
+Napi::Value PyObjectWrap::ToJS(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  return PyObj::ToJS(env, self);
+  return PyObjectWrap::ToJS(env, self);
 }

@@ -7,10 +7,10 @@ using namespace pymport;
 size_t active_environments = 0;
 
 Napi::Object Init(Env env, Object exports) {
-  Function pyObjCons = PyObj::GetClass(env);
+  Function pyObjCons = PyObjectWrap::GetClass(env);
 
   exports.Set("PyObject", pyObjCons);
-  exports.Set("pymport", Function::New(env, PyObj::Import));
+  exports.Set("pymport", Function::New(env, PyObjectWrap::Import));
 
   auto context = new EnvContext();
   context->pyObj = new FunctionReference();

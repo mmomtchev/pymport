@@ -20,7 +20,7 @@ using namespace pymport;
 // This is the only way to avoid infinite loops when dealing with recursive structures
 
 // New steals the py reference
-Value PyObj::New(Napi::Env env, PyObject *obj) {
+Value PyObjectWrap::New(Napi::Env env, PyObject *obj) {
   THROW_IF_NULL(obj);
 
   auto context = env.GetInstanceData<EnvContext>();
@@ -54,7 +54,7 @@ Value PyObj::New(Napi::Env env, PyObject *obj) {
 }
 
 // NewCallable steals the reference
-Value PyObj::NewCallable(Napi::Env env, PyObject *py) {
+Value PyObjectWrap::NewCallable(Napi::Env env, PyObject *py) {
   THROW_IF_NULL(py);
 
   auto context = env.GetInstanceData<EnvContext>();
@@ -81,7 +81,7 @@ Value PyObj::NewCallable(Napi::Env env, PyObject *py) {
 // -> the mapping is removed from the object store
 // -> the C-API PyObject reference is decreased
 // -> the Python GC can free the underlying object
-void PyObj::Release() {
+void PyObjectWrap::Release() {
   Napi::Env env = Env();
   auto context = env.GetInstanceData<EnvContext>();
 

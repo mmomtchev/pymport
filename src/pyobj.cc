@@ -5,7 +5,7 @@
 using namespace Napi;
 using namespace pymport;
 
-PyObj::PyObj(const CallbackInfo &info) : ObjectWrap(info) {
+PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info) {
   Napi::Env env = info.Env();
 
   if (info.Length() < 1) throw TypeError::New(env, "Cannot create an empty object");
@@ -18,7 +18,7 @@ PyObj::PyObj(const CallbackInfo &info) : ObjectWrap(info) {
   }
 }
 
-PyObj::~PyObj() {
+PyObjectWrap::~PyObjectWrap() {
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
   if (self != nullptr) {
@@ -27,29 +27,29 @@ PyObj::~PyObj() {
   }
 }
 
-Function PyObj::GetClass(Napi::Env env) {
+Function PyObjectWrap::GetClass(Napi::Env env) {
   return DefineClass(
     env,
     "PyObject",
-    {PyObj::InstanceMethod("toString", &PyObj::ToString),
-     PyObj::InstanceMethod("get", &PyObj::Get),
-     PyObj::InstanceMethod("has", &PyObj::Has),
-     PyObj::InstanceMethod("call", &PyObj::Call),
-     PyObj::InstanceMethod("toJS", &PyObj::ToJS),
-     PyObj::InstanceAccessor("type", &PyObj::Type, nullptr),
-     PyObj::InstanceAccessor("callable", &PyObj::Callable, nullptr),
-     PyObj::StaticMethod("fromJS", &PyObj::FromJS),
-     PyObj::StaticMethod("import", &PyObj::Import),
-     PyObj::StaticMethod("string", &PyObj::String),
-     PyObj::StaticMethod("int", &PyObj::Integer),
-     PyObj::StaticMethod("float", &PyObj::Float),
-     PyObj::StaticMethod("dict", &PyObj::Dictionary),
-     PyObj::StaticMethod("list", &PyObj::List),
-     PyObj::StaticMethod("tuple", &PyObj::Tuple),
-     PyObj::StaticMethod("slice", &PyObj::Slice)});
+    {PyObjectWrap::InstanceMethod("toString", &PyObjectWrap::ToString),
+     PyObjectWrap::InstanceMethod("get", &PyObjectWrap::Get),
+     PyObjectWrap::InstanceMethod("has", &PyObjectWrap::Has),
+     PyObjectWrap::InstanceMethod("call", &PyObjectWrap::Call),
+     PyObjectWrap::InstanceMethod("toJS", &PyObjectWrap::ToJS),
+     PyObjectWrap::InstanceAccessor("type", &PyObjectWrap::Type, nullptr),
+     PyObjectWrap::InstanceAccessor("callable", &PyObjectWrap::Callable, nullptr),
+     PyObjectWrap::StaticMethod("fromJS", &PyObjectWrap::FromJS),
+     PyObjectWrap::StaticMethod("import", &PyObjectWrap::Import),
+     PyObjectWrap::StaticMethod("string", &PyObjectWrap::String),
+     PyObjectWrap::StaticMethod("int", &PyObjectWrap::Integer),
+     PyObjectWrap::StaticMethod("float", &PyObjectWrap::Float),
+     PyObjectWrap::StaticMethod("dict", &PyObjectWrap::Dictionary),
+     PyObjectWrap::StaticMethod("list", &PyObjectWrap::List),
+     PyObjectWrap::StaticMethod("tuple", &PyObjectWrap::Tuple),
+     PyObjectWrap::StaticMethod("slice", &PyObjectWrap::Slice)});
 }
 
-Value PyObj::ToString(const CallbackInfo &info) {
+Value PyObjectWrap::ToString(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   PyStackObject r = PyObject_Str(self);
@@ -57,7 +57,7 @@ Value PyObj::ToString(const CallbackInfo &info) {
   return ToJS(env, r);
 }
 
-Value PyObj::Get(const CallbackInfo &info) {
+Value PyObjectWrap::Get(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
@@ -65,7 +65,7 @@ Value PyObj::Get(const CallbackInfo &info) {
   return New(env, r);
 }
 
-Value PyObj::Import(const CallbackInfo &info) {
+Value PyObjectWrap::Import(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
@@ -76,7 +76,7 @@ Value PyObj::Import(const CallbackInfo &info) {
   return New(env, obj);
 }
 
-Value PyObj::Has(const CallbackInfo &info) {
+Value PyObjectWrap::Has(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
@@ -84,13 +84,13 @@ Value PyObj::Has(const CallbackInfo &info) {
   return Boolean::New(env, r);
 }
 
-Value PyObj::Type(const CallbackInfo &info) {
+Value PyObjectWrap::Type(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   return String::New(env, self->ob_type->tp_name);
 }
 
-bool PyObj::_InstanceOf(Napi::Value v) {
+bool PyObjectWrap::_InstanceOf(Napi::Value v) {
   Napi::Env env = v.Env();
   if (!v.IsObject()) return false;
   auto obj = v.ToObject();
@@ -98,7 +98,7 @@ bool PyObj::_InstanceOf(Napi::Value v) {
   return obj.ToObject().InstanceOf(cons->Value());
 }
 
-bool PyObj::_FunctionOf(Napi::Value v) {
+bool PyObjectWrap::_FunctionOf(Napi::Value v) {
   Napi::Env env = v.Env();
   if (!v.IsObject()) return false;
   auto obj = v.ToObject().Get("__PyObject__");
