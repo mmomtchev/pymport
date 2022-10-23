@@ -16,7 +16,7 @@ describe('pymport', () => {
         const a = np.arange(3);
         assert.deepEqual(a.get('tolist').call().toJS(), [0, 1, 2]);
       } else {
-        assert.throws(() => pymport('numpy').toJS(), /on Windows/);
+        assert.throws(() => pymport('numpy').toJS(), /_gdbm/);
       }
     });
   });

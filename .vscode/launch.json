@@ -69,9 +69,8 @@
       ],
       "args": [
         "--expose-gc",
-        "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js"
       ],
-      "program": "${workspaceFolder}/node_modules/.bin/mocha"
+      "program": "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js"
     }
   ]
 }

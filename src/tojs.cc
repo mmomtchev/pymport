@@ -1,5 +1,6 @@
 #include "pymport.h"
 #include "pystackobject.h"
+#include "values.h"
 #include <map>
 
 using namespace Napi;
@@ -31,15 +32,7 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &st
 
   if (PyTuple_Check(py)) { return _ToJS_Tuple(env, py, store); }
 
-  if (PyModule_Check(py)) {
-#ifdef WIN32
-    throw Error::New(env, "toJS() on Python module objects is still not supported on Windows");
-#else
-    auto dict = PyModule_GetDict(py);
-    auto r = _ToJS(env, dict, store);
-    return r;
-#endif
-  }
+  if (PyModule_Check(py)) { return _ToJS_Dir(env, py, store); }
 
   if (py == Py_None) { return env.Null(); }
 
@@ -89,6 +82,25 @@ Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, PyObject *py, NapiObjectStor
     PyObject *v = PyList_GetItem(py, i);
     Napi::Value js = _ToJS(env, v, store);
     r.Set(i, js);
+  }
+  return r;
+}
+
+Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, PyObject *py, NapiObjectStore &store) {
+  Napi::Object r = Array::New(env);
+  PyStackObject dict = PyObject_Dir(py);
+  size_t len = PyList_Size(dict);
+  store.insert({py, r});
+
+  for (size_t i = 0; i < len; i++) {
+    PyObject *key = PyList_GetItem(dict, i);
+    THROW_IF_NULL(key);
+    PyObject *value = PyObject_GetAttr(py, key);
+    THROW_IF_NULL(value);
+
+    Napi::Value jsKey = _ToJS(env, key, store);
+    Napi::Value jsValue = _ToJS(env, value, store);
+    r.Set(jsKey, jsValue);
   }
   return r;
 }
