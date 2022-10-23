@@ -70,6 +70,11 @@ export class PyObject {
   readonly type: string;
 
   /**
+   * Length of the underlying object if it is defined
+   */
+  readonly length: number | undefined;
+
+  /**
    * Get a property from the object
    * @param {string} name property name
    * @returns {PyObject}
@@ -83,6 +88,12 @@ export class PyObject {
    */
   has: (name: string) => boolean;
 
+  /**
+   * Retrieve an element by index, equivalent to Python subscript operator[]
+   * @param {any} index index
+   * @returns {boolean}
+   */
+  item: (index: any) => PyObject;
 
   /**
    * Call a callable property from the object

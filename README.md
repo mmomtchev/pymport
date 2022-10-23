@@ -61,12 +61,13 @@ assert.deepEqual(df.columns.tolist().toJS(), ["A", "B", "C"]);
 
 // df[2:3]
 // In Python this is equivalent to df.__getitem__(2:3)
-const df2 = df.__getitem__(PyObject.slice([2, 3, null]));
+// In pymport item is a shortcut for __getitem__
+const df2 = df.item(PyObject.slice([2, 3, null]));
 assert.deepEqual(df2.values.tolist().toJS(), [[6, 7, 8]]);
 
 // df[df["C"] <= 3]
 // In Python this is equivalent to df.__getitem__(df.__getitem__("C").__le__(3))
-const df3 = df.__getitem__(df.__getitem__("C").__le__(3));
+const df3 = df.item(df.item("C").__le__(3));
 assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
 ```
 
@@ -131,7 +132,7 @@ Type: function (name: string): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `name` **string** property name
+- `name` **string** property name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -143,7 +144,7 @@ Type: function (name: string): boolean
 
 #### Parameters
 
-*   `name` **string** property name
+- `name` **string** property name
 
 Returns **boolean**&#x20;
 
@@ -155,7 +156,7 @@ Type: function (...args: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `args` **...Array\<any>** function arguments
+- `args` **...Array\<any>** function arguments
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -183,7 +184,7 @@ Type: function (v: number): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `number` **number**&#x20;
+- `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -195,7 +196,7 @@ Type: function (v: number): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `number` **number**&#x20;
+- `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -207,7 +208,7 @@ Type: function (v: string): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `string` **string**&#x20;
+- `string` **string**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -219,7 +220,7 @@ Type: function (v: Record\<string, any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `object` **Record\<string, any>**&#x20;
+- `object` **Record\<string, any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -231,7 +232,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `array` **Array\<any>**&#x20;
+- `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -243,7 +244,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `array` **Array\<any>**&#x20;
+- `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -263,7 +264,7 @@ Type: function (v: any): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `value` **any**&#x20;
+- `value` **any**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -273,7 +274,7 @@ Import a Python module
 
 ### Parameters
 
-*   `name` **string** Python module name
+- `name` **string** Python module name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -284,8 +285,8 @@ that works like a native Python object
 
 ### Parameters
 
-*   `v` **[PyObject](#pyobject)**&#x20;
-*   `object` **[PyObject](#pyobject)** object to proxify
+- `v` **[PyObject](#pyobject)**&#x20;
+- `object` **[PyObject](#pyobject)** object to proxify
 
 Returns **any**&#x20;
 

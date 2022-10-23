@@ -34,10 +34,12 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
     {PyObjectWrap::InstanceMethod("toString", &PyObjectWrap::ToString),
      PyObjectWrap::InstanceMethod("get", &PyObjectWrap::Get),
      PyObjectWrap::InstanceMethod("has", &PyObjectWrap::Has),
+     PyObjectWrap::InstanceMethod("item", &PyObjectWrap::Item),
      PyObjectWrap::InstanceMethod("call", &PyObjectWrap::Call),
      PyObjectWrap::InstanceMethod("toJS", &PyObjectWrap::ToJS),
      PyObjectWrap::InstanceAccessor("type", &PyObjectWrap::Type, nullptr),
      PyObjectWrap::InstanceAccessor("callable", &PyObjectWrap::Callable, nullptr),
+     PyObjectWrap::InstanceAccessor("length", &PyObjectWrap::Length, nullptr),
      PyObjectWrap::StaticMethod("fromJS", &PyObjectWrap::FromJS),
      PyObjectWrap::StaticMethod("import", &PyObjectWrap::Import),
      PyObjectWrap::StaticMethod("string", &PyObjectWrap::String),
@@ -88,6 +90,42 @@ Value PyObjectWrap::Type(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   return String::New(env, self->ob_type->tp_name);
+}
+
+Value PyObjectWrap::Item(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  if (PyList_Check(self)) {
+    Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
+    auto r = PyList_GetItem(self, idx);
+    THROW_IF_NULL(r);
+    // PyList returns a borrowed reference, New expects a strong one
+    Py_INCREF(r);
+    return New(env, r);
+  }
+  if (PyTuple_Check(self)) {
+    Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
+    auto r = PyTuple_GetItem(self, idx);
+    THROW_IF_NULL(r);
+    if (r == nullptr) return env.Undefined();
+    // PyTuple returns a borrowed reference, New expects a strong one
+    Py_INCREF(r);
+    return New(env, r);
+  }
+  PyStackObject getitem = PyObject_GetAttrString(self, "__getitem__");
+  if ((PyObject *)getitem != nullptr) { return _Call(getitem, info); }
+
+  return env.Undefined();
+}
+
+Value PyObjectWrap::Length(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  if (PyList_Check(self)) { return Number::New(env, static_cast<long>(PyList_Size(self))); }
+  if (PyTuple_Check(self)) return Number::New(env, static_cast<long>(PyTuple_Size(self)));
+  if (PyDict_Check(self)) return Number::New(env, static_cast<long>(PyDict_Size(self)));
+  if (PyUnicode_Check(self)) return Number::New(env, static_cast<long>(PyUnicode_GetLength(self)));
+  return env.Undefined();
 }
 
 bool PyObjectWrap::_InstanceOf(Napi::Value v) {

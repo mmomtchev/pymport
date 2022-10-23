@@ -14,6 +14,8 @@ describe('types', () => {
       const f = PyObject.float(2.3);
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
+      assert.isUndefined(f.length);
+      assert.isUndefined(f.item(0));
       assert.equal(f.type, 'float');
       assert.equal(f.toJS(), 2.3);
     });
@@ -22,6 +24,7 @@ describe('types', () => {
       const f = PyObject.fromJS(2.3);
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
+      assert.isUndefined(f.length);
       assert.equal(f.type, 'float');
       assert.equal(f.toJS(), 2.3);
     });
@@ -41,6 +44,8 @@ describe('types', () => {
       const f = PyObject.int(2.3);
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
+      assert.isUndefined(f.length);
+      assert.isUndefined(f.item(0));
       assert.equal(f.type, 'int');
       assert.equal(f.toJS(), 2);
     });
@@ -49,6 +54,7 @@ describe('types', () => {
       const f = PyObject.fromJS(2);
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
+      assert.isUndefined(f.length);
       assert.equal(f.type, 'int');
       assert.equal(f.toJS(), 2);
     });
@@ -80,6 +86,9 @@ describe('types', () => {
     it('fromJS()', () => {
       const a = PyObject.fromJS(array);
       assert.equal(a.type, 'list');
+      assert.equal(a.length, 3);
+      assert.equal(a.item(1).toJS(), 2.1);
+      assert.throws(() => a.item(10));
       assert.deepEqual(a.toJS(), array);
     });
 
@@ -104,6 +113,7 @@ describe('types', () => {
       const d = PyObject.fromJS(circular);
       assert.instanceOf(d, PyObject);
       assert.isFalse(d.callable);
+      assert.equal(d.length, 1);
       assert.deepEqual(circular, d.toJS());
       assert.equal(d.toString(), '[[...]]');
     });
@@ -112,10 +122,18 @@ describe('types', () => {
   describe('tuple', () => {
     const array = [1, 'a', { name: 'text' }];
 
-    it('toJS()', () => {
+    it('tuple()', () => {
       const t = PyObject.tuple(array);
       assert.isFalse(t.callable);
       assert.equal(t.type, 'tuple');
+      assert.isFalse(t.callable);
+      assert.equal(t.length, 3);
+      assert.equal(t.item(1).toJS(), 'a');
+      assert.throws(() => t.item(10));
+    });
+
+    it('toJS()', () => {
+      const t = PyObject.tuple(array);
       assert.deepEqual(t.toJS(), array);
     });
 
@@ -133,26 +151,34 @@ describe('types', () => {
       circular[0] = circular;
       const t = PyObject.tuple(circular);
       assert.instanceOf(t, PyObject);
+      assert.equal(t.length, 1);
       assert.deepEqual(circular, t.toJS());
       assert.equal(t.toString(), '([[...]],)');
     });
   });
 
   describe('string', () => {
-    it('toJS()', () => {
+    it('string()', () => {
       const s = PyObject.string('hello');
       assert.instanceOf(s, PyObject);
       assert.isFalse(s.callable);
+      assert.equal(s.length, 5);
       assert.equal(s.type, 'str');
       assert.equal(s.toJS(), 'hello');
     });
 
+    it('toJS()', () => {
+      const s = PyObject.string('hello');
+      assert.equal(s.toJS(), 'hello');
+    });
+
     it('fromJS()', () => {
-      const s = PyObject.fromJS('hello');
+      const s = PyObject.fromJS('你好');
       assert.instanceOf(s, PyObject);
       assert.isFalse(s.callable);
+      assert.equal(s.length, 2);
       assert.equal(s.type, 'str');
-      assert.equal(s.toJS(), 'hello');
+      assert.equal(s.toJS(), '你好');
     });
 
     it('toString()', () => {
@@ -173,6 +199,7 @@ describe('types', () => {
       assert.instanceOf(d, PyObject);
       assert.isFalse(d.callable);
       assert.equal(d.type, 'dict');
+      assert.equal(d.length, 3);
       assert.deepEqual(d.toJS(), o);
     });
 
@@ -180,6 +207,7 @@ describe('types', () => {
       const d = PyObject.fromJS(o);
       assert.instanceOf(d, PyObject);
       assert.isFalse(d.callable);
+      assert.equal(d.length, 3);
       assert.equal(d.type, 'dict');
       assert.deepEqual(d.toJS(), o);
     });
@@ -199,6 +227,7 @@ describe('types', () => {
       circular['circular'] = circular;
       const d = PyObject.fromJS(circular);
       assert.isFalse(d.callable);
+      assert.equal(d.length, 1);
       assert.instanceOf(d, PyObject);
       assert.deepEqual(circular, d.toJS());
       assert.equal(d.toString(), "{'circular': {...}}");
@@ -246,6 +275,7 @@ describe('types', () => {
     it('True is equivalent to true', () => {
       const bool = PyObject.fromJS(true);
       assert.isFalse(bool.callable);
+      assert.isUndefined(bool.length);
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'True');
       assert.equal(bool.toJS(), true);
@@ -254,6 +284,7 @@ describe('types', () => {
     it('False is equivalent to false', () => {
       const bool = PyObject.fromJS(false);
       assert.isFalse(bool.callable);
+      assert.isUndefined(bool.length);
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'False');
       assert.equal(bool.toJS(), false);
@@ -265,6 +296,7 @@ describe('types', () => {
       const fn = np.get('ones');
       assert.instanceOf(fn, PyObject);
       assert.isTrue(fn.callable);
+      assert.isUndefined(fn.length);
       assert.equal(fn.type, 'function');
     });
 
@@ -287,6 +319,7 @@ describe('types', () => {
 
       assert.instanceOf(slice, PyObject);
       assert.isFalse(slice.callable);
+      assert.isUndefined(slice.length);
       assert.equal(slice.type, 'slice');
 
       const cut = list.get('__getitem__').call(slice);
@@ -299,6 +332,7 @@ describe('types', () => {
 
       assert.instanceOf(slice, PyObject);
       assert.isFalse(slice.callable);
+      assert.isUndefined(slice.length);
       assert.equal(slice.type, 'slice');
 
       const cut = list.get('__getitem__').call(slice);
