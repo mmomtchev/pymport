@@ -98,6 +98,8 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, PyObject *py, NapiObjectStore
     PyObject *key = PyList_GetItem(list, i);
     THROW_IF_NULL(key);
     PyObject *value = PyObject_GetAttr(py, key);
+    // TODO try to understand how tkinter creeps into queue.py
+    if (value == nullptr) continue;
     THROW_IF_NULL(value);
 
     Napi::Value jsKey = _ToJS(env, key, store);
