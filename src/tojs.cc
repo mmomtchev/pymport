@@ -88,12 +88,12 @@ Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, PyObject *py, NapiObjectStor
 
 Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, PyObject *py, NapiObjectStore &store) {
   Napi::Object r = Array::New(env);
-  PyStackObject dict = PyObject_Dir(py);
-  size_t len = PyList_Size(dict);
+  PyStackObject list = PyObject_Dir(py);
+  size_t len = PyList_Size(list);
   store.insert({py, r});
 
   for (size_t i = 0; i < len; i++) {
-    PyObject *key = PyList_GetItem(dict, i);
+    PyObject *key = PyList_GetItem(list, i);
     THROW_IF_NULL(key);
     PyObject *value = PyObject_GetAttr(py, key);
     THROW_IF_NULL(value);
