@@ -19,18 +19,7 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &st
 
   if (PyFloat_Check(py)) { return Number::New(env, PyFloat_AsDouble(py)); }
 
-  if (PyList_Check(py)) {
-    Napi::Array r = Array::New(env);
-    size_t len = PyList_Size(py);
-    store.insert({py, r});
-
-    for (size_t i = 0; i < len; i++) {
-      PyObject *v = PyList_GetItem(py, i);
-      Napi::Value js = _ToJS(env, v, store);
-      r.Set(i, js);
-    }
-    return r;
-  }
+  if (PyList_Check(py)) { return _ToJS_List(env, py, store); }
 
   if (PyUnicode_Check(py)) {
     PyStackObject utf16 = PyUnicode_AsUTF16String(py);
@@ -38,32 +27,9 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &st
     return String::New(env, reinterpret_cast<char16_t *>(raw + 2), PyUnicode_GET_LENGTH(py));
   }
 
-  if (PyDict_Check(py)) {
-    auto obj = Object::New(env);
+  if (PyDict_Check(py)) { return _ToJS_Dictionary(env, py, store); }
 
-    PyObject *key, *value;
-    Py_ssize_t pos = 0;
-    store.insert({py, obj});
-    while (PyDict_Next(py, &pos, &key, &value)) {
-      auto jsKey = _ToJS(env, key, store);
-      auto jsValue = _ToJS(env, value, store);
-      obj.Set(jsKey, jsValue);
-    }
-    return obj;
-  }
-
-  if (PyTuple_Check(py)) {
-    Napi::Array r = Array::New(env);
-    size_t len = PyTuple_Size(py);
-    store.insert({py, r});
-
-    for (size_t i = 0; i < len; i++) {
-      PyObject *v = PyTuple_GetItem(py, i);
-      Napi::Value js = _ToJS(env, v, store);
-      r.Set(i, js);
-    }
-    return r;
-  }
+  if (PyTuple_Check(py)) { return _ToJS_Tuple(env, py, store); }
 
   if (PyModule_Check(py)) {
 #ifdef WIN32
@@ -85,6 +51,46 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, PyObject *py, NapiObjectStore &st
   Py_INCREF(py);
   if (PyCallable_Check(py)) { return NewCallable(env, py); }
   return New(env, py);
+}
+
+Napi::Value PyObjectWrap::_ToJS_Dictionary(Napi::Env env, PyObject *py, NapiObjectStore &store) {
+  auto obj = Object::New(env);
+
+  PyObject *key, *value;
+  Py_ssize_t pos = 0;
+  store.insert({py, obj});
+  while (PyDict_Next(py, &pos, &key, &value)) {
+    auto jsKey = _ToJS(env, key, store);
+    auto jsValue = _ToJS(env, value, store);
+    obj.Set(jsKey, jsValue);
+  }
+  return obj;
+}
+
+Napi::Value PyObjectWrap::_ToJS_Tuple(Napi::Env env, PyObject *py, NapiObjectStore &store) {
+  Napi::Array r = Array::New(env);
+  size_t len = PyTuple_Size(py);
+  store.insert({py, r});
+
+  for (size_t i = 0; i < len; i++) {
+    PyObject *v = PyTuple_GetItem(py, i);
+    Napi::Value js = _ToJS(env, v, store);
+    r.Set(i, js);
+  }
+  return r;
+}
+
+Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, PyObject *py, NapiObjectStore &store) {
+  Napi::Array r = Array::New(env);
+  size_t len = PyList_Size(py);
+  store.insert({py, r});
+
+  for (size_t i = 0; i < len; i++) {
+    PyObject *v = PyList_GetItem(py, i);
+    Napi::Value js = _ToJS(env, v, store);
+    r.Set(i, js);
+  }
+  return r;
 }
 
 Napi::Value PyObjectWrap::ToJS(Napi::Env env, PyObject *py) {

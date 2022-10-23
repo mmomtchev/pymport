@@ -93,7 +93,13 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   typedef std::list<std::pair<Napi::Value, PyObject *>> PyObjectStore;
 
   void Release();
+
   static Napi::Value _ToJS(Napi::Env, PyObject *, NapiObjectStore &);
+  static Napi::Value _ToJS_Dictionary(Napi::Env, PyObject *, NapiObjectStore &);
+  static Napi::Value _ToJS_Tuple(Napi::Env, PyObject *, NapiObjectStore &);
+  static Napi::Value _ToJS_List(Napi::Env, PyObject *, NapiObjectStore &);
+  static Napi::Value _ToJS_Dir(Napi::Env, PyObject *, NapiObjectStore &);
+
   static PyObject *_FromJS(Napi::Value, PyObjectStore &);
   static PyObject *_Dictionary(Napi::Object, PyObject *, PyObjectStore &);
   static PyObject *_List(Napi::Array, PyObject *, PyObjectStore &);
