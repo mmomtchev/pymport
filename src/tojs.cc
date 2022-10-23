@@ -87,8 +87,10 @@ Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, PyObject *py, NapiObjectStor
 }
 
 Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, PyObject *py, NapiObjectStore &store) {
-  Napi::Object r = Array::New(env);
+  Napi::Object r = Object::New(env);
   PyStackObject list = PyObject_Dir(py);
+  // It seems that some system modules are hidden, we return an empty array
+  if (list == nullptr) return r;
   size_t len = PyList_Size(list);
   store.insert({py, r});
 
