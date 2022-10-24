@@ -9,7 +9,8 @@ class PyStackObject {
     public:
   PyStackObject(PyObject *v) : self(v){};
   PyStackObject(const PyStackObject &) = delete;
-  PyStackObject(const PyStackObject &&v) {
+  PyStackObject &operator=(const PyStackObject &) = delete;
+  inline PyStackObject(const PyStackObject &&v) {
     self = v.self;
   };
 
