@@ -68,7 +68,7 @@
               'dependencies': [ 'builtin_python' ],
               'include_dirs': [ '<(bin_path)/include/python3.10' ],
               'libraries': [ '-L <(bin_path)/lib/ -lpython3.10' ],
-              'ldflags': [ '-Wl,-z,origin', '-Wl,-rpath,\'$$ORIGIN/../../../<(binding_dir)/lib\'' ]
+              'ldflags': [ '-Wl,-z,origin', '-Wl,-rpath,\'$$ORIGIN/lib\'' ]
             }]
           ],
           'xcode_settings': {
@@ -76,6 +76,7 @@
             'CLANG_CXX_LIBRARY': 'libc++',
             'MACOSX_DEPLOYMENT_TARGET': '10.7',
             'OTHER_CFLAGS': [ '<!@(pkg-config --cflags python3-embed)' ],
+            'OTHER_LDFLAGS': [ '-Wl,-rpath,@loader_path/lib' ]
           },
           'cflags!': [ '-fno-exceptions' ],
           'cflags_cc!': [ '-fno-exceptions' ],
