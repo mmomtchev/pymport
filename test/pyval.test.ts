@@ -3,7 +3,7 @@ import { assert } from 'chai';
 
 describe('pyval', () => {
   it('basic pyval', () => {
-    const py_array = pyval('list([1, 2, 3])');
+    const py_array = pyval('[1, 2, 3]');
     assert.instanceOf(py_array, PyObject);
     assert.deepEqual(py_array.toJS(), [1, 2, 3]);
   });
@@ -21,7 +21,7 @@ describe('pyval', () => {
   });
 
   it('w/ args', () => {
-    const py_array = pyval('list([1, x, 3])', { x: 4 });
+    const py_array = pyval('[1, x, 3]', { x: 4 });
     assert.instanceOf(py_array, PyObject);
     assert.deepEqual(py_array.toJS(), [1, 4, 3]);
   });
