@@ -2,7 +2,9 @@
   'variables': {
     'enable_asan%': 'false',
     'enable_coverage%': 'false',
-    'static_python%': 'false'
+    'builtin_python%': 'false',
+    'binding_dir': '<!(node -e "console.log(path.dirname(require(\'@mapbox/node-pre-gyp\').find(\'package.json\')))")',
+    'bin_path': '<!(node -e "console.log(path.resolve(path.dirname(require(\'@mapbox/node-pre-gyp\').find(\'package.json\'))))")',
   },
   'targets': [
     {
@@ -34,29 +36,39 @@
           'ldflags' : [ '-lgcov', '--coverage' ]
         }],
         ['OS == "win"', {
-          'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
           'msvs_settings': {
             'VCCLCompilerTool': { 'ExceptionHandling': 1 },
           },
           'conditions': [
-            ['static_python == "false"', {
+            ['builtin_python == "false"', {
               'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
               'msvs_settings': {
                 'VCLinkerTool': {
                   'AdditionalLibraryDirectories': '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/libs'
                 }
               },
+            }],
+            ['builtin_python == "true"', {
+              'dependencies': [ 'builtin_python' ],
+              'include_dirs': [ 'build\Python-3.10.8\Include', 'build\Python-3.10.8\PC' ],
+              'msvs_settings': {
+                'VCLinkerTool': {
+                  'AdditionalLibraryDirectories': '<(bin_path)'
+                }
+              },
             }]]
         }],
         ['OS != "win"', {
           'conditions': [
-            ['static_python == "false"', {
+            ['builtin_python == "false"', {
               'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
               'libraries': [ '<!@(pkg-config --libs python3-embed)' ]
             }],
-            ['static_python != "false"', {
-              'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
-              'libraries': [ '<!@(pkg-config --static --libs-only-L python3-embed)', '<(static_python)' ]
+            ['builtin_python == "true"', {
+              'dependencies': [ 'builtin_python' ],
+              'include_dirs': [ '<(bin_path)/include/python3.10' ],
+              'libraries': [ '<(bin_path)/lib/libpython3.10.so' ],
+              'ldflags': [ '-Wl,-z,origin', '-Wl,-rpath,\'$$ORIGIN/../../../<(binding_dir)/lib\'' ]
             }]
           ],
           'xcode_settings': {
@@ -83,5 +95,31 @@
         }
       ]
     }
+  ],
+  'conditions': [
+    ['builtin_python == "true" and OS != "win"', {
+      'targets': [{
+        'target_name': 'builtin_python',
+        'type': 'none',
+        'actions': [{
+          'action_name': 'Python',
+          'inputs': [ './build_python.sh' ],
+          'outputs': [ '<(bin_path)/lib/libpython3.10.so' ],
+          'action': [ 'sh', 'build_python.sh', '<(bin_path)' ]
+        }]
+      }]
+    }],
+    ['builtin_python == "true" and OS == "win"', {
+      'targets': [{
+        'target_name': 'builtin_python',
+        'type': 'none',
+        'actions': [{
+          'action_name': 'Python',
+          'inputs': [ './build_python.bat' ],
+          'outputs': [ '<(bin_path)/Python310.lib' ],
+          'action': [ '<(module_root_dir)/build_python.bat', '<(bin_path)' ]
+        }]
+      }]
+    }]
   ]
 }

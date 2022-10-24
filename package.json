@@ -1,18 +1,4 @@
 {
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "scripts": {
-    "install": "node-pre-gyp install --fallback-to-build",
-    "test": "mocha",
-    "doc": "documentation readme --section=API --config=documentation.yml lib/index.d.ts",
-    "build": "npx node-pre-gyp configure && npx node-pre-gyp build",
-    "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
-    "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*",
-    "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
-    "codecov": "cd coverage && curl -s https://codecov.io/bash | bash",
-    "preversion": "npm run lint && npm run test && npm run doc && git add README.md",
-    "postversion": "git push && git push --tags && node ./scripts/publish-packages.js && node ./scripts/publish-docs.js "
-  },
   "name": "pymport",
   "version": "0.0.1",
   "description": "Use Python libraries from Node.js",
@@ -20,6 +6,8 @@
     "type": "git",
     "url": "git+https://github.com/mmomtchev/pymport.git"
   },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "keywords": [
     "python",
     "node.js",
@@ -32,6 +20,9 @@
     "url": "https://github.com/mmomtchev/pymport/issues"
   },
   "homepage": "https://github.com/mmomtchev/pymport#readme",
+  "bin": {
+    "pympip3": "node ./scripts/pympip"
+  },
   "binary": {
     "module_name": "pymport",
     "module_path": "./lib/binding/{platform}-{arch}",
@@ -42,6 +33,18 @@
       "provider": "github",
       "repo": "mmomtchev/pymport"
     }
+  },
+  "scripts": {
+    "install": "node-pre-gyp install --fallback-to-build",
+    "test": "mocha",
+    "doc": "documentation readme --section=API --config=documentation.yml lib/index.d.ts",
+    "build": "npx node-pre-gyp configure && npx node-pre-gyp build",
+    "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
+    "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*",
+    "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
+    "codecov": "cd coverage && curl -s https://codecov.io/bash | bash",
+    "preversion": "npm run lint && npm run test && npm run doc && git add README.md",
+    "postversion": "git push && git push --tags && node ./scripts/publish-packages.js"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",

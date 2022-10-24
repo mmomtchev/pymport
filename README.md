@@ -2,11 +2,43 @@
 
 Use Python libraries from Node.js
 
-# Status
+# Installation
 
-Not ready
+## Fully self-contained package
+
+```shell
+npm i pymport
+```
+
+This will install the pre-built `pymport` binaries and a self-contained Python 3.10 environment.
+
+You should use `pympip3`, which should be a link to `node_modules/pymport/Python/bin/pip3` to install packages into this environment.
+
+This is supported only on Windows x64, Linux x64 and macOS x64.
+
+## Using an existing Python environment
+
+```shell
+npm i pymport --build-from-source
+```
+
+This will download and rebuild `pymport` against your own already existing Python environment.
+
+On Linux you will need the `libpython3-dev` package. On macOS the Homebrew install has everything required. On Windows you should have a working `python` command in your shell.
 
 # Usage
+
+## Basic Principle
+
+All Python objects co-exist with the JavaScript objects. The Python GC manages the Python objects, the V8 GC manages the JS objects. The Python GC cannot free Python objects while they are referenced by a JavaScript object.
+
+Python objects have a `PyObject` type in JavaScript. When calling a Python function, input JavaScript arguments are automatically converted. In all other cases, an explicit conversion, using `fromJS()`/`toJS()` is needed.
+
+An additional _(and optional)_ convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that allows the illusion of directly accessing the `PyObject` from JavaScript.
+
+`pymport` itself supports `worker_thread` but does not provide any locking. Unlike Node.js, Python threads share the same single environment and `PyObject`s will be shared among all threads.
+
+## Examples
 
 Directly use the raw `PyObject` object:
 
@@ -36,11 +68,11 @@ With `proxify`:
 import { pymport, proxify } from "pymport";
 
 // Python: import numpy as np
-// np is a normal JS object
+// np is a JS proxy object
 const np = proxify(pymport("numpy"));
 
 // Python: a = np.arange(15).reshape(3, 5)
-// a is a PyObject
+// a is a JS proxy object
 const a = np.arange(15).reshape(3, 5);
 
 // Python: a = np.ones((2, 3), dtype=int16)
@@ -77,36 +109,36 @@ assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
 
 ### Table of Contents
 
-*   [PyObject](#pyobject)
-    *   [callable](#callable)
-    *   [type](#type)
-    *   [get](#get)
-        *   [Parameters](#parameters)
-    *   [has](#has)
-        *   [Parameters](#parameters-1)
-    *   [call](#call)
-        *   [Parameters](#parameters-2)
-    *   [toJS](#tojs)
-    *   [toString](#tostring)
-    *   [int](#int)
-        *   [Parameters](#parameters-3)
-    *   [float](#float)
-        *   [Parameters](#parameters-4)
-    *   [string](#string)
-        *   [Parameters](#parameters-5)
-    *   [dict](#dict)
-        *   [Parameters](#parameters-6)
-    *   [list](#list)
-        *   [Parameters](#parameters-7)
-    *   [tuple](#tuple)
-        *   [Parameters](#parameters-8)
-    *   [slice](#slice)
-    *   [fromJS](#fromjs)
-        *   [Parameters](#parameters-9)
-*   [pymport](#pymport)
-    *   [Parameters](#parameters-10)
-*   [proxify](#proxify)
-    *   [Parameters](#parameters-11)
+- [PyObject](#pyobject)
+  - [callable](#callable)
+  - [type](#type)
+  - [get](#get)
+    - [Parameters](#parameters)
+  - [has](#has)
+    - [Parameters](#parameters-1)
+  - [call](#call)
+    - [Parameters](#parameters-2)
+  - [toJS](#tojs)
+  - [toString](#tostring)
+  - [int](#int)
+    - [Parameters](#parameters-3)
+  - [float](#float)
+    - [Parameters](#parameters-4)
+  - [string](#string)
+    - [Parameters](#parameters-5)
+  - [dict](#dict)
+    - [Parameters](#parameters-6)
+  - [list](#list)
+    - [Parameters](#parameters-7)
+  - [tuple](#tuple)
+    - [Parameters](#parameters-8)
+  - [slice](#slice)
+  - [fromJS](#fromjs)
+    - [Parameters](#parameters-9)
+- [pymport](#pymport)
+  - [Parameters](#parameters-10)
+- [proxify](#proxify)
+  - [Parameters](#parameters-11)
 
 ## PyObject
 
