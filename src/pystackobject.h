@@ -8,6 +8,11 @@ class PyStackObject {
 
     public:
   PyStackObject(PyObject *v) : self(v){};
+  PyStackObject(const PyStackObject &) = delete;
+  PyStackObject(const PyStackObject &&v) {
+    self = v.self;
+  };
+
   virtual ~PyStackObject() {
     if (self != nullptr) Py_DECREF(self);
   }
