@@ -29,7 +29,12 @@ Napi::Object Init(Env env, Object exports) {
       // context will be deleted by the NAPI Finalizer
     },
     context);
-  if (active_environments == 0) { Py_Initialize(); }
+  if (active_environments == 0) {
+    Py_Initialize();
+#ifdef BUILTIN_PYTHON_PATH
+    Py_SetPythonHome(BUILTIN_PYTHON_PATH);
+#endif
+  }
   active_environments++;
   return exports;
 }

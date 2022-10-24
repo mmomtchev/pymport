@@ -35,6 +35,9 @@
           'cflags_cc': [ '-fprofile-arcs', '-ftest-coverage' ],
           'ldflags' : [ '-lgcov', '--coverage' ]
         }],
+        ['builtin_python == "true"', {
+          'defines': [ 'BUILTIN_PYTHON_PATH=L"<(binding_dir)"' ]
+        }],
         ['OS == "win"', {
           'msvs_settings': {
             'VCCLCompilerTool': { 'ExceptionHandling': 1 },
