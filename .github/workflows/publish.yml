@@ -12,24 +12,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
-      - uses: kanga333/variable-mapper@master
-        with:
-          key: "${{ matrix.platform }}"
-          map: |
-            {
-              "ubuntu-20.04": {
-                "static_python": "'/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8-pic.a -lutil -lexpat'"
-              },
-              "macos-11": {
-                "static_python": "libpython3.10.a"
-              }
-            }
+          node-version: 16.x
       - run: npm install --ignore-scripts
-      - run: npx @mapbox/node-pre-gyp configure --static_python=${{ env.static_python }}
+      - run: npx @mapbox/node-pre-gyp configure --builtin_python=true
       - run: npx @mapbox/node-pre-gyp build -j max
       - run: npm test
       - run: npx @mapbox/node-pre-gyp package
