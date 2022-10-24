@@ -1,4 +1,4 @@
-import { pymport, proxify, PyObject } from '../lib';
+import { pymport, proxify, PyObject, pyval } from '../lib';
 import { assert } from 'chai';
 
 describe('proxy', () => {
@@ -58,5 +58,18 @@ describe('proxy', () => {
     const a = np.arange(2).reshape(1, 2);
 
     assert.deepEqual(a.T.T.tolist().toJS(), [[0, 1]]);
+  });
+
+  it('functions', () => {
+    const fn = proxify(pyval('lambda x: (x + 42)'));
+
+    assert.typeOf(fn, 'function');
+    assert.equal(fn(-42).toJS(), 0);
+  });
+
+  it('passing proxified arguments', () => {
+    const py_array = pyval('np.array([2, 1, 0]).tolist()', { np });
+    assert.instanceOf(py_array, PyObject);
+    assert.deepEqual(py_array.toJS(), [2, 1, 0]);
   });
 });

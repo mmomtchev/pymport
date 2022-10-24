@@ -126,13 +126,16 @@ export function pymport(name: string): PyObject;
  * Create a profixied version of a PyObject
  * that works like a native Python object
  * @param {PyObject} object object to proxify
+ * @param {string} [name] optional name to be assigned to a proxified function
  * @returns {any}
  */
-export function proxify(v: PyObject): any;
+export function proxify(v: PyObject, name?: string): any;
 
 /**
  * Eval a Python fragment
  * @param {string} name Python module name
+ * @param {PyObject | Record<string, any>} [globals] Optional global context
+ * @param {PyObject | Record<string, any>} [locals] Optional local context
  * @returns {PyObject}
  */
 export function pyval(
