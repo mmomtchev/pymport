@@ -67,7 +67,7 @@
             ['builtin_python == "true"', {
               'dependencies': [ 'builtin_python' ],
               'include_dirs': [ '<(bin_path)/include/python3.10' ],
-              'libraries': [ '<(bin_path)/lib/libpython3.10.so' ],
+              'libraries': [ '-L <(bin_path)/lib/ -lpython3.10' ],
               'ldflags': [ '-Wl,-z,origin', '-Wl,-rpath,\'$$ORIGIN/../../../<(binding_dir)/lib\'' ]
             }]
           ],
@@ -97,7 +97,7 @@
     }
   ],
   'conditions': [
-    ['builtin_python == "true" and OS != "win"', {
+    ['builtin_python == "true" and OS == "linux"', {
       'targets': [{
         'target_name': 'builtin_python',
         'type': 'none',
@@ -105,6 +105,18 @@
           'action_name': 'Python',
           'inputs': [ './build_python.sh' ],
           'outputs': [ '<(bin_path)/lib/libpython3.10.so' ],
+          'action': [ 'sh', 'build_python.sh', '<(bin_path)' ]
+        }]
+      }]
+    }],
+    ['builtin_python == "true" and OS == "mac"', {
+      'targets': [{
+        'target_name': 'builtin_python',
+        'type': 'none',
+        'actions': [{
+          'action_name': 'Python',
+          'inputs': [ './build_python.sh' ],
+          'outputs': [ '<(bin_path)/lib/libpython3.10.dylib' ],
           'action': [ 'sh', 'build_python.sh', '<(bin_path)' ]
         }]
       }]
