@@ -4,8 +4,6 @@ Use Python libraries from Node.js
 
 # Installation
 
-**_(still not published)_**
-
 ## Fully self-contained package
 
 ```shell
@@ -26,7 +24,7 @@ npm i pymport --build-from-source
 
 This will download and rebuild `pymport` against your own already existing Python environment.
 
-On Linux you will need the `libpython3-dev` package. On macOS the Homebrew install has everything required. On Windows you should have a working `python` command in your shell.
+You will need a working C++ development environment. Additionally, on Linux you will need the `libpython3-dev` package. On macOS the Homebrew install has everything required. On Windows you should have a working `python` command in your shell.
 
 # Usage
 
