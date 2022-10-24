@@ -116,6 +116,7 @@ Value PyObjectWrap::Slice(const CallbackInfo &info) {
   return New(env, slice);
 }
 
+// Returns a strong reference
 PyObject *PyObjectWrap::_Slice(Array array, PyObjectStore &store) {
   Napi::Env env = array.Env();
 
