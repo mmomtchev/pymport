@@ -4,6 +4,8 @@ Use Python libraries from Node.js
 
 # Installation
 
+**_(still not published)_**
+
 ## Fully self-contained package
 
 ```shell
@@ -12,7 +14,7 @@ npm i pymport
 
 This will install the pre-built `pymport` binaries and a self-contained Python 3.10 environment.
 
-You should use `pympip3`, which should be a link to `node_modules/pymport/Python/bin/pip3` to install packages into this environment.
+You should use `pympip3` to install packages into this environment. `pympip3` is simply a redirection to `node_modules/pymport/lib/binding/<platform>/python -m pip`.
 
 This is supported only on Windows x64, Linux x64 and macOS x64.
 
@@ -34,7 +36,7 @@ All Python objects co-exist with the JavaScript objects. The Python GC manages t
 
 Python objects have a `PyObject` type in JavaScript. When calling a Python function, input JavaScript arguments are automatically converted. In all other cases, an explicit conversion, using `fromJS()`/`toJS()` is needed.
 
-An additional _(and optional)_ convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that allows the illusion of directly accessing the `PyObject` from JavaScript.
+An additional _(and optional)_ convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
 
 `pymport` itself supports `worker_thread` but does not provide any locking. Unlike Node.js, Python threads share the same single environment and `PyObject`s will be shared among all threads.
 
