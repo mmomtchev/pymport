@@ -129,3 +129,14 @@ export function pymport(name: string): PyObject;
  * @returns {any}
  */
 export function proxify(v: PyObject): any;
+
+/**
+ * Eval a Python fragment
+ * @param {string} name Python module name
+ * @returns {PyObject}
+ */
+export function pyval(
+  code: string,
+  globals?: PyObject | Record<string, any>,
+  locals?: PyObject | Record<string, any>
+): PyObject;

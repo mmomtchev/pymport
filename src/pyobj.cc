@@ -41,7 +41,6 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::InstanceAccessor("callable", &PyObjectWrap::Callable, nullptr),
      PyObjectWrap::InstanceAccessor("length", &PyObjectWrap::Length, nullptr),
      PyObjectWrap::StaticMethod("fromJS", &PyObjectWrap::FromJS),
-     PyObjectWrap::StaticMethod("import", &PyObjectWrap::Import),
      PyObjectWrap::StaticMethod("string", &PyObjectWrap::String),
      PyObjectWrap::StaticMethod("int", &PyObjectWrap::Integer),
      PyObjectWrap::StaticMethod("float", &PyObjectWrap::Float),

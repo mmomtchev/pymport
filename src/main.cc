@@ -11,6 +11,7 @@ Napi::Object Init(Env env, Object exports) {
 
   exports.Set("PyObject", pyObjCons);
   exports.Set("pymport", Function::New(env, PyObjectWrap::Import));
+  exports.Set("pyval", Function::New(env, PyObjectWrap::Eval));
 
   auto context = new EnvContext();
   context->pyObj = new FunctionReference();

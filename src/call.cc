@@ -22,6 +22,7 @@ Value PyObjectWrap::_Call(PyObject *py, const CallbackInfo &info) {
   for (size_t i = 0; i < argc; i++) {
     PyObject *v = FromJS(info[i]);
     THROW_IF_NULL(v);
+    // FromJS returns a strong reference and PyTuple_SetItem steals it
     PyTuple_SetItem(args, i, v);
   }
 
@@ -44,4 +45,16 @@ Value PyObjectWrap::Callable(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   return Boolean::New(env, PyCallable_Check(self));
+}
+
+Value PyObjectWrap::Eval(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  auto text = NAPI_ARG_STRING(0).Utf8Value();
+  PyStackObject globals = info.Length() > 1 ? FromJS(info[1]) : PyDict_New();
+  PyStackObject locals = info.Length() > 2 ? FromJS(info[2]) : PyDict_New();
+
+  PyObject *result = PyRun_String(text.c_str(), Py_eval_input, globals, locals);
+  THROW_IF_NULL(result);
+
+  return New(env, result);
 }

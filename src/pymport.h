@@ -71,6 +71,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   Napi::Value Callable(const Napi::CallbackInfo &);
 
   static Napi::Value Import(const Napi::CallbackInfo &);
+  static Napi::Value Eval(const Napi::CallbackInfo &);
 
   static Napi::Value FromJS(const Napi::CallbackInfo &);
   static Napi::Value ToJS(Napi::Env, PyObject *);
