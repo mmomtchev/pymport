@@ -1,4 +1,4 @@
-import { PyObject, pyval } from '../lib';
+import { pymport, PyObject, pyval } from '../lib';
 import { assert } from 'chai';
 
 describe('pyval', () => {
@@ -26,4 +26,10 @@ describe('pyval', () => {
     assert.deepEqual(py_array.toJS(), [1, 4, 3]);
   });
 
+  it('w/ modules', () => {
+    const np = pymport('numpy');
+    const py_array = pyval('np.array([2, 1, 0]).tolist()', { np });
+    assert.instanceOf(py_array, PyObject);
+    assert.deepEqual(py_array.toJS(), [2, 1, 0]);
+  });
 });
