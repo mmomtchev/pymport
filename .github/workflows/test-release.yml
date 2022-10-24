@@ -24,5 +24,7 @@ jobs:
       - run: npm i -g npm@latest
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp install
+      - run: node ./scripts/pympip install --upgrade pip
+      - run: node ./scripts/pympip install -r test/requirements.txt
       - name: Run unit tests
         run: npm test
