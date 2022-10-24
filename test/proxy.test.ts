@@ -72,4 +72,11 @@ describe('proxy', () => {
     assert.instanceOf(py_array, PyObject);
     assert.deepEqual(py_array.toJS(), [2, 1, 0]);
   });
+
+  it('automatic conversion to JS objects through Symbol.toPrimitive', () => {
+    const num = proxify(PyObject.int(10));
+    assert.instanceOf(num, PyObject);
+    assert.equal(num, 10);
+    assert.throws(() => assert.strictEqual(num, 10));
+  });
 });

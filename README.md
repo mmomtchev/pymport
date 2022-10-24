@@ -4,7 +4,7 @@ Use Python libraries from Node.js
 
 # Installation
 
-***(still not published)***
+**_(still not published)_**
 
 ## Fully self-contained package
 
@@ -34,9 +34,9 @@ On Linux you will need the `libpython3-dev` package. On macOS the Homebrew insta
 
 All Python objects co-exist with the JavaScript objects. The Python GC manages the Python objects, the V8 GC manages the JS objects. The Python GC cannot free Python objects while they are referenced by a JavaScript object.
 
-Python objects have a `PyObject` type in JavaScript. When calling a Python function, input JavaScript arguments are automatically converted. In all other cases, an explicit conversion, using `fromJS()`/`toJS()` is needed.
+Python objects have a `PyObject` type in JavaScript. When calling a Python function, input JavaScript arguments are automatically converted. Automatic conversion to JavaScript is possible if the context permits it through `valueOf` and `Symbol.toPrimitive`. In all other cases, an explicit conversion, using `fromJS()`/`toJS()` is needed.
 
-An additional *(and optional)* convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
+An additional _(and optional)_ convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
 
 `pymport` itself supports `worker_thread` but does not provide any locking. Unlike Node.js, Python threads share the same single environment and `PyObject`s will be shared among all threads.
 
@@ -133,41 +133,41 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 
 ### Table of Contents
 
-*   [PyObject](#pyobject)
-    *   [callable](#callable)
-    *   [type](#type)
-    *   [length](#length)
-    *   [get](#get)
-        *   [Parameters](#parameters)
-    *   [has](#has)
-        *   [Parameters](#parameters-1)
-    *   [item](#item)
-        *   [Parameters](#parameters-2)
-    *   [call](#call)
-        *   [Parameters](#parameters-3)
-    *   [toJS](#tojs)
-    *   [toString](#tostring)
-    *   [int](#int)
-        *   [Parameters](#parameters-4)
-    *   [float](#float)
-        *   [Parameters](#parameters-5)
-    *   [string](#string)
-        *   [Parameters](#parameters-6)
-    *   [dict](#dict)
-        *   [Parameters](#parameters-7)
-    *   [list](#list)
-        *   [Parameters](#parameters-8)
-    *   [tuple](#tuple)
-        *   [Parameters](#parameters-9)
-    *   [slice](#slice)
-    *   [fromJS](#fromjs)
-        *   [Parameters](#parameters-10)
-*   [pymport](#pymport)
-    *   [Parameters](#parameters-11)
-*   [proxify](#proxify)
-    *   [Parameters](#parameters-12)
-*   [pyval](#pyval)
-    *   [Parameters](#parameters-13)
+- [PyObject](#pyobject)
+  - [callable](#callable)
+  - [type](#type)
+  - [length](#length)
+  - [get](#get)
+    - [Parameters](#parameters)
+  - [has](#has)
+    - [Parameters](#parameters-1)
+  - [item](#item)
+    - [Parameters](#parameters-2)
+  - [call](#call)
+    - [Parameters](#parameters-3)
+  - [toJS](#tojs)
+  - [toString](#tostring)
+  - [int](#int)
+    - [Parameters](#parameters-4)
+  - [float](#float)
+    - [Parameters](#parameters-5)
+  - [string](#string)
+    - [Parameters](#parameters-6)
+  - [dict](#dict)
+    - [Parameters](#parameters-7)
+  - [list](#list)
+    - [Parameters](#parameters-8)
+  - [tuple](#tuple)
+    - [Parameters](#parameters-9)
+  - [slice](#slice)
+  - [fromJS](#fromjs)
+    - [Parameters](#parameters-10)
+- [pymport](#pymport)
+  - [Parameters](#parameters-11)
+- [proxify](#proxify)
+  - [Parameters](#parameters-12)
+- [pyval](#pyval)
+  - [Parameters](#parameters-13)
 
 ## PyObject
 
@@ -199,7 +199,7 @@ Type: function (name: string): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `name` **string** property name
+- `name` **string** property name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -211,7 +211,7 @@ Type: function (name: string): boolean
 
 #### Parameters
 
-*   `name` **string** property name
+- `name` **string** property name
 
 Returns **boolean**&#x20;
 
@@ -223,7 +223,7 @@ Type: function (index: any): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `index` **any** index
+- `index` **any** index
 
 Returns **boolean**&#x20;
 
@@ -235,7 +235,7 @@ Type: function (...args: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `args` **...Array\<any>** function arguments
+- `args` **...Array\<any>** function arguments
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -263,7 +263,7 @@ Type: function (v: number): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `number` **number**&#x20;
+- `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -275,7 +275,7 @@ Type: function (v: number): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `number` **number**&#x20;
+- `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -287,7 +287,7 @@ Type: function (v: string): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `string` **string**&#x20;
+- `string` **string**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -299,7 +299,7 @@ Type: function (v: Record\<string, any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `object` **Record\<string, any>**&#x20;
+- `object` **Record\<string, any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -311,7 +311,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `array` **Array\<any>**&#x20;
+- `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -323,7 +323,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `array` **Array\<any>**&#x20;
+- `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -343,7 +343,7 @@ Type: function (v: any): [PyObject](#pyobject)
 
 #### Parameters
 
-*   `value` **any**&#x20;
+- `value` **any**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -353,7 +353,7 @@ Import a Python module
 
 ### Parameters
 
-*   `name` **string** Python module name
+- `name` **string** Python module name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -364,8 +364,8 @@ that works like a native Python object
 
 ### Parameters
 
-*   `v` **[PyObject](#pyobject)**&#x20;
-*   `object` **[PyObject](#pyobject)** object to proxify
+- `v` **[PyObject](#pyobject)**&#x20;
+- `object` **[PyObject](#pyobject)** object to proxify
 
 Returns **any**&#x20;
 
@@ -375,10 +375,10 @@ Eval a Python fragment
 
 ### Parameters
 
-*   `code` **string**&#x20;
-*   `globals` **([PyObject](#pyobject) | Record\<string, any>)?**&#x20;
-*   `locals` **([PyObject](#pyobject) | Record\<string, any>)?**&#x20;
-*   `name` **string** Python module name
+- `code` **string**&#x20;
+- `globals` **([PyObject](#pyobject) | Record\<string, any>)?**&#x20;
+- `locals` **([PyObject](#pyobject) | Record\<string, any>)?**&#x20;
+- `name` **string** Python module name
 
 Returns **[PyObject](#pyobject)**&#x20;
 

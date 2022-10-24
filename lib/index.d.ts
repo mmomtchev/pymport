@@ -103,10 +103,16 @@ export class PyObject {
   call: (...args: any[]) => PyObject;
 
   /**
-   * Transform the PyObject to a plain JS object
+   * Transform the PyObject to a plain JS object. Equivalent to valueOf().
    * @returns {any}
    */
   toJS: () => any;
+
+  /**
+   * Transform the PyObject to a plain JS object. Equivalent to toJS().
+   * @returns {any}
+   */
+  valueOf: () => any;
 
   /**
    * Use the Python str() built-in on the object

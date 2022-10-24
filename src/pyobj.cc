@@ -37,6 +37,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::InstanceMethod("item", &PyObjectWrap::Item),
      PyObjectWrap::InstanceMethod("call", &PyObjectWrap::Call),
      PyObjectWrap::InstanceMethod("toJS", &PyObjectWrap::ToJS),
+     PyObjectWrap::InstanceMethod("valueOf", &PyObjectWrap::ToJS),
      PyObjectWrap::InstanceAccessor("type", &PyObjectWrap::Type, nullptr),
      PyObjectWrap::InstanceAccessor("callable", &PyObjectWrap::Callable, nullptr),
      PyObjectWrap::InstanceAccessor("length", &PyObjectWrap::Length, nullptr),
