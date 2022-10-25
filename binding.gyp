@@ -4,7 +4,6 @@
     'enable_coverage%': 'false',
     'builtin_python%': 'false',
     'binding_dir': '<!(node -e "console.log(path.dirname(require(\'@mapbox/node-pre-gyp\').find(\'package.json\')))")',
-    'bin_path': '<!(node -e "console.log(path.resolve(path.dirname(require(\'@mapbox/node-pre-gyp\').find(\'package.json\'))))")',
   },
   'targets': [
     {
@@ -56,7 +55,7 @@
               'include_dirs': [ 'build\Python-3.10.8\Include', 'build\Python-3.10.8\PC' ],
               'msvs_settings': {
                 'VCLinkerTool': {
-                  'AdditionalLibraryDirectories': '<(bin_path)'
+                  'AdditionalLibraryDirectories': '<(module_path)'
                 }
               },
             }]]
@@ -69,8 +68,8 @@
             }],
             ['builtin_python == "true"', {
               'dependencies': [ 'builtin_python' ],
-              'include_dirs': [ '<(bin_path)/include/python3.10' ],
-              'libraries': [ '-L<(bin_path)/lib/ -lpython3.10' ],
+              'include_dirs': [ '<(module_path)/include/python3.10' ],
+              'libraries': [ '-L<(module_path)/lib/ -lpython3.10' ],
               'ldflags': [ '-Wl,-z,origin', '-Wl,-rpath,\'$$ORIGIN/lib\'' ]
             }]
           ],
@@ -78,8 +77,7 @@
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
             'CLANG_CXX_LIBRARY': 'libc++',
             'MACOSX_DEPLOYMENT_TARGET': '10.7',
-            'OTHER_CFLAGS': [ '<!@(pkg-config --cflags python3-embed)' ],
-            'OTHER_LDFLAGS': [ '-Wl,-rpath,@loader_path/lib' ]
+            'OTHER_CFLAGS': [ '<!@(pkg-config --cflags python3-embed)' ]
           },
           'cflags!': [ '-fno-exceptions' ],
           'cflags_cc!': [ '-fno-exceptions' ],
@@ -108,22 +106,40 @@
         'actions': [{
           'action_name': 'Python',
           'inputs': [ './build_python.sh' ],
-          'outputs': [ '<(bin_path)/lib/libpython3.10.so' ],
-          'action': [ 'sh', 'build_python.sh', '<(bin_path)' ]
+          'outputs': [ '<(module_path)/lib/libpython3.10.so' ],
+          'action': [ 'sh', 'build_python.sh', '<(module_path)' ]
         }]
       }]
     }],
     ['builtin_python == "true" and OS == "mac"', {
-      'targets': [{
-        'target_name': 'builtin_python',
-        'type': 'none',
-        'actions': [{
-          'action_name': 'Python',
-          'inputs': [ './build_python.sh' ],
-          'outputs': [ '<(bin_path)/lib/libpython3.10.dylib' ],
-          'action': [ 'sh', 'build_python.sh', '<(bin_path)' ]
-        }]
-      }]
+      'targets': [
+        {
+          'target_name': 'builtin_python',
+          'type': 'none',
+          'actions': [{
+            'action_name': 'Python',
+            'inputs': [ './build_python.sh' ],
+            'outputs': [ '<(module_path)/lib/libpython3.10.dylib' ],
+            'action': [ 'sh', 'build_python.sh', '<(module_path)' ]
+          }]
+        },
+        {
+          'target_name': 'install_name_tool',
+          'type': 'none',
+          'dependencies': [ '<(module_name)' ],
+          'actions': [{
+            'action_name': 'Python',
+            'inputs': [ '<(module_path)/pymport.node' ],
+            'outputs': [ '<(module_path)/pymport.node' ],
+            'action': [
+              'install_name_tool', '-change',
+              '<(module_path)/lib/libpython3.10.dylib',
+              '@loader_path/lib/libpython3.10.dylib',
+              '<(module_path)/pymport.node'
+            ]
+          }]
+        }
+      ]
     }],
     ['builtin_python == "true" and OS == "win"', {
       'targets': [{
@@ -132,8 +148,8 @@
         'actions': [{
           'action_name': 'Python',
           'inputs': [ './build_python.bat' ],
-          'outputs': [ '<(bin_path)/Python310.lib' ],
-          'action': [ '<(module_root_dir)/build_python.bat', '<(bin_path)' ]
+          'outputs': [ '<(module_path)/Python310.lib' ],
+          'action': [ '<(module_root_dir)/build_python.bat', '<(module_path)' ]
         }]
       }]
     }]
