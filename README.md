@@ -113,17 +113,17 @@ Inline Python is supported through `pyval` (Python `eval`):
 // fn is a PyObject
 const fn = pyval("lambda x: (x + 42)");
 
-assert.instanceOf(py_fn, PyObject);
-assert.isTrue(py_fn.callable);
-assert.strictEqual(py_fn.call(-42).toJS(), 0);
+assert.instanceOf(fn, PyObject);
+assert.isTrue(fn.callable);
+assert.strictEqual(fn.call(-42).toJS(), 0);
 
 // with eval arguments
 // (this is not a real closure as Python still does not
 // have access to the JS objects - this will produce a
 // Python copy of the variable x)
 const array = pyval("list([1, x, 3])", { x: 4 });
-assert.instanceOf(py_array, PyObject);
-assert.deepEqual(py_array.toJS(), [1, 4, 3]);
+assert.instanceOf(array, PyObject);
+assert.deepEqual(array.toJS(), [1, 4, 3]);
 
 // PyObjects can be passed too
 // In this case the expression is a real closure
