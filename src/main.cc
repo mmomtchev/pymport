@@ -1,3 +1,7 @@
+#include <locale>
+#include <codecvt>
+#include <string>
+
 #include "pymport.h"
 #include "values.h"
 
@@ -5,6 +9,7 @@ using namespace Napi;
 using namespace pymport;
 
 size_t active_environments = 0;
+std::wstring builtin_python_path;
 
 Napi::Object Init(Env env, Object exports) {
   Function pyObjCons = PyObjectWrap::GetClass(env);
@@ -31,7 +36,17 @@ Napi::Object Init(Env env, Object exports) {
     context);
   if (active_environments == 0) {
 #ifdef BUILTIN_PYTHON_PATH
-    Py_SetPythonHome(BUILTIN_PYTHON_PATH);
+    auto pathPymport = std::getenv("PYMPORTPATH");
+    auto pathPython = std::getenv("PYTHONPATH");
+    if (pathPython == nullptr) {
+      if (pathPymport == nullptr) {
+        Py_SetPythonHome(BUILTIN_PYTHON_PATH);
+      } else {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        builtin_python_path = converter.from_bytes(pathPymport);
+        Py_SetPythonHome(builtin_python_path.c_str());
+      }
+    }
 #endif
     Py_Initialize();
   }
