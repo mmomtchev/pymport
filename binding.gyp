@@ -36,7 +36,7 @@
           'ldflags' : [ '-lgcov', '--coverage' ]
         }],
         ['builtin_python == "true"', {
-          'defines': [ 'BUILTIN_PYTHON_PATH=L"<(binding_dir)"' ]
+          'defines': [ 'BUILTIN_PYTHON_PATH=LR"<(binding_dir)"' ]
         }],
         ['OS == "win"', {
           'msvs_settings': {
@@ -70,7 +70,7 @@
             ['builtin_python == "true"', {
               'dependencies': [ 'builtin_python' ],
               'include_dirs': [ '<(bin_path)/include/python3.10' ],
-              'libraries': [ '-L <(bin_path)/lib/ -lpython3.10' ],
+              'libraries': [ '-L<(bin_path)/lib/ -lpython3.10' ],
               'ldflags': [ '-Wl,-z,origin', '-Wl,-rpath,\'$$ORIGIN/lib\'' ]
             }]
           ],
