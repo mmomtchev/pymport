@@ -148,7 +148,7 @@
         'actions': [{
           'action_name': 'Python',
           'inputs': [ './build_python.bat' ],
-          'outputs': [ '<(module_path)/Python310.lib' ],
+          'outputs': [ '<(module_path)/Python310.lib', '<(module_root_dir)/build/Python-3.10.8/Include/Python.h' ],
           'action': [ '<(module_root_dir)/build_python.bat', '<(module_path)' ]
         }]
       }]

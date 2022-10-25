@@ -15,4 +15,5 @@ if not exist "%1/python310.lib" (
   tar -C build -zxf dist\Python-%VERSION%.tgz
   build\Python-%VERSION%\PCBuild\build.bat
   (robocopy build\Python-%VERSION%\PCBuild\amd64 %1 /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
+  (robocopy build\Python-%VERSION%\Lib %1\lib /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
 )
