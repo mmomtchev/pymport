@@ -127,17 +127,30 @@
           'target_name': 'install_name_tool',
           'type': 'none',
           'dependencies': [ 'action_after_build' ],
-          'actions': [{
-            'action_name': 'install_name_tool',
-            'inputs': [ '<(module_path)/pymport.node' ],
-            'outputs': [ '<(module_path)/.install_name_tool' ],
-            'action': [
-              'install_name_tool', '-change',
-              '<(module_path)/lib/libpython3.10.dylib',
-              '@loader_path/lib/libpython3.10.dylib',
-              '<(module_path)/pymport.node'
-            ]
-          }]
+          'actions': [
+            {
+              'action_name': 'install_name_tool_libpython3.10.dylib',
+              'inputs': [ '<(module_path)/pymport.node' ],
+              'outputs': [ '<(module_path)/.install_name_tool_dylib' ],
+              'action': [
+                'install_name_tool', '-change',
+                '<(module_path)/lib/libpython3.10.dylib',
+                '@loader_path/lib/libpython3.10.dylib',
+                '<(module_path)/pymport.node'
+              ]
+            },
+            {
+              'action_name': 'install_name_tool_python',
+              'inputs': [ '<(module_path)/pymport.node' ],
+              'outputs': [ '<(module_path)/.install_name_tool_exe' ],
+              'action': [
+                'install_name_tool', '-change',
+                '<(module_path)/lib/libpython3.10.dylib',
+                '@loader_path/lib/libpython3.10.dylib',
+                '<(module_path)/bin/python3.10'
+              ]
+            }
+          ]
         }
       ]
     }],
