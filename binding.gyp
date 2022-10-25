@@ -128,9 +128,9 @@
           'type': 'none',
           'dependencies': [ 'action_after_build' ],
           'actions': [{
-            'action_name': 'Python',
+            'action_name': 'install_name_tool',
             'inputs': [ '<(module_path)/pymport.node' ],
-            'outputs': [ '<(module_path)/pymport.node' ],
+            'outputs': [ '<(module_path)/.install_name_tool' ],
             'action': [
               'install_name_tool', '-change',
               '<(module_path)/lib/libpython3.10.dylib',
