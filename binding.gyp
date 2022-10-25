@@ -126,7 +126,7 @@
         {
           'target_name': 'install_name_tool',
           'type': 'none',
-          'dependencies': [ '<(module_name)' ],
+          'dependencies': [ 'action_after_build' ],
           'actions': [{
             'action_name': 'Python',
             'inputs': [ '<(module_path)/pymport.node' ],
