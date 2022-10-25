@@ -38,7 +38,7 @@ Python objects have a `PyObject` type in JavaScript. When calling a Python funct
 
 An additional _(and optional)_ convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
 
-At the moment, Python code does not have access to the JavaScript objects - this requires the implementation of a similar `JSObject` type on the Python side. See the lambda example below for an example.
+At the moment, Python code does not have access to the JavaScript objects - this requires the implementation of a similar `JSObject` type on the Python side. All JavaScript arguments are passed to Python by value. `PyObject`s are passed by reference. See the lambda examples below to get a feeling how it works.
 
 `pymport` itself supports `worker_thread` but does not provide any locking. Unlike Node.js, Python threads share the same single environment and `PyObject`s will be shared among all threads.
 
