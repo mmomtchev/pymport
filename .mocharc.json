@@ -1,5 +1,5 @@
 {
-  "spec": "test/*.test.[tj]s",
+  "spec": "test/*.test.?([cm])[tj]s",
   "require": [
     "ts-node/register"
   ],

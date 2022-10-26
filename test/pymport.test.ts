@@ -1,4 +1,4 @@
-import { pymport } from '../lib';
+import { pymport } from '..';
 import { assert } from 'chai';
 
 describe('pymport', () => {
