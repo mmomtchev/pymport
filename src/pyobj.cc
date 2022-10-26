@@ -130,8 +130,6 @@ Value PyObjectWrap::Keys(const CallbackInfo &info) {
   auto py = ObjectWrap::Unwrap(target);
 
   if (PyDict_Check(py->self)) return New(env, PyDict_Keys(py->self));
-  PyStackObject r = PyObject_GetAttrString(py->self, "keys");
-  if (r != nullptr) { return _Call(r, info); }
 
   throw TypeError::New(env, "Object does not implement keys()");
 }
@@ -144,8 +142,6 @@ Value PyObjectWrap::Values(const CallbackInfo &info) {
   auto py = ObjectWrap::Unwrap(target);
 
   if (PyDict_Check(py->self)) return New(env, PyDict_Values(py->self));
-  PyStackObject r = PyObject_GetAttrString(py->self, "values");
-  if (r != nullptr) { return _Call(r, info); }
 
   throw TypeError::New(env, "Object does not implement values()");
 }
