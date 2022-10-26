@@ -165,7 +165,8 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 - `TypedArray` <-> `array` equivalence
 - Improved memory management in V8 of Python objects (currently their memory size is not being tracked)
 - More features allowing direct interaction with `PyObject`s from JS
-- Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
+- (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
+- (longer term) Generate TypeScript bindings from the Python modules
 
 # API
 
