@@ -4,7 +4,7 @@ Use Python libraries from Node.js
 
 # Installation
 
-## Fully self-contained package
+## Fully self-contained package (easier install)
 
 This is supported only on Windows x64, Linux x64 and macOS x64.
 
@@ -18,7 +18,7 @@ You should use `pympip3` (or `npx pympip3` if `node_modules/.bin` is not in your
 
 `pympip3` is simply a redirection to `node_modules/pymport/lib/binding/<platform>/python -m pip`.
 
-## Using an existing Python environment
+## Using an existing Python environment (more compatible and more robust)
 
 ```shell
 npm i pymport --build-from-source
@@ -27,6 +27,12 @@ npm i pymport --build-from-source
 This will download and rebuild `pymport` against your own already existing Python environment.
 
 You will need a working C++ development environment. Additionally, on Linux you will need the `libpython3-dev` package. On macOS the Homebrew install has everything required. On Windows you should have a working `python` command in your shell.
+
+## Using an existing Python environment without rebuilding from source (risky)
+
+This is valid on all OS, but it concerns mostly Windows users without a working C++ environment.
+
+After installing the self-contained package, you can set the `PYTHONHOME`/`PYTHONPATH` variables to point Python to your existing environment. This requires Python 3.10, as Python libraries are not compatible across different versions.
 
 # Usage
 
@@ -147,7 +153,7 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
   - When chaining `numpy` functions there should be almost no impact
 - `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
 - The two GCs should work well in tandem as for every object there is exactly one of them that can free it
-- Currently the V8 GC vastly underestimates the memory size of the `PyObject`s are may be reluctant to free them (this is to be improved soon)
+- Currently the V8 GC vastly underestimates the memory size of the `PyObject`s and may be reluctant to free them (this is to be improved soon)
   - This can even lead to a thrashing memory crash as V8 can be unaware that most of the memory has been allocated
 
 # Future Plans
