@@ -248,6 +248,11 @@ describe('types', () => {
       assert.deepEqual(circular, d.toJS());
       assert.equal(d.toString(), "{'circular': {...}}");
     });
+
+    it('returns undefined for non-existing attributes', () => {
+      const obj = PyObject.fromJS({ test: 'test' });
+      assert.isUndefined(obj.get('notAtest'));
+    });
   });
 
   describe('PyObject pass-through', () => {

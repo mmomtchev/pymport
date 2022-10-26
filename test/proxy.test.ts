@@ -79,4 +79,9 @@ describe('proxy', () => {
     assert.equal(num, 10);
     assert.throws(() => assert.strictEqual(num, 10));
   });
+
+  it('returns undefined for non-existing attributes', () => {
+    const obj = proxify(PyObject.fromJS({ test: 'test' }));
+    assert.isUndefined(obj.notAtest);
+  });
 });
