@@ -125,8 +125,14 @@ const array = pyval("list([1, x, 3])", { x: 4 });
 assert.instanceOf(array, PyObject);
 assert.deepEqual(array.toJS(), [1, 4, 3]);
 
-// PyObjects can be passed too
+// The same with a PyObject
 // In this case the expression is a real closure
+// x will be passed by reference in the globals of the lambda
+const x = PyObject.fromJS(4);
+const lambda = pyval("lambda y: (y + x)", { x });
+assert.strictEqual(lambda.call(-4).toJS(), 0);
+
+// Modules can be passed too
 const np = pymport("numpy");
 const py_array = pyval("np.array([2, 1, 0]).tolist()", { np });
 assert.instanceOf(py_array, PyObject);
