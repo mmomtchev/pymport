@@ -1,4 +1,4 @@
-import { pymport, PyObject, pyval } from '..';
+import { pymport, PyObject, pyval } from 'pymport';
 import { assert } from 'chai';
 
 describe('pyval', () => {

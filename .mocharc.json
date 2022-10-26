@@ -1,7 +1,8 @@
 {
   "spec": "test/*.test.?([cm])[tj]s",
   "require": [
-    "ts-node/register"
+    "ts-node/register",
+    "tsconfig-paths/register"
   ],
   "timeout": "20000",
   "reporter": "tap",

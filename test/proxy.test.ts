@@ -1,4 +1,4 @@
-import { pymport, proxify, PyObject, pyval } from '..';
+import { pymport, proxify, PyObject, pyval } from 'pymport';
 import { assert } from 'chai';
 
 describe('proxy', () => {

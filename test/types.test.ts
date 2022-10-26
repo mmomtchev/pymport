@@ -1,4 +1,4 @@
-import { pymport, PyObject } from '..';
+import { pymport, PyObject } from 'pymport';
 import { assert } from 'chai';
 
 let np: PyObject;
