@@ -14,6 +14,10 @@ class PyStackObject {
     self = v.self;
   };
 
+  inline bool operator==(const PyObject *v) {
+    return self == v;
+  }
+
   virtual ~PyStackObject() {
     if (self != nullptr) Py_DECREF(self);
   }

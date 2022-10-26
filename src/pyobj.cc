@@ -41,6 +41,8 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::InstanceAccessor("type", &PyObjectWrap::Type, nullptr),
      PyObjectWrap::InstanceAccessor("callable", &PyObjectWrap::Callable, nullptr),
      PyObjectWrap::InstanceAccessor("length", &PyObjectWrap::Length, nullptr),
+     PyObjectWrap::StaticMethod("keys", &PyObjectWrap::Keys),
+     PyObjectWrap::StaticMethod("values", &PyObjectWrap::Values),
      PyObjectWrap::StaticMethod("fromJS", &PyObjectWrap::FromJS),
      PyObjectWrap::StaticMethod("string", &PyObjectWrap::String),
      PyObjectWrap::StaticMethod("int", &PyObjectWrap::Integer),
@@ -118,6 +120,34 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
   PyObject *r = PyObject_GetItem(self, item);
   THROW_IF_NULL(r);
   return New(env, r);
+}
+
+Value PyObjectWrap::Keys(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Object target = NAPI_ARG_OBJECT(0);
+  if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
+  auto py = ObjectWrap::Unwrap(target);
+
+  if (PyDict_Check(py->self)) return New(env, PyDict_Keys(py->self));
+  PyStackObject r = PyObject_GetAttrString(py->self, "keys");
+  if (r != nullptr) { return _Call(r, info); }
+
+  throw TypeError::New(env, "Object does not implement keys()");
+}
+
+Value PyObjectWrap::Values(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Object target = NAPI_ARG_OBJECT(0);
+  if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
+  auto py = ObjectWrap::Unwrap(target);
+
+  if (PyDict_Check(py->self)) return New(env, PyDict_Values(py->self));
+  PyStackObject r = PyObject_GetAttrString(py->self, "values");
+  if (r != nullptr) { return _Call(r, info); }
+
+  throw TypeError::New(env, "Object does not implement values()");
 }
 
 Value PyObjectWrap::Length(const CallbackInfo &info) {

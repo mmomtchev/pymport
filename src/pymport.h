@@ -77,6 +77,9 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value ToJS(Napi::Env, PyObject *);
   Napi::Value ToJS(const Napi::CallbackInfo &);
 
+  static Napi::Value Keys(const Napi::CallbackInfo &);
+  static Napi::Value Values(const Napi::CallbackInfo &);
+
   static Napi::Value Float(const Napi::CallbackInfo &);
   static Napi::Value Integer(const Napi::CallbackInfo &);
   static Napi::Value String(const Napi::CallbackInfo &);

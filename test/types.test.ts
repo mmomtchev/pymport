@@ -16,6 +16,8 @@ describe('types', () => {
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
       assert.throws(() => f.item(0), /not subscriptable/);
+      assert.throws(() => PyObject.keys(f), /does not implement keys/);
+      assert.throws(() => PyObject.values(f), /does not implement values/);
       assert.equal(f.type, 'float');
       assert.equal(f.toJS(), 2.3);
       assert.equal(+f, 2.3);
@@ -48,6 +50,8 @@ describe('types', () => {
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
       assert.throws(() => f.item(0), /not subscriptable/);
+      assert.throws(() => PyObject.keys(f), /does not implement keys/);
+      assert.throws(() => PyObject.values(f), /does not implement values/);
       assert.equal(f.type, 'int');
       assert.equal(f.toJS(), 2);
       assert.equal(+f, 2);
@@ -93,6 +97,8 @@ describe('types', () => {
       assert.equal(a.length, 3);
       assert.equal(a.item(1).toJS(), 2.1);
       assert.throws(() => a.item(10));
+      assert.throws(() => PyObject.keys(a), /does not implement keys/);
+      assert.throws(() => PyObject.values(a), /does not implement values/);
       assert.deepEqual(a.toJS(), array);
     });
 
@@ -134,6 +140,8 @@ describe('types', () => {
       assert.equal(t.length, 3);
       assert.equal(t.item(1).toJS(), 'a');
       assert.throws(() => t.item(10));
+      assert.throws(() => PyObject.keys(t), /does not implement keys/);
+      assert.throws(() => PyObject.values(t), /does not implement values/);
     });
 
     it('toJS()', () => {
@@ -169,6 +177,8 @@ describe('types', () => {
       assert.equal(s.length, 5);
       assert.equal(s.type, 'str');
       assert.equal(s.toJS(), 'hello');
+      assert.throws(() => PyObject.keys(s), /does not implement keys/);
+      assert.throws(() => PyObject.values(s), /does not implement values/);
     });
 
     it('toJS()', () => {
@@ -204,6 +214,8 @@ describe('types', () => {
       assert.isFalse(d.callable);
       assert.equal(d.type, 'dict');
       assert.equal(d.length, 3);
+      assert.deepEqual(PyObject.keys(d).toJS(), ['text', 'number', 'obj']);
+      assert.deepEqual(PyObject.values(d).toJS(), ['hello', 42, { text: 'garga' }]);
       assert.deepEqual(d.toJS(), o);
     });
 
@@ -283,6 +295,8 @@ describe('types', () => {
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'True');
       assert.equal(bool.toJS(), true);
+      assert.throws(() => PyObject.keys(bool), /does not implement keys/);
+      assert.throws(() => PyObject.values(bool), /does not implement values/);
     });
 
     it('False is equivalent to false', () => {
@@ -302,6 +316,8 @@ describe('types', () => {
       assert.isTrue(fn.callable);
       assert.isUndefined(fn.length);
       assert.equal(fn.type, 'function');
+      assert.throws(() => PyObject.keys(fn), /does not implement keys/);
+      assert.throws(() => PyObject.values(fn), /does not implement values/);
     });
 
     it('toJS()', () => {
@@ -328,6 +344,9 @@ describe('types', () => {
 
       const cut = list.get('__getitem__').call(slice);
       assert.deepEqual(cut.toJS(), [1, 3]);
+
+      assert.throws(() => PyObject.keys(slice), /does not implement keys/);
+      assert.throws(() => PyObject.values(slice), /does not implement values/);
     });
 
     it('partial arguments', () => {

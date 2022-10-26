@@ -75,7 +75,7 @@ export class PyObject {
   readonly length: number | undefined;
 
   /**
-   * Get a property from the object
+   * Get a property from the object, equivalent to Python member operator .
    * @param {string} name property name
    * @returns {PyObject}
    */
@@ -94,6 +94,18 @@ export class PyObject {
    * @returns {boolean}
    */
   item: (index: any) => PyObject;
+
+  /**
+   * Retrieve a list with the keys of the dictionary, equivalent to JS Object.keys()
+   * @returns {PyObject}
+   */
+  static keys: (obj: PyObject) => PyObject;
+
+  /**
+   * Retrieve a list with the values of the dictionary, equivalent to JS Object.values()
+   * @returns {PyObject}
+   */
+  static values: (obj: PyObject) => PyObject;
 
   /**
    * Call a callable property from the object
