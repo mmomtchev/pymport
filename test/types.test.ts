@@ -15,7 +15,7 @@ describe('types', () => {
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
-      assert.isUndefined(f.item(0));
+      assert.throws(() => f.item(0), /not subscriptable/);
       assert.equal(f.type, 'float');
       assert.equal(f.toJS(), 2.3);
       assert.equal(+f, 2.3);
@@ -47,7 +47,7 @@ describe('types', () => {
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
-      assert.isUndefined(f.item(0));
+      assert.throws(() => f.item(0), /not subscriptable/);
       assert.equal(f.type, 'int');
       assert.equal(f.toJS(), 2);
       assert.equal(+f, 2);

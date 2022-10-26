@@ -112,10 +112,12 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
     Py_INCREF(r);
     return New(env, r);
   }
-  PyStackObject getitem = PyObject_GetAttrString(self, "__getitem__");
-  if ((PyObject *)getitem != nullptr) { return _Call(getitem, info); }
 
-  return env.Undefined();
+  if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
+  PyStackObject item = FromJS(info[0]);
+  PyObject *r = PyObject_GetItem(self, item);
+  THROW_IF_NULL(r);
+  return New(env, r);
 }
 
 Value PyObjectWrap::Length(const CallbackInfo &info) {
