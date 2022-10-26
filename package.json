@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/mmomtchev/pymport#readme",
   "bin": {
+    "pympip": "./scripts/pympip",
     "pympip3": "./scripts/pympip"
   },
   "binary": {
