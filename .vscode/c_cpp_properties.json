@@ -1,4 +1,15 @@
 {
+  "env": {
+    "projectDefines": [
+      "NAPI_EXPERIMENTAL",
+      "NODE_ADDON_API_DISABLE_DEPRECATED",
+      "NAPI_VERSION=6",
+      "PYMPORT_VERSION_MAJOR=1",
+      "PYMPORT_VERSION_MINOR=0",
+      "PYMPORT_VERSION_PATCH=0",
+      "PYMPORT_VERSION_SUFFIX=git"
+    ]
+  },
   "configurations": [
     {
       "name": "Linux",
@@ -6,6 +17,9 @@
         "/usr/include/node",
         "${workspaceFolder}/node_modules/node-addon-api",
         "/usr/include/python3.8"
+      ],
+      "defines": [
+        "${projectDefines}"
       ],
       "compilerPath": "/usr/bin/g++",
       "cStandard": "c17",
@@ -17,6 +31,9 @@
         "${workspaceFolder}/node_modules/node-addon-api",
         "C:/Program Files/Python310/include",
         "~/AppData/Local/node-gyp/Cache/16.10.0/include/node"
+      ],
+      "defines": [
+        "${projectDefines}"
       ],
       "compilerPath": "cl.exe",
       "cStandard": "c17",

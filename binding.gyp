@@ -20,9 +20,13 @@
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
       'defines': [
-        'NAPI_EXPERIMENTAL'
+        'NAPI_EXPERIMENTAL',
         'NODE_ADDON_API_DISABLE_DEPRECATED',
-        'NAPI_VERSION=6'
+        'NAPI_VERSION=6',
+        'PYMPORT_VERSION_MAJOR=<!(node -e "console.log(require(\'./package.json\').version.split(\'.\')[0])")',
+        'PYMPORT_VERSION_MINOR=<!(node -e "console.log(require(\'./package.json\').version.split(\'.\')[1])")',
+        'PYMPORT_VERSION_PATCH=<!(node -e "console.log(require(\'./package.json\').version.split(\'-\')[0].split(\'.\')[2])")',
+        'PYMPORT_VERSION_SUFFIX=<!(node -e "console.log(require(\'./package.json\').version.split(\'-\')[1])")'
       ],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
       'conditions': [

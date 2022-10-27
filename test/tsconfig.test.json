@@ -4,6 +4,7 @@
     "strict": true,
     "strictNullChecks": true,
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@mapbox/node-pre-gyp": [
         "./mapbox-node-pre-gyp"

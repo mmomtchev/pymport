@@ -1,8 +1,24 @@
-import { pymport } from 'pymport';
+import { pymport, version } from 'pymport';
 import { assert } from 'chai';
+
+import pkg from '../package.json';
 
 describe('pymport', () => {
   afterEach('gc', global.gc);
+
+  it('version', () => {
+    assert.strictEqual(version.pymport.major, +pkg.version.split('.')[0]);
+    assert.strictEqual(version.pymport.minor, +pkg.version.split('.')[1]);
+    assert.strictEqual(version.pymport.patch, +pkg.version.split('-')[0].split('.')[2]);
+    assert.isBoolean(version.pythonLibrary.builtin);
+    assert.isNumber(version.pythonLibrary.major);
+    assert.isNumber(version.pythonLibrary.minor);
+    assert.isNumber(version.pythonLibrary.micro);
+    assert.isNumber(version.pythonLibrary.release);
+    assert.isNumber(version.pythonLibrary.serial);
+    assert.isString(version.pythonLibrary.version);
+    assert.isString(version.pythonPath);
+  });
 
   describe('numpy', () => {
     it('basic pyimport', () => {

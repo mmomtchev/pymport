@@ -161,3 +161,24 @@ export function pyval(
   globals?: PyObject | Record<string, any>,
   locals?: PyObject | Record<string, any>
 ): PyObject;
+
+export const version: {
+  pymport: { major: number, minor: number, patch: number, suffix: string; },
+  pythonLibrary: {
+    builtin: boolean;
+    major: number;
+    minor: number;
+    micro: number;
+    release: number;
+    serial: number;
+    /**
+     * Hex number
+     */
+    version: string;
+  };
+  /**
+   * Supported only on Python 3.11+
+   */
+  pythonRuntime: null | string;
+  pythonPath: string;
+};
