@@ -31,6 +31,7 @@ jobs:
           npm install
       - name: Install from npm
         run: npm install --force pymport@${{ github.event.inputs.version }}
+      - run: pympip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
           cd test
@@ -62,6 +63,7 @@ jobs:
           npm install
       - name: Rebuild with npm
         run: npm install --verbose --force pymport@${{ github.event.inputs.version }} --build-from-source
+      - run: pympip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
           cd test
