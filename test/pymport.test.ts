@@ -1,4 +1,4 @@
-import { pymport, version } from 'pymport';
+import { pymport, PyObject, version } from 'pymport';
 import { assert } from 'chai';
 
 import pkg from '../package.json';
@@ -53,7 +53,7 @@ describe('pymport', () => {
     it('named arguments', () => {
       const pd = pymport('pandas');
       const d = pd.get('date_range').call('20130101', { periods: 6 });
-      assert.deepEqual(d.get('tolist').call().toJS().map((e) => e.toString()), [
+      assert.deepEqual(d.get('tolist').call().toJS().map((e: PyObject) => e.toString()), [
         '2013-01-01 00:00:00',
         '2013-01-02 00:00:00',
         '2013-01-03 00:00:00',
