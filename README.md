@@ -205,12 +205,17 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
   - [slice](#slice)
   - [fromJS](#fromjs)
     - [Parameters](#parameters-10)
+  - [keys](#keys)
+  - [values](#values)
 - [pymport](#pymport)
   - [Parameters](#parameters-11)
 - [proxify](#proxify)
   - [Parameters](#parameters-12)
 - [pyval](#pyval)
   - [Parameters](#parameters-13)
+- [version](#version)
+- [version](#version-1)
+  - [pythonRuntime](#pythonruntime)
 
 ## PyObject
 
@@ -236,7 +241,7 @@ Type: (number | undefined)
 
 ### get
 
-Get a property from the object
+Get a property from the object, equivalent to Python member operator .
 
 Type: function (name: string): [PyObject](#pyobject)
 
@@ -398,6 +403,22 @@ Type: function (v: any): [PyObject](#pyobject)
 
 Returns **[PyObject](#pyobject)**&#x20;
 
+### keys
+
+Retrieve a list with the keys of the dictionary, equivalent to JS Object.keys()
+
+Type: function (obj: [PyObject](#pyobject)): [PyObject](#pyobject)
+
+Returns **[PyObject](#pyobject)**&#x20;
+
+### values
+
+Retrieve a list with the values of the dictionary, equivalent to JS Object.values()
+
+Type: function (obj: [PyObject](#pyobject)): [PyObject](#pyobject)
+
+Returns **[PyObject](#pyobject)**&#x20;
+
 ## pymport
 
 Import a Python module
@@ -433,6 +454,24 @@ Eval a Python fragment
 - `name` **string** Python module name
 
 Returns **[PyObject](#pyobject)**&#x20;
+
+## version
+
+Hex number
+
+Type: string
+
+## version
+
+Version information
+
+Type: {pymport: {major: number, minor: number, patch: number, suffix: string}, pythonLibrary: {builtin: boolean, major: number, minor: number, micro: number, release: number, serial: number, version: string}, pythonRuntime: (null | string), pythonPath: string}
+
+### pythonRuntime
+
+Supported only on Python 3.11+
+
+Type: (null | string)
 
 # Alternatives
 

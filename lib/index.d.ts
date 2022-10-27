@@ -162,23 +162,31 @@ export function pyval(
   locals?: PyObject | Record<string, any>
 ): PyObject;
 
-export const version: {
-  pymport: { major: number, minor: number, patch: number, suffix: string; },
-  pythonLibrary: {
-    builtin: boolean;
-    major: number;
-    minor: number;
-    micro: number;
-    release: number;
-    serial: number;
+/**
+ * Version information
+ */
+declare const version: {
+  readonly pymport: {
+    readonly major: number,
+    readonly minor: number,
+    readonly patch: number,
+    readonly suffix: string;
+  },
+  readonly pythonLibrary: {
+    readonly builtin: boolean;
+    readonly major: number;
+    readonly minor: number;
+    readonly micro: number;
+    readonly release: number;
+    readonly serial: number;
     /**
      * Hex number
      */
-    version: string;
+    readonly version: string;
   };
   /**
    * Supported only on Python 3.11+
    */
-  pythonRuntime: null | string;
-  pythonPath: string;
+  readonly pythonRuntime: null | string;
+  readonly pythonPath: string;
 };
