@@ -17,7 +17,10 @@ describe('pymport', () => {
     assert.isNumber(version.pythonLibrary.release);
     assert.isNumber(version.pythonLibrary.serial);
     assert.isString(version.pythonLibrary.version);
-    assert.isString(version.pythonPath);
+    if (version.pythonLibrary.builtin)
+      assert.isString(version.pythonPath);
+    else
+      assert.isNull(version.pythonPath);
   });
 
   describe('numpy', () => {

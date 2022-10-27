@@ -54,8 +54,13 @@ Value Version(const CallbackInfo &info) {
 #endif
 
   std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-  std::string pyHome = converter.to_bytes(Py_GetPythonHome());
-  versionInfo.Set("pythonPath", String::New(env, pyHome.c_str()));
+  auto pyHomeWide = Py_GetPythonHome();
+  if (pyHomeWide != nullptr) {
+    std::string pyHome = converter.to_bytes(pyHomeWide);
+    versionInfo.Set("pythonPath", String::New(env, pyHome.c_str()));
+  } else {
+    versionInfo.Set("pythonPath", env.Null());
+  }
 
   return versionInfo;
 }
