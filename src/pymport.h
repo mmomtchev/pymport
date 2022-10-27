@@ -125,6 +125,8 @@ struct EnvContext {
   std::map<PyObject *, Napi::FunctionReference *> function_store;
 };
 
+extern size_t active_environments;
+
 }; // namespace pymport
 
 #if PY_MAJOR_VERSION < 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 3)

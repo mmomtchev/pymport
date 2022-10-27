@@ -148,7 +148,7 @@ assert.instanceOf(py_array, PyObject);
 assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 ```
 
-# Performance Notes
+# Performance Notes / Known Issues
 
 - Simply calling into Python is only slightly more expensive than from the native Python interpreter
   - If working on `numpy` arrays of 1 element, the difference can be significant
@@ -157,7 +157,8 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 - `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
 - The two GCs should work well in tandem as for every object there is exactly one of them that can free it
 - Currently the V8 GC vastly underestimates the memory size of the `PyObject`s and may be reluctant to free them (this is to be improved soon)
-  - This can even lead to a thrashing memory crash as V8 can be unaware that most of the memory has been allocated
+  - If Python allocates most of the memory, V8 will not be aware and this can even lead to thrashing in the most extreme cases
+- Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop
 
 # Future Plans
 

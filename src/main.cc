@@ -8,7 +8,7 @@
 using namespace Napi;
 using namespace pymport;
 
-size_t active_environments = 0;
+size_t pymport::active_environments = 0;
 std::wstring builtin_python_path;
 
 Napi::Object Init(Env env, Object exports) {
@@ -28,9 +28,12 @@ Napi::Object Init(Env env, Object exports) {
       active_environments--;
       context->pyObj->Reset();
       delete context->pyObj;
-      // We can't finalize the Python environment until there is
-      // a solution for https://github.com/nodejs/node/issues/45088
-      //if (active_environments == 0) { Py_Finalize(); }
+#ifdef DEBUG
+      // This is complicated because of
+      // https://github.com/nodejs/node/issues/45088
+      // Anyway, it is really needed only for the asan build
+      if (active_environments == 0) { Py_Finalize(); }
+#endif
       // context will be deleted by the NAPI Finalizer
     },
     context);

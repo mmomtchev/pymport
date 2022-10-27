@@ -2,6 +2,9 @@ import { pymport, PyObject, pyval } from 'pymport';
 import { assert } from 'chai';
 
 describe('pyval', () => {
+
+  afterEach('gc', global.gc);
+
   it('basic pyval', () => {
     const py_array = pyval('[1, 2, 3]');
     assert.instanceOf(py_array, PyObject);

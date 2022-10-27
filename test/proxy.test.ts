@@ -5,6 +5,8 @@ describe('proxy', () => {
   const np = proxify(pymport('numpy'));
   const pd = proxify(pymport('pandas'));
 
+  afterEach('gc', global.gc);
+
   it('numpy', () => {
     const a = np.arange(15).reshape(3, 5);
     const r = a.tolist().toJS();

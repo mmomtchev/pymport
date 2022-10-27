@@ -2,6 +2,8 @@ import { pymport } from 'pymport';
 import { assert } from 'chai';
 
 describe('pymport', () => {
+  afterEach('gc', global.gc);
+
   describe('numpy', () => {
     it('basic pyimport', () => {
       const np = pymport('numpy');

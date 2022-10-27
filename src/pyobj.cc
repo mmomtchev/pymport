@@ -19,6 +19,9 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info) {
 }
 
 PyObjectWrap::~PyObjectWrap() {
+#ifdef DEBUG
+  if (active_environments == 0) return;
+#endif
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
   if (self != nullptr) {
