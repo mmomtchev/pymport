@@ -159,12 +159,14 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 - Currently the V8 GC vastly underestimates the memory size of the `PyObject`s and may be reluctant to free them (this is to be improved soon)
   - If Python allocates most of the memory, V8 will not be aware and this can even lead to thrashing in the most extreme cases
 - Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop
+- Use `process.env['PYTHONPATH'] = __dirname;` if you want to load your own Python script from the current directory as a module
 
 # Future Plans
 
 - `Buffer` <-> `bytes[]` equivalence
 - `TypedArray` <-> `array` equivalence
 - Improved memory management in V8 of Python objects (currently their memory size is not being tracked)
+- Passing of JavaScript callbacks to Python
 - More features allowing direct interaction with `PyObject`s from JS
 - (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
 - (longer term) Generate TypeScript bindings from the Python modules

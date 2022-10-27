@@ -58,9 +58,9 @@ Value Version(const CallbackInfo &info) {
   auto pyHomeWide = Py_GetPythonHome();
   if (pyHomeWide != nullptr) {
     std::string pyHome = converter.to_bytes(pyHomeWide);
-    versionInfo.Set("pythonPath", String::New(env, pyHome.c_str()));
+    versionInfo.Set("pythonHome", String::New(env, pyHome.c_str()));
   } else {
-    versionInfo.Set("pythonPath", env.Null());
+    versionInfo.Set("pythonHome", env.Null());
   }
 
   return versionInfo;

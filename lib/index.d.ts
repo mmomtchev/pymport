@@ -188,5 +188,5 @@ declare const version: {
    * Supported only on Python 3.11+
    */
   readonly pythonRuntime: null | string;
-  readonly pythonPath: string;
+  readonly pythonHome: string;
 };
