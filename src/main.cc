@@ -1,6 +1,7 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include <sstream>
 #include <iomanip>
 
 #include "pymport.h"
