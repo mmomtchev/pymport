@@ -53,6 +53,7 @@
     "@types/node": "^18.11.0",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
+    "benny": "^3.7.1",
     "chai": "^4.3.6",
     "documentation": "^14.0.0",
     "eslint": "^8.25.0",

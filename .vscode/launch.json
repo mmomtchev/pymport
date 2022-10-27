@@ -71,6 +71,27 @@
         "--expose-gc",
       ],
       "program": "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js"
+    },
+    {
+      "name": "Launch benchmarks (gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/usr/bin/node",
+      "args": [
+        "${workspaceFolder}/bench/bench.js",
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
     }
   ]
 }

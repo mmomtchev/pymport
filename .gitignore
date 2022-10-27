@@ -4,3 +4,4 @@ lib/binding
 dist
 coverage
 /Python*
+__pycache__
