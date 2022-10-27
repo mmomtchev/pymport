@@ -1,0 +1,71 @@
+name: Test npm package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version to test"
+        required: true
+
+jobs:
+  test_npm_binaries:
+    runs-on: ${{ matrix.platforms }}
+
+    strategy:
+      matrix:
+        platforms: [ubuntu-latest, windows-2019, macos-11]
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm i -g npm@latest
+      - name: Set up the unit tests
+        run: |
+          curl https://codeload.github.com/mmomtchev/pymport/zip/refs/tags/v${{ github.event.inputs.version }} --output repo.zip
+          unzip repo.zip
+          mv pymport-${{ github.event.inputs.version }}/package.json .
+          mv pymport-${{ github.event.inputs.version }}/test .
+          npm install
+      - name: Install from npm
+        run: npm install --force pymport@${{ github.event.inputs.version }}
+      - name: Run the unit tests
+        run: |
+          cd test
+          npx mocha --reporter=tap -r ts-node/register -r tsconfig-paths/register --timeout 20000 --v8-expose-gc *.test.ts
+        env:
+          TS_NODE_PROJECT: tsconfig.test.json
+          MOCHA_SKIP_EXEC: 1
+
+  test_npm_rebuild:
+    runs-on: ${{ matrix.platforms }}
+
+    strategy:
+      matrix:
+        platforms: [ubuntu-latest, windows-2019, macos-11]
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm i -g npm@latest
+      - name: Set up the unit tests
+        run: |
+          curl https://codeload.github.com/mmomtchev/pymport/zip/refs/tags/v${{ github.event.inputs.version }} --output repo.zip
+          unzip repo.zip
+          mv pymport-${{ github.event.inputs.version }}/package.json .
+          mv pymport-${{ github.event.inputs.version }}/test .
+          npm install
+      - name: Rebuild with npm
+        run: npm install --verbose --force pymport@${{ github.event.inputs.version }} --build-from-source
+      - name: Run the unit tests
+        run: |
+          cd test
+          npx mocha --reporter=tap -r ts-node/register -r tsconfig-paths/register --timeout 20000 --v8-expose-gc *.test.ts
+        env:
+          TS_NODE_PROJECT: tsconfig.test.json
+          MOCHA_SKIP_EXEC: 1

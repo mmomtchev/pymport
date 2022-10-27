@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mapbox/node-pre-gyp": [
+        "./mapbox-node-pre-gyp"
+      ]
+    }
+  }
+}
