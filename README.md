@@ -152,6 +152,7 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 
 - Simply calling into Python is only slightly more expensive than from the native Python interpreter
   - If working on `numpy` arrays of less than 10 elements, the difference can be very significant (up to 4 times)
+  - `proxify`ed objects have a small additional overhead that, for all practical reasons, can be ignored
   - Above a few hundred elements, the difference gradually becomes smaller
   - With very large arrays and very complex operations, Node.js can very slightly outperform stock Python
 - `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap

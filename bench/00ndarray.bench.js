@@ -1,18 +1,34 @@
 const b = require('benny');
 const { pymport, proxify } = require('..');
 
-const np = proxify(pymport('numpy'));
+const np = pymport('numpy');
+const proxified = proxify(np);
 
 const py_fn = proxify(pymport('pyth00')).fn;
-const js_fn = new Function('np', 'size', `
+
+const js_proxified_fn = new Function('np', 'size', `
   let b = 0;
   for (let i = 0; i < 100; i++) {
     const a = np.matmul(np.arange(size * size * 2).reshape([size, size * 2]).T,
       np.arange(size * size * 2).reshape([size, size * 2]));
-    b += np.sum(a).get('item')().toJS();
+    b += np.average(a).get('item')().toJS();
   }
   return b;
 `);
+
+const js_fn = new Function('np', 'size', `
+  let b = 0;
+  const matmul = np.get('matmul');
+  const arange = np.get('arange');
+  const average = np.get('average');
+  for (let i = 0; i < 100; i++) {
+    const a = matmul.call(arange.call(size * size * 2).get('reshape').call([size, size * 2]).get('T'),
+      arange.call(size * size * 2).get('reshape').call([size, size * 2]));
+    b += average.call(a).get('item').call().toJS();
+  }
+  return b;
+`);
+
 
 module.exports = function (size) {
   return b.suite(
@@ -21,7 +37,10 @@ module.exports = function (size) {
     b.add('inline Python', () => {
       py_fn(np, size);
     }),
-    b.add('Node.js', () => {
+    b.add('Node.js proxified', () => {
+      js_proxified_fn(proxified, size);
+    }),
+    b.add('Node.js raw', () => {
       js_fn(np, size);
     }),
     b.cycle(),
