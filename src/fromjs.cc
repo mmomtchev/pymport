@@ -31,7 +31,7 @@ Value PyObjectWrap::Integer(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-void PyObjectWrap::_Dictionary(Napi::Object object, PyStrongRef &target, PyObjectStore &store) {
+void PyObjectWrap::_Dictionary(Napi::Object object, const PyStrongRef &target, PyObjectStore &store) {
   Napi::Env env = object.Env();
 
   for (auto const &el : object.GetPropertyNames()) {
@@ -57,7 +57,7 @@ Value PyObjectWrap::Dictionary(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-void PyObjectWrap::_List(Napi::Array array, PyStrongRef &target, PyObjectStore &store) {
+void PyObjectWrap::_List(Napi::Array array, const PyStrongRef &target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {
@@ -79,7 +79,7 @@ Value PyObjectWrap::List(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-void PyObjectWrap::_Tuple(Napi::Array array, PyStrongRef &target, PyObjectStore &store) {
+void PyObjectWrap::_Tuple(Napi::Array array, const PyStrongRef &target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {

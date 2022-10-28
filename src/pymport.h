@@ -109,10 +109,10 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value _ToJS_Dir(Napi::Env, const PyWeakRef &, NapiObjectStore &);
 
   static PyStrongRef _FromJS(Napi::Value, PyObjectStore &);
-  static void _Dictionary(Napi::Object, PyStrongRef &, PyObjectStore &);
-  static void _List(Napi::Array, PyStrongRef &, PyObjectStore &);
-  static void _Tuple(Napi::Array, PyStrongRef &, PyObjectStore &);
-  static void _Slice(Napi::Array, PyObjectStore &);
+  static void _Dictionary(Napi::Object, const PyStrongRef &, PyObjectStore &);
+  static void _List(Napi::Array, const PyStrongRef &, PyObjectStore &);
+  static void _Tuple(Napi::Array, const PyStrongRef &, PyObjectStore &);
+  static void _Slice(Napi::Array, const PyObjectStore &);
   static Napi::Value _Call(const PyWeakRef &, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
   static bool _InstanceOf(Napi::Value);
