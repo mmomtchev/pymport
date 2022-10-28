@@ -150,8 +150,11 @@ export function pymport(name: string): PyObject;
 export function proxify(v: PyObject, name?: string): any;
 
 /**
- * Eval a Python fragment
- * @param {string} name Python module name
+ * Eval a Python fragment. Uses Python `eval` which is a special language context.
+ * The Python code must be an expression that evaluates to a value and not a statement.
+ * Refer to the Python documentation for more information on what is allowed in this context.
+ * If you need to execute statements, you should place them in a file and load it as a module.
+ * @param {string} code Python code
  * @param {PyObject | Record<string, any>} [globals] Optional global context
  * @param {PyObject | Record<string, any>} [locals] Optional local context
  * @returns {PyObject}
