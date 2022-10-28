@@ -5,13 +5,13 @@
 using namespace Napi;
 using namespace pymport;
 
-PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info) {
+PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nullptr) {
   Napi::Env env = info.Env();
 
   if (info.Length() < 1) throw TypeError::New(env, "Cannot create an empty object");
 
   if (info[0].IsExternal()) {
-    self = info[0].As<External<PyObject>>().Data();
+    self = PyStrongRef(info[0].As<External<PyObject>>().Data());
   } else {
     // Reference unicity cannot be achieved with a constructor
     throw Error::New(env, "Use PyObject.fromJS() to create PyObjects");
@@ -22,12 +22,10 @@ PyObjectWrap::~PyObjectWrap() {
 #ifdef DEBUG
   if (active_environments == 0) return;
 #endif
+  VERBOSE_PYOBJ(*self, "ObjWrap delete");
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
-  if (self != nullptr) {
-    Release();
-    Py_DECREF(self);
-  }
+  if (*self != nullptr) { Release(); }
 }
 
 Function PyObjectWrap::GetClass(Napi::Env env) {
@@ -59,7 +57,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
 Value PyObjectWrap::ToString(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  PyStackObject r = PyObject_Str(self);
+  PyStrongRef r = PyObject_Str(*self);
   THROW_IF_NULL(r);
   return ToJS(env, r);
 }
@@ -68,7 +66,7 @@ Value PyObjectWrap::Get(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
-  auto r = PyObject_GetAttrString(self, name.c_str());
+  auto r = PyObject_GetAttrString(*self, name.c_str());
   if (r == nullptr) return env.Undefined();
   return New(env, r);
 }
@@ -77,53 +75,56 @@ Value PyObjectWrap::Import(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
-  PyStackObject pyname = PyUnicode_DecodeFSDefault(name.c_str());
+  PyStrongRef pyname = PyUnicode_DecodeFSDefault(name.c_str());
   THROW_IF_NULL(pyname);
 
-  auto obj = PyImport_Import(pyname);
-  return New(env, obj);
+  PyStrongRef obj = PyImport_Import(*pyname);
+  return New(env, std::move(obj));
 }
 
 Value PyObjectWrap::Has(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
-  auto r = PyObject_HasAttrString(self, name.c_str());
+  auto r = PyObject_HasAttrString(*self, name.c_str());
   return Boolean::New(env, r);
 }
 
 Value PyObjectWrap::Type(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  return String::New(env, self->ob_type->tp_name);
+  // TODO Fix me
+  return String::New(env, (*self)->ob_type->tp_name);
 }
 
 Value PyObjectWrap::Item(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  if (PyList_Check(self)) {
+  if (PyList_Check(*self)) {
     Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
-    auto r = PyList_GetItem(self, idx);
+    PyWeakRef r = PyList_GetItem(*self, idx);
     THROW_IF_NULL(r);
     // PyList returns a borrowed reference, New expects a strong one
-    Py_INCREF(r);
-    return New(env, r);
+    Py_INCREF(*r);
+    PyStrongRef strong = *r;
+    return New(env, std::move(strong));
   }
-  if (PyTuple_Check(self)) {
+  if (PyTuple_Check(*self)) {
     Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
-    auto r = PyTuple_GetItem(self, idx);
+    PyWeakRef r = PyTuple_GetItem(*self, idx);
     THROW_IF_NULL(r);
     if (r == nullptr) return env.Undefined();
     // PyTuple returns a borrowed reference, New expects a strong one
-    Py_INCREF(r);
-    return New(env, r);
+    Py_INCREF(*r);
+    PyStrongRef strong = *r;
+    return New(env, std::move(strong));
   }
 
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
-  PyStackObject item = FromJS(info[0]);
-  PyObject *r = PyObject_GetItem(self, item);
+  PyStrongRef item = FromJS(info[0]);
+  PyStrongRef r = PyObject_GetItem(*self, *item);
   THROW_IF_NULL(r);
-  return New(env, r);
+  return New(env, std::move(r));
 }
 
 Value PyObjectWrap::Keys(const CallbackInfo &info) {
@@ -133,7 +134,7 @@ Value PyObjectWrap::Keys(const CallbackInfo &info) {
   if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
   auto py = ObjectWrap::Unwrap(target);
 
-  if (PyDict_Check(py->self)) return New(env, PyDict_Keys(py->self));
+  if (PyDict_Check(*py->self)) return New(env, PyDict_Keys(*py->self));
 
   throw TypeError::New(env, "Object does not implement keys()");
 }
@@ -145,7 +146,7 @@ Value PyObjectWrap::Values(const CallbackInfo &info) {
   if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
   auto py = ObjectWrap::Unwrap(target);
 
-  if (PyDict_Check(py->self)) return New(env, PyDict_Values(py->self));
+  if (PyDict_Check(*py->self)) return New(env, PyDict_Values(*py->self));
 
   throw TypeError::New(env, "Object does not implement values()");
 }
@@ -153,10 +154,10 @@ Value PyObjectWrap::Values(const CallbackInfo &info) {
 Value PyObjectWrap::Length(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  if (PyList_Check(self)) { return Number::New(env, static_cast<long>(PyList_Size(self))); }
-  if (PyTuple_Check(self)) return Number::New(env, static_cast<long>(PyTuple_Size(self)));
-  if (PyDict_Check(self)) return Number::New(env, static_cast<long>(PyDict_Size(self)));
-  if (PyUnicode_Check(self)) return Number::New(env, static_cast<long>(PyUnicode_GetLength(self)));
+  if (PyList_Check(*self)) { return Number::New(env, static_cast<long>(PyList_Size(*self))); }
+  if (PyTuple_Check(*self)) return Number::New(env, static_cast<long>(PyTuple_Size(*self)));
+  if (PyDict_Check(*self)) return Number::New(env, static_cast<long>(PyDict_Size(*self)));
+  if (PyUnicode_Check(*self)) return Number::New(env, static_cast<long>(PyUnicode_GetLength(*self)));
   return env.Undefined();
 }
 

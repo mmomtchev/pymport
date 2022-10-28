@@ -5,6 +5,8 @@
 #include <Python.h>
 #include <napi.h>
 
+#include "pystackobject.h"
+
 namespace pymport {
 
 // Object lifecycle overview
@@ -74,7 +76,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value Eval(const Napi::CallbackInfo &);
 
   static Napi::Value FromJS(const Napi::CallbackInfo &);
-  static Napi::Value ToJS(Napi::Env, PyObject *);
+  static Napi::Value ToJS(Napi::Env, const PyWeakRef &);
   Napi::Value ToJS(const Napi::CallbackInfo &);
 
   static Napi::Value Keys(const Napi::CallbackInfo &);
@@ -88,10 +90,10 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value List(const Napi::CallbackInfo &);
   static Napi::Value Slice(const Napi::CallbackInfo &);
 
-  static PyObject *FromJS(Napi::Value);
+  static PyStrongRef FromJS(Napi::Value);
 
-  static Napi::Value New(Napi::Env, PyObject *);
-  static Napi::Value NewCallable(Napi::Env, PyObject *);
+  static Napi::Value New(Napi::Env, PyStrongRef &&);
+  static Napi::Value NewCallable(Napi::Env, PyStrongRef &&);
   static Napi::Function GetClass(Napi::Env);
 
     private:
@@ -100,23 +102,23 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
 
   void Release();
 
-  static Napi::Value _ToJS(Napi::Env, PyObject *, NapiObjectStore &);
-  static Napi::Value _ToJS_Dictionary(Napi::Env, PyObject *, NapiObjectStore &);
-  static Napi::Value _ToJS_Tuple(Napi::Env, PyObject *, NapiObjectStore &);
-  static Napi::Value _ToJS_List(Napi::Env, PyObject *, NapiObjectStore &);
-  static Napi::Value _ToJS_Dir(Napi::Env, PyObject *, NapiObjectStore &);
+  static Napi::Value _ToJS(Napi::Env, const PyWeakRef &, NapiObjectStore &);
+  static Napi::Value _ToJS_Dictionary(Napi::Env, const PyWeakRef &, NapiObjectStore &);
+  static Napi::Value _ToJS_Tuple(Napi::Env, const PyWeakRef &, NapiObjectStore &);
+  static Napi::Value _ToJS_List(Napi::Env, const PyWeakRef &, NapiObjectStore &);
+  static Napi::Value _ToJS_Dir(Napi::Env, const PyWeakRef &, NapiObjectStore &);
 
-  static PyObject *_FromJS(Napi::Value, PyObjectStore &);
-  static PyObject *_Dictionary(Napi::Object, PyObject *, PyObjectStore &);
-  static PyObject *_List(Napi::Array, PyObject *, PyObjectStore &);
-  static PyObject *_Tuple(Napi::Array, PyObject *, PyObjectStore &);
-  static PyObject *_Slice(Napi::Array, PyObjectStore &);
-  static Napi::Value _Call(PyObject *, const Napi::CallbackInfo &info);
+  static PyStrongRef _FromJS(Napi::Value, PyObjectStore &);
+  static void _Dictionary(Napi::Object, PyStrongRef &, PyObjectStore &);
+  static void _List(Napi::Array, PyStrongRef &, PyObjectStore &);
+  static void _Tuple(Napi::Array, PyStrongRef &, PyObjectStore &);
+  static void _Slice(Napi::Array, PyObjectStore &);
+  static Napi::Value _Call(const PyWeakRef &, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
   static bool _InstanceOf(Napi::Value);
   static bool _FunctionOf(Napi::Value);
 
-  PyObject *self;
+  PyStrongRef self;
 };
 
 struct EnvContext {
@@ -124,8 +126,6 @@ struct EnvContext {
   std::map<PyObject *, PyObjectWrap *> object_store;
   std::map<PyObject *, Napi::FunctionReference *> function_store;
 };
-
-extern size_t active_environments;
 
 }; // namespace pymport
 

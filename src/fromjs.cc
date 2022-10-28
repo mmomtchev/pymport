@@ -9,122 +9,109 @@ Value PyObjectWrap::String(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_STRING(0).Utf16Value();
-  auto obj = PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
-  return New(env, obj);
+  PyStrongRef obj =
+    PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
+  return New(env, std::move(obj));
 }
 
 Value PyObjectWrap::Float(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_NUMBER(0).DoubleValue();
-  auto obj = PyFloat_FromDouble(raw);
-  return New(env, obj);
+  PyStrongRef obj = PyFloat_FromDouble(raw);
+  return New(env, std::move(obj));
 }
 
 Value PyObjectWrap::Integer(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_NUMBER(0).Int64Value();
-  auto obj = PyLong_FromLong(raw);
-  return New(env, obj);
+  PyStrongRef obj = PyLong_FromLong(raw);
+  return New(env, std::move(obj));
 }
 
 // Returns a strong reference
-PyObject *PyObjectWrap::_Dictionary(Napi::Object object, PyObject *target, PyObjectStore &store) {
+void PyObjectWrap::_Dictionary(Napi::Object object, PyStrongRef &target, PyObjectStore &store) {
   Napi::Env env = object.Env();
 
   for (auto const &el : object.GetPropertyNames()) {
     auto key = ((Napi::Value)el.second).ToString().Utf8Value();
     auto js = object.Get(key);
-    PyStackObject item = _FromJS(js, store);
+    PyStrongRef item = _FromJS(js, store);
     THROW_IF_NULL(item);
     // This is the only Py***_Set that does not steal a reference
-    PyDict_SetItemString(target, key.c_str(), item);
+    PyDict_SetItemString(*target, key.c_str(), *item);
   }
-
-  return target;
 }
 
 Value PyObjectWrap::Dictionary(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_OBJECT(0);
-  auto dict = PyDict_New();
+  PyStrongRef dict = PyDict_New();
   THROW_IF_NULL(dict);
   PyObjectStore store;
   _Dictionary(raw, dict, store);
 
-  return New(env, dict);
+  return New(env, std::move(dict));
 }
 
 // Returns a strong reference
-PyObject *PyObjectWrap::_List(Napi::Array array, PyObject *target, PyObjectStore &store) {
+void PyObjectWrap::_List(Napi::Array array, PyStrongRef &target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {
-    auto el = _FromJS(array.Get(i), store);
-    PyList_SetItem(target, i, el);
+    PyStrongRef el = _FromJS(array.Get(i), store);
+    PyList_SetItem(*target, i, el.gift());
   }
-
-  return target;
 }
 
 Value PyObjectWrap::List(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_ARRAY(0);
-  auto list = PyList_New(raw.Length());
+  PyStrongRef list = PyList_New(raw.Length());
   THROW_IF_NULL(list);
   PyObjectStore store;
   _List(raw, list, store);
 
-  return New(env, list);
+  return New(env, std::move(list));
 }
 
 // Returns a strong reference
-PyObject *PyObjectWrap::_Tuple(Napi::Array array, PyObject *target, PyObjectStore &store) {
+void PyObjectWrap::_Tuple(Napi::Array array, PyStrongRef &target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {
-    auto el = _FromJS(array.Get(i), store);
-    PyTuple_SetItem(target, i, el);
+    PyStrongRef el = _FromJS(array.Get(i), store);
+    PyTuple_SetItem(*target, i, el.gift());
   }
-
-  return target;
 }
 
 Value PyObjectWrap::Tuple(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   auto raw = NAPI_ARG_ARRAY(0);
-  auto tuple = PyTuple_New(raw.Length());
+  PyStrongRef tuple = PyTuple_New(raw.Length());
   THROW_IF_NULL(tuple);
   PyObjectStore store;
   _Tuple(raw, tuple, store);
 
-  return New(env, tuple);
+  return New(env, std::move(tuple));
 }
 
 Value PyObjectWrap::Slice(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  auto raw = NAPI_ARG_ARRAY(0);
-  if (raw.Length() != 3) throw RangeError::New(env, "Slices must have exactly three arguments - start, stop and step");
-  PyObjectStore store;
-  auto slice = _Slice(raw, store);
-
-  return New(env, slice);
-}
-
-// Returns a strong reference
-PyObject *PyObjectWrap::_Slice(Array array, PyObjectStore &store) {
-  Napi::Env env = array.Env();
-
+  Array array = NAPI_ARG_ARRAY(0);
   if (array.Length() != 3)
     throw RangeError::New(env, "Slices must have exactly three arguments - start, stop and step");
-  auto slice = PySlice_New(_FromJS(array[(uint32_t)0], store), _FromJS(array[1], store), _FromJS(array[2], store));
+  PyObjectStore store;
+  PyStrongRef slice =
+    PySlice_New(*_FromJS(array[(uint32_t)0], store), *_FromJS(array[1], store), *_FromJS(array[2], store));
   THROW_IF_NULL(slice);
-  return slice;
+
+  return New(env, std::move(slice));
 }
 
 Value PyObjectWrap::FromJS(const CallbackInfo &info) {
@@ -135,13 +122,13 @@ Value PyObjectWrap::FromJS(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-PyObject *PyObjectWrap::FromJS(Napi::Value v) {
+PyStrongRef PyObjectWrap::FromJS(Napi::Value v) {
   PyObjectStore store;
   return _FromJS(v, store);
 }
 
 // Returns a strong reference
-PyObject *PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
+PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
   Napi::Env env = v.Env();
 
   // Break recursion on circular references
@@ -166,15 +153,16 @@ PyObject *PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
   }
   if (v.IsString()) {
     auto raw = v.ToString().Utf16Value();
-    auto py = PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
-    store.push_front({v, py});
+    PyStrongRef py =
+      PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
+    store.push_front({v, *py});
     return py;
   }
   if (v.IsArray()) {
     auto array = v.As<Array>();
-    auto list = PyList_New(array.Length());
+    PyStrongRef list = PyList_New(array.Length());
     THROW_IF_NULL(list);
-    store.push_front({v, list});
+    store.push_front({v, *list});
     _List(array, list, store);
     return list;
   }
@@ -183,22 +171,20 @@ PyObject *PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     if (_FunctionOf(obj)) {
       auto wrap = obj.Get("__PyObject__").ToObject();
       auto py = ObjectWrap::Unwrap(wrap);
-      // We must return a strong reference
-      Py_INCREF(py->self);
-      return py->self;
+      // Copy the strong reference
+      return PyStrongRef(py->self);
     }
     // A Proxy is an instance of the underlying object, so this
     // must come after the previous block
     if (_InstanceOf(obj)) {
       auto py = ObjectWrap::Unwrap(obj);
-      // We must return a strong reference
-      Py_INCREF(py->self);
-      return py->self;
+      // Copy the strong reference
+      return PyStrongRef(py->self);
     }
 
-    auto dict = PyDict_New();
+    PyStrongRef dict = PyDict_New();
     THROW_IF_NULL(dict);
-    store.push_front({v, dict});
+    store.push_front({v, *dict});
     _Dictionary(obj, dict, store);
     return dict;
   }

@@ -28,7 +28,7 @@
 #endif
 
 #define THROW_IF_NULL(val)                                                                                             \
-  if ((PyObject *)val == nullptr) {                                                                                    \
+  if (*val == nullptr) {                                                                                               \
     auto err = PyErr_Occurred();                                                                                       \
     if (err != nullptr) {                                                                                              \
       PyObject *type, *v, *trace;                                                                                      \
@@ -42,9 +42,26 @@
     throw Napi::TypeError::New(env, std::string("Failed converting value at ") LINEINFO);                              \
   }
 
-#define DEBUG_PY_PRINT(o, msg)                                                                                         \
+#ifdef DEBUG_VERBOSE
+#define INLINE inline
+#define ASSERT(x) assert(x)
+#define VERBOSE(...) printf(__VA_ARGS__)
+#define VERBOSE_PYOBJ(o, msg)                                                                                          \
   {                                                                                                                    \
-    printf("%s %p: ", msg, (PyObject *)o);                                                                             \
+    printf(                                                                                                            \
+      "%s %p : %s (refs %lu): ",                                                                                       \
+      msg,                                                                                                             \
+      (o),                                                                                                             \
+      (o) != nullptr ? (o)->ob_type->tp_name : "null",                                                                 \
+      (o) != nullptr ? (unsigned long)((o)->ob_refcnt) : 0);                                                           \
     PyObject_Print(o, stdout, 0);                                                                                      \
-    printf("\n\n");                                                                                                    \
+    printf("\n");                                                                                                      \
   }
+
+#else
+
+#define INLINE
+#define ASSERT(x)
+#define VERBOSE(...)
+#define VERBOSE_PYOBJ(o, msg)
+#endif

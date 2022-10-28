@@ -5,12 +5,12 @@
 using namespace Napi;
 using namespace pymport;
 
-Value PyObjectWrap::_Call(PyObject *py, const CallbackInfo &info) {
+Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  if (!PyCallable_Check(py)) { throw Napi::TypeError::New(env, "Value not callable"); }
+  if (!PyCallable_Check(*py)) { throw Napi::TypeError::New(env, "Value not callable"); }
 
-  PyStackObject kwargs = PyDict_New();
+  PyStrongRef kwargs = PyDict_New();
   size_t argc = info.Length();
   if (argc > 0 && info[argc - 1].IsObject() && !info[argc - 1].IsArray() && !_InstanceOf(info[argc - 1])) {
     PyObjectStore store;
@@ -18,18 +18,19 @@ Value PyObjectWrap::_Call(PyObject *py, const CallbackInfo &info) {
     argc--;
   }
 
-  PyStackObject args = PyTuple_New(argc);
+  PyStrongRef args = PyTuple_New(argc);
   for (size_t i = 0; i < argc; i++) {
-    PyObject *v = FromJS(info[i]);
+    PyStrongRef v = FromJS(info[i]);
     THROW_IF_NULL(v);
     // FromJS returns a strong reference and PyTuple_SetItem steals it
-    PyTuple_SetItem(args, i, v);
+    PyTuple_SetItem(*args, i, v.gift());
   }
 
-  PyObject *r = PyObject_Call(py, args, kwargs);
+  PyStrongRef r = PyObject_Call(*py, *args, *kwargs);
+  if (r == nullptr) { VERBOSE_PYOBJ(*py, "null strong reference"); }
   THROW_IF_NULL(r);
 
-  return New(env, r);
+  return New(env, std::move(r));
 }
 
 Value PyObjectWrap::Call(const CallbackInfo &info) {
@@ -44,17 +45,17 @@ Value PyObjectWrap::_CallableTrampoline(const CallbackInfo &info) {
 Value PyObjectWrap::Callable(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  return Boolean::New(env, PyCallable_Check(self));
+  return Boolean::New(env, PyCallable_Check(*self));
 }
 
 Value PyObjectWrap::Eval(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   auto text = NAPI_ARG_STRING(0).Utf8Value();
-  PyStackObject globals = info.Length() > 1 ? FromJS(info[1]) : PyDict_New();
-  PyStackObject locals = info.Length() > 2 ? FromJS(info[2]) : PyDict_New();
+  PyStrongRef globals = info.Length() > 1 ? FromJS(info[1]) : PyStrongRef(PyDict_New());
+  PyStrongRef locals = info.Length() > 2 ? FromJS(info[2]) : PyStrongRef(PyDict_New());
 
-  PyObject *result = PyRun_String(text.c_str(), Py_eval_input, globals, locals);
+  PyStrongRef result = PyRun_String(text.c_str(), Py_eval_input, *globals, *locals);
   THROW_IF_NULL(result);
 
-  return New(env, result);
+  return New(env, std::move(result));
 }
