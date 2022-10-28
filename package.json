@@ -12,7 +12,8 @@
     "python",
     "node.js",
     "import",
-    "require"
+    "require",
+    "compatibility"
   ],
   "author": "Momtchil Momtchev <momtchil@momtchev.com>",
   "license": "ISC",
