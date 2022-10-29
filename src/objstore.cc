@@ -82,7 +82,8 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
     js.DefineProperty(Napi::PropertyDescriptor::Value("__PyObject__", New(env, std::move(py)), napi_default));
   } else {
     VERBOSE_PYOBJ(*fini_py, "Funcstore retrieve");
-    ASSERT(!it->second->Value().IsEmpty());
+    // TODO: confirm that deferred destruction does not apply to functions??
+    assert(!it->second->Value().IsEmpty());
     js = it->second->Value();
   }
 
