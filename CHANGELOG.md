@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [1.0.1] 2022-10-29
 
+- Enable TypeScript strict mode
 - Fix [#1](https://github.com/mmomtchev/pymport/issues/1), always consume Python exceptions
 
 # [1.0.0] 2022-10-28
