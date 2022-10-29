@@ -34,6 +34,7 @@
       PyObject *type, *v, *trace;                                                                                      \
                                                                                                                        \
       PyErr_Fetch(&type, &v, &trace);                                                                                  \
+      PyErr_Clear();                                                                                                   \
       PyObject *pstr = PyObject_Str(v);                                                                                \
       const char *py_err_msg = PyUnicode_AsUTF8(pstr);                                                                 \
       std::string err_msg = std::string("Python exception: ") + py_err_msg LINEINFO;                                   \
