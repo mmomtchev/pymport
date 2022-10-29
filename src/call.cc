@@ -27,7 +27,6 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   }
 
   PyStrongRef r = PyObject_Call(*py, *args, *kwargs);
-  if (r == nullptr) { VERBOSE_PYOBJ(*py, "null strong reference"); }
   THROW_IF_NULL(r);
 
   return New(env, std::move(r));
