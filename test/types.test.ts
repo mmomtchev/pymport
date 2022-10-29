@@ -1,4 +1,4 @@
-import { pymport, PyObject } from 'pymport';
+import { pymport, PyObject, pyval } from 'pymport';
 import { assert } from 'chai';
 
 let np: PyObject;
@@ -252,6 +252,12 @@ describe('types', () => {
     it('returns undefined for non-existing attributes', () => {
       const obj = PyObject.fromJS({ test: 'test' });
       assert.isUndefined(obj.get('notAtest'));
+    });
+
+    it('when retrieving an non-existing attribute the error is reset', () => {
+      const obj = PyObject.fromJS({ test: 'test' });
+      assert.isUndefined(obj.get('notAtest'));
+      assert.throws(() => pyval('invalid'), /invalid/);
     });
   });
 
