@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic tracking of the memory held by Python objects referenced in JS by the V8 GC
 - (internals) New automatic reference counting
 
+### [1.0.1] 2022-10-29
+
+- Fix [#1](https://github.com/mmomtchev/pymport/issues/1), always consume Python exceptions
+
 # [1.0.0] 2022-10-28
 
 - First release
