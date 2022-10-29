@@ -41,8 +41,7 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   // Everything else is kept as a PyObject
   // (New/NewCallable expect a strong reference and steal it)
-  Py_INCREF(*py);
-  PyStrongRef strong = *py;
+  PyStrongRef strong(py);
   if (PyCallable_Check(*py)) { return NewCallable(env, std::move(strong)); }
   return New(env, std::move(strong));
 }
@@ -50,7 +49,7 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 Napi::Value PyObjectWrap::_ToJS_Dictionary(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
   auto obj = Object::New(env);
 
-  PyObject *key, *value;
+  PyWeakRef key = nullptr, value = nullptr;
   Py_ssize_t pos = 0;
   store.insert({*py, obj});
   while (PyDict_Next(*py, &pos, &key, &value)) {

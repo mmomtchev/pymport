@@ -44,6 +44,11 @@ class PyWeakRef {
     ASSERT(self == nullptr || self->ob_refcnt > 0);
     return self;
   };
+
+  virtual PyObject **operator&() {
+    ASSERT(self == nullptr);
+    return &self;
+  }
 };
 
 class PyStrongRef : public PyWeakRef {
@@ -123,6 +128,11 @@ class PyStrongRef : public PyWeakRef {
       Py_DECREF(self);
     }
   };
+
+  // This should never happen
+  virtual PyObject **operator&() override {
+    abort();
+  }
 };
 
 } // namespace pymport

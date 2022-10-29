@@ -136,9 +136,9 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
   // the provided operator==...
   for (const auto &i : store) {
     if (i.first == v) {
+      // The store contains weak references
       // We must return a strong reference
-      Py_INCREF(i.second);
-      return i.second;
+      return PyStrongRef(i.second);
     }
   }
 
@@ -155,14 +155,14 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     auto raw = v.ToString().Utf16Value();
     PyStrongRef py =
       PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
-    store.push_front({v, *py});
+    store.push_front({v, py});
     return py;
   }
   if (v.IsArray()) {
     auto array = v.As<Array>();
     PyStrongRef list = PyList_New(array.Length());
     THROW_IF_NULL(list);
-    store.push_front({v, *list});
+    store.push_front({v, list});
     _List(array, list, store);
     return list;
   }
@@ -184,7 +184,7 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
 
     PyStrongRef dict = PyDict_New();
     THROW_IF_NULL(dict);
-    store.push_front({v, *dict});
+    store.push_front({v, dict});
     _Dictionary(obj, dict, store);
     return dict;
   }

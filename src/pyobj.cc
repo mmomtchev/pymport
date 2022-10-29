@@ -72,12 +72,12 @@ Value PyObjectWrap::Get(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
-  auto r = PyObject_GetAttrString(*self, name.c_str());
+  PyStrongRef r = PyObject_GetAttrString(*self, name.c_str());
   if (r == nullptr) {
     PyErr_Clear();
     return env.Undefined();
   }
-  return New(env, r);
+  return New(env, std::move(r));
 }
 
 Value PyObjectWrap::Import(const CallbackInfo &info) {
@@ -114,19 +114,14 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
     PyWeakRef r = PyList_GetItem(*self, idx);
     THROW_IF_NULL(r);
     // PyList returns a borrowed reference, New expects a strong one
-    Py_INCREF(*r);
-    PyStrongRef strong = *r;
-    return New(env, std::move(strong));
+    return New(env, std::move(PyStrongRef(r)));
   }
   if (PyTuple_Check(*self)) {
     Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
     PyWeakRef r = PyTuple_GetItem(*self, idx);
     THROW_IF_NULL(r);
-    if (r == nullptr) return env.Undefined();
     // PyTuple returns a borrowed reference, New expects a strong one
-    Py_INCREF(*r);
-    PyStrongRef strong = *r;
-    return New(env, std::move(strong));
+    return New(env, std::move(PyStrongRef(r)));
   }
 
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");

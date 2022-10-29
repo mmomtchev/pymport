@@ -98,7 +98,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
 
     private:
   typedef std::map<PyObject *, Napi::Value> NapiObjectStore;
-  typedef std::list<std::pair<Napi::Value, PyObject *>> PyObjectStore;
+  typedef std::list<std::pair<Napi::Value, PyWeakRef>> PyObjectStore;
 
   void Release();
 
