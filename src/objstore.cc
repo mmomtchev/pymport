@@ -50,18 +50,38 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
 Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
   THROW_IF_NULL(py);
 
+  VERBOSE_PYOBJ(*fini_py, "Funcstore new callable");
   auto context = env.GetInstanceData<EnvContext>();
   auto it = context->function_store.find(*py);
   Function js;
   if (it == context->function_store.end()) {
+    VERBOSE_PYOBJ(*fini_py, "Funcstore insert");
+    // py is a strong reference that will be duplicated here
+    // - one copy goes to the __PyObject__ property of the function which is a normal PyObject
+    // - the other copy goes to the hint of the function descriptor which will be passed to the trampoline
+    // both have the same lifecycle and both will be destroyed at the same time
+    // -> so we consider them a single strong reference
+    // It will be destroyed when the __PyObject__ is collected
+    // (the function contains the __PyObject__ so the destruction order is defined)
     js = Function::New(env, _CallableTrampoline, "[PyFunction]", *py);
-    Py_INCREF(*py);
+
+    // The function store keeps weak references to allow the GC to free these objects
     FunctionReference *jsRef = new FunctionReference;
-    // Functions never expire (for now)
-    *jsRef = Napi::Persistent(js);
+    *jsRef = Napi::Weak(js);
     context->function_store.insert({*py, jsRef});
+    js.AddFinalizer(
+      [](Napi::Env env, FunctionReference *fini_fn, PyObject *fini_py) {
+        VERBOSE_PYOBJ(*fini_py, "Funcstore erase");
+        auto context = env.GetInstanceData<EnvContext>();
+        context->function_store.erase(fini_py);
+        delete fini_fn;
+      },
+      jsRef,
+      *py);
+
     js.DefineProperty(Napi::PropertyDescriptor::Value("__PyObject__", New(env, std::move(py)), napi_default));
   } else {
+    VERBOSE_PYOBJ(*fini_py, "Funcstore retrieve");
     ASSERT(!it->second->Value().IsEmpty());
     js = it->second->Value();
   }

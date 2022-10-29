@@ -165,7 +165,7 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 - The two GCs should work well in tandem as for every object there is exactly one of them that can free it
 - In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
 - In (_upcoming_) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
-- Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop
+- In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
 - Use `process.env['PYTHONPATH'] = __dirname;` if you want to load your own Python script from the current directory as a module
 
 # Future Plans
