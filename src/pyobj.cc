@@ -69,7 +69,10 @@ Value PyObjectWrap::Get(const CallbackInfo &info) {
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   auto r = PyObject_GetAttrString(self, name.c_str());
-  if (r == nullptr) return env.Undefined();
+  if (r == nullptr) {
+    PyErr_Clear();
+    return env.Undefined();
+  }
   return New(env, r);
 }
 
