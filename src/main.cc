@@ -7,6 +7,8 @@
 #include "pymport.h"
 #include "values.h"
 
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+
 using namespace Napi;
 using namespace pymport;
 
