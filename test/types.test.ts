@@ -336,10 +336,26 @@ describe('types', () => {
       assert.typeOf(fn, 'function');
     });
 
+    it('fromJS()', () => {
+      assert.throws(() => PyObject.fromJS(() => undefined), /not supported/);
+    });
+
     it('__PyObject__', () => {
       const fn = np.get('ones').toJS();
       assert.instanceOf(fn.__PyObject__, PyObject);
       assert.equal(fn.__PyObject__, np.get('ones'));
+    });
+  });
+
+  describe('BigInt', () => {
+    it('fromJS()', () => {
+      assert.throws(() => PyObject.fromJS(BigInt(1)), /not supported/);
+    });
+  });
+
+  describe('Symbol', () => {
+    it('fromJS()', () => {
+      assert.throws(() => PyObject.fromJS(Symbol(1)), /not supported/);
     });
   });
 

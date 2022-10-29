@@ -40,12 +40,12 @@ class PyWeakRef {
   };
 
   // Dereference
-  PyObject *operator*() const {
+  INLINE PyObject *operator*() const {
     ASSERT(self == nullptr || self->ob_refcnt > 0);
     return self;
   };
 
-  virtual PyObject **operator&() {
+  virtual INLINE PyObject **operator&() {
     ASSERT(self == nullptr);
     return &self;
   }
@@ -61,7 +61,7 @@ class PyStrongRef : public PyWeakRef {
 
   // Copying is allowed only if explicit
   // (this is, in fact, a performance problem)
-  explicit PyStrongRef(const PyWeakRef &v) : PyWeakRef(v) {
+  explicit INLINE PyStrongRef(const PyWeakRef &v) : PyWeakRef(v) {
     VERBOSE_PYOBJ(self, "StrongRef copy/weak");
     ASSERT(self->ob_refcnt > 0);
     Py_INCREF(self);
@@ -69,7 +69,7 @@ class PyStrongRef : public PyWeakRef {
 
   // The previous function won't get called for a PyStrongRef
   // because the compiler will generate an implicit deleted copy constructor
-  explicit PyStrongRef(const PyStrongRef &v) : PyWeakRef(v.self) {
+  explicit INLINE PyStrongRef(const PyStrongRef &v) : PyWeakRef(v.self) {
     VERBOSE_PYOBJ(self, "StrongRef copy/strong");
     ASSERT(self->ob_refcnt > 0);
     Py_INCREF(self);
@@ -91,7 +91,7 @@ class PyStrongRef : public PyWeakRef {
   //    When evicting dying objects from the store
   // * Assign a reference to a null reference
   //    When initializing in the PyObjectWrap constructor
-  PyStrongRef &operator=(PyStrongRef &&v) {
+  INLINE PyStrongRef &operator=(PyStrongRef &&v) {
     ASSERT(self == nullptr || v.self == nullptr);
     if (self == nullptr) {
       VERBOSE_PYOBJ(v.self, "StrongRef move-assignment");
@@ -104,7 +104,8 @@ class PyStrongRef : public PyWeakRef {
       Py_DECREF(self);
       self = nullptr;
     } else {
-      abort();
+      fprintf(stderr, "invalid reference move-assignemnt\n"); //LCOV_EXCL_LINE
+      abort();                                                //LCOV_EXCL_LINE
     }
     return *this;
   };
@@ -118,7 +119,7 @@ class PyStrongRef : public PyWeakRef {
     return r;
   };
 
-  virtual ~PyStrongRef() {
+  INLINE virtual ~PyStrongRef() {
 #ifdef DEBUG
     if (active_environments == 0) return;
 #endif
@@ -130,8 +131,9 @@ class PyStrongRef : public PyWeakRef {
   };
 
   // This should never happen
-  virtual PyObject **operator&() override {
-    abort();
+  virtual PyObject **operator&() override {           // LCOV_EXCL_LINE
+    fprintf(stderr, "address of strong reference\n"); //LCOV_EXCL_LINE
+    abort();                                          //LCOV_EXCL_LINE
   }
 };
 

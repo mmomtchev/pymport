@@ -181,6 +181,7 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
       // Copy the strong reference
       return PyStrongRef(py->self);
     }
+    if (v.IsFunction()) { throw TypeError::New(env, "functions are not supported yet"); }
 
     PyStrongRef dict = PyDict_New();
     THROW_IF_NULL(dict);
@@ -195,5 +196,5 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     if (v.ToBoolean() == false) return Py_False;
   }
 
-  return nullptr;
+  throw TypeError::New(env, "Object type is not supported");
 }
