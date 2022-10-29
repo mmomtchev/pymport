@@ -5,13 +5,15 @@
 using namespace Napi;
 using namespace pymport;
 
-PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nullptr) {
+PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nullptr), memory_hint(0) {
   Napi::Env env = info.Env();
 
   if (info.Length() < 1) throw TypeError::New(env, "Cannot create an empty object");
 
   if (info[0].IsExternal()) {
     self = PyStrongRef(info[0].As<External<PyObject>>().Data());
+    memory_hint = PyObject_LengthHint(*self, sizeof(PyObject));
+    if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, static_cast<int64_t>(memory_hint));
   } else {
     // Reference unicity cannot be achieved with a constructor
     throw Error::New(env, "Use PyObject.fromJS() to create PyObjects");
@@ -19,6 +21,7 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 }
 
 PyObjectWrap::~PyObjectWrap() {
+  Napi::Env env = Env();
 #ifdef DEBUG
   if (active_environments == 0) return;
 #endif
@@ -26,6 +29,9 @@ PyObjectWrap::~PyObjectWrap() {
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
   if (*self != nullptr) { Release(); }
+
+  // Whether the object has been evicted or not, the adjusting happens here
+  if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
 }
 
 Function PyObjectWrap::GetClass(Napi::Env env) {

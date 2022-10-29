@@ -119,6 +119,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static bool _FunctionOf(Napi::Value);
 
   PyStrongRef self;
+  Py_ssize_t memory_hint;
 };
 
 struct EnvContext {

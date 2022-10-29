@@ -163,8 +163,8 @@ assert.deepEqual(py_array.toJS(), [2, 1, 0]);
     _Large `numpy` arrays are very dependent on the memory allocator and Node.js/V8 has an outstanding memory allocator_
 - `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
 - The two GCs should work well in tandem as for every object there is exactly one of them that can free it
-- Currently the V8 GC vastly underestimates the memory size of the `PyObject`s and may be reluctant to free them (this is to be improved soon)
-  - If Python allocates most of the memory, V8 will not be aware and this can even lead to thrashing in the most extreme cases
+- In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
+- In (_upcoming_) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
 - Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop
 - Use `process.env['PYTHONPATH'] = __dirname;` if you want to load your own Python script from the current directory as a module
 
