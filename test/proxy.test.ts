@@ -86,4 +86,17 @@ describe('proxy', () => {
     const obj = proxify(PyObject.fromJS({ test: 'test' }));
     assert.isUndefined(obj.notAtest);
   });
+
+  it('does not intercept calls to functions whose names conflict with PyObject', () => {
+    const a = np.arange(4, { dtype: np.int32 });
+    assert.equal(a.type, 'numpy.ndarray');
+
+    assert.equal(a.dtype.__PyObject__, np.dtype('int32').__PyObject__);
+
+    const d = np.average(a);
+    assert.equal(d.type, 'numpy.float64');
+
+    // call the underlying item() method instead of the PyObject.item()
+    assert.closeTo(d.item().toJS(), 1.5, 1e-6);
+  });
 });

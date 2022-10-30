@@ -67,7 +67,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "args": [
+      "runtimeArgs": [
         "--expose-gc",
       ],
       "program": "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js"

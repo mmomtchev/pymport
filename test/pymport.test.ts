@@ -107,6 +107,7 @@ describe('pymport', () => {
       const np = pymport('numpy');
 
       const a = np.get('ones').call([2, 3], { dtype: np.get('int16') });
+      assert.strictEqual(a.get('dtype'), np.get('dtype').call('int16'));
       assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
     });
 
@@ -114,6 +115,7 @@ describe('pymport', () => {
       const np = pymport('numpy').toJS();
 
       const a = np.ones([2, 3], { dtype: np.int16 });
+      assert.strictEqual(a.get('dtype'), np.dtype('int16'));
       assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
     });
   });

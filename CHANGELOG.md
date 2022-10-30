@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Expiring of function objects
 - Basic tracking of the memory held by Python objects referenced in JS by the V8 GC
+- `proxify`ed object do not intercept and redirect calls to `PyObject` methods if the Python object has a method with the same name - ie. calling `item()` on a non-proxified PyObject invokes `PyObject.item()` but if the underlying Python object of a proxified object also has an `item()` function, calling `item()` on the proxified object will invoke the Python method
 - Do not allow `PYTHONPATH` to override `PYTHONHOME` when using the builtin Python
 - (internals) New automatic reference counting
 
