@@ -74,6 +74,7 @@ const a = np.get("arange").call(15).get("reshape").call(3, 5);
 
 // Python: a = np.ones((2, 3), dtype=int16)
 // np.get('int16') is a PyObject
+// (if the last argument is a plain JS object, it is considered a kwargs argument)
 const b = np.get("ones").call([2, 3], { dtype: np.get("int16") });
 
 // Python: print(a.tolist())
@@ -96,6 +97,7 @@ const a = np.arange(15).reshape(3, 5);
 
 // Python: a = np.ones((2, 3), dtype=int16)
 // np.int16 is a callable PyFunction
+// (if the last argument is a plain JS object, it is considered a kwargs argument)
 const b = np.ones([2, 3], { dtype: np.int16 });
 
 console.log(a.tolist().toJS());
