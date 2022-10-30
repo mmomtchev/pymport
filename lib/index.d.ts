@@ -140,7 +140,11 @@ export class PyObject {
  * It can be overridden by setting the PYTHONPATH environment variable.
  * 
  * If you want to load a Python file in the same directory as the calling JS you can use
+ * 
  * process.env['PYTHONPATH'] = __dirname
+ * 
+ * before importing pymport - once Python has been initialized further modifications
+ * will have no effect.
  * 
  * @param {string} name Python module name
  * @returns {PyObject}
