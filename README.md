@@ -59,7 +59,7 @@ At the moment, Python code does not have access to the JavaScript objects - this
 
 ## Examples
 
-Directly use the raw `PyObject` object:
+You can directly use the raw `PyObject` object and call `get`/`call` each time you need to access a Python attribute or call a Python function:
 
 ```js
 import { pymport } from "pymport";
@@ -81,7 +81,7 @@ const b = np.get("ones").call([2, 3], { dtype: np.get("int16") });
 console.log(a.get("tolist").call().toJS());
 ```
 
-With `proxify`:
+Or you can use `proxify` to create a JS `Proxy`:
 
 ```js
 import { pymport, proxify } from "pymport";
@@ -122,7 +122,7 @@ const df3 = df.item(df.item("C").__le__(3));
 assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
 ```
 
-Inline Python is supported through `pyval` (Python `eval`):
+Inline Python is supported through `pyval` (using Python `eval` - note that it expects a Python expression and not a Python statement):
 
 ```js
 // fn is a PyObject
@@ -153,6 +153,16 @@ const py_array = pyval("np.array([2, 1, 0]).tolist()", { np });
 assert.instanceOf(py_array, PyObject);
 assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 ```
+
+Direct conversion of the Python module object itself to a JavaScript object is supported too, but this is the least compatible mode, as some Python constructs cannot be expressed in JS:
+
+```js
+// np is a plain JS object whose properties are the numpy methods
+const np = pymport("numpy").toJS();
+const a = np.arange(15).reshape(3, 5);
+```
+
+Generally, `proxify` is the best way to use `pymport`.
 
 # Performance Notes / Known Issues
 
