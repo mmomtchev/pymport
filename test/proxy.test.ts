@@ -29,12 +29,20 @@ describe('proxy', () => {
     assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
   });
 
-  it('unique references', () => {
+  it('proxified objects return unique references', () => {
     const a = np.arange;
     const b = np.arange;
 
     assert.equal(a, b);
     assert.equal(a.name, 'arange');
+  });
+
+  it('proxified objects have unique references', () => {
+    const py = PyObject.fromJS({ name: 'value' });
+    const a = proxify(py);
+    const b = proxify(py);
+
+    assert.equal(a, b);
   });
 
   it('toString()', () => {
@@ -91,6 +99,7 @@ describe('proxy', () => {
     const a = np.arange(4, { dtype: np.int32 });
     assert.equal(a.type, 'numpy.ndarray');
 
+    assert.equal(a.dtype, np.dtype('int32'));
     assert.equal(a.dtype.__PyObject__, np.dtype('int32').__PyObject__);
 
     const d = np.average(a);
