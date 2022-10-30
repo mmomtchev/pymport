@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Expiring of function objects
 - Basic tracking of the memory held by Python objects referenced in JS by the V8 GC
+- Do not allow `PYTHONPATH` to override `PYTHONHOME` when using the builtin Python
 - (internals) New automatic reference counting
 
 ### [1.0.1] 2022-10-29

@@ -134,7 +134,14 @@ export class PyObject {
 }
 
 /**
- * Import a Python module
+ * Import a Python module.
+ * 
+ * Default search location is determined by the Python interpreter library.
+ * It can be overridden by setting the PYTHONPATH environment variable.
+ * 
+ * If you want to load a Python file in the same directory as the calling JS you can use
+ * process.env['PYTHONPATH'] = __dirname
+ * 
  * @param {string} name Python module name
  * @returns {PyObject}
  */
