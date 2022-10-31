@@ -45,7 +45,7 @@ class PyWeakRef {
     return self;
   };
 
-  virtual INLINE PyObject **operator&() {
+  INLINE PyObject **operator&() {
     ASSERT(self == nullptr);
     return &self;
   }
@@ -90,7 +90,8 @@ class PyStrongRef : public PyWeakRef {
   // * Assign null reference to an existing reference (unreference)
   //    When evicting dying objects from the store
   // * Assign a reference to a null reference
-  //    When initializing in the PyObjectWrap constructor
+  //    With deferred initialization
+  // Overwriting an existing PyStrongRef is not a valid operation
   INLINE PyStrongRef &operator=(PyStrongRef &&v) {
     ASSERT(self == nullptr || v.self == nullptr);
     if (self == nullptr) {
@@ -129,12 +130,6 @@ class PyStrongRef : public PyWeakRef {
       Py_DECREF(self);
     }
   };
-
-  // This should never happen
-  virtual PyObject **operator&() override {           // LCOV_EXCL_LINE
-    fprintf(stderr, "address of strong reference\n"); //LCOV_EXCL_LINE
-    abort();                                          //LCOV_EXCL_LINE
-  }
 };
 
 } // namespace pymport

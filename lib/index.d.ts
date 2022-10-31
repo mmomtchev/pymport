@@ -204,3 +204,8 @@ declare const version: {
   readonly pythonRuntime: null | string;
   readonly pythonHome: string;
 };
+
+/**
+ * Errors thrown from Python have a `pythonTrace` property that contains the Python traceback
+ */
+export type PythonError = (Error | TypeError | RangeError) & { pythonTrace: PyObject; };

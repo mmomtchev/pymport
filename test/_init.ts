@@ -1,3 +1,5 @@
+process.env['PYTHONPATH'] = __dirname;
+
 import { version } from 'pymport';
 
 console.log(`pymport: ${version.pymport.major}.${version.pymport.minor}.${version.pymport.patch}`);

@@ -64,7 +64,7 @@ Value PyObjectWrap::ToString(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   PyStrongRef r = PyObject_Str(*self);
-  THROW_IF_NULL(r);
+  ExceptionHandler(env, r);
   return ToJS(env, r);
 }
 
@@ -85,7 +85,7 @@ Value PyObjectWrap::Import(const CallbackInfo &info) {
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef pyname = PyUnicode_DecodeFSDefault(name.c_str());
-  THROW_IF_NULL(pyname);
+  ExceptionHandler(env, pyname);
 
   PyStrongRef obj = PyImport_Import(*pyname);
   return New(env, std::move(obj));
@@ -112,14 +112,14 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
   if (PyList_Check(*self)) {
     Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
     PyWeakRef r = PyList_GetItem(*self, idx);
-    THROW_IF_NULL(r);
+    ExceptionHandler(env, r);
     // PyList returns a borrowed reference, New expects a strong one
     return New(env, std::move(PyStrongRef(r)));
   }
   if (PyTuple_Check(*self)) {
     Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
     PyWeakRef r = PyTuple_GetItem(*self, idx);
-    THROW_IF_NULL(r);
+    ExceptionHandler(env, r);
     // PyTuple returns a borrowed reference, New expects a strong one
     return New(env, std::move(PyStrongRef(r)));
   }
@@ -127,7 +127,7 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
   PyStrongRef item = FromJS(info[0]);
   PyStrongRef r = PyObject_GetItem(*self, *item);
-  THROW_IF_NULL(r);
+  ExceptionHandler(env, r);
   return New(env, std::move(r));
 }
 

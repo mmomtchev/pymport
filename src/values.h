@@ -27,22 +27,6 @@
 #define LINEINFO
 #endif
 
-#define THROW_IF_NULL(val)                                                                                             \
-  if (*val == nullptr) {                                                                                               \
-    auto err = PyErr_Occurred();                                                                                       \
-    if (err != nullptr) {                                                                                              \
-      PyObject *type, *v, *trace;                                                                                      \
-                                                                                                                       \
-      PyErr_Fetch(&type, &v, &trace);                                                                                  \
-      PyErr_Clear();                                                                                                   \
-      PyObject *pstr = PyObject_Str(v);                                                                                \
-      const char *py_err_msg = PyUnicode_AsUTF8(pstr);                                                                 \
-      std::string err_msg = std::string("Python exception: ") + py_err_msg LINEINFO;                                   \
-      throw Napi::Error::New(env, err_msg);                                                                            \
-    }                                                                                                                  \
-    throw Napi::TypeError::New(env, std::string("Failed converting value at ") LINEINFO);                              \
-  }
-
 #ifdef DEBUG_VERBOSE
 #define INLINE inline
 #define ASSERT(x) assert(x)

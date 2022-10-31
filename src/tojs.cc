@@ -24,7 +24,9 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   if (PyUnicode_Check(*py)) {
     PyStrongRef utf16 = PyUnicode_AsUTF16String(*py);
+    ExceptionHandler(env, utf16);
     auto raw = PyBytes_AsString(*utf16);
+    if (raw == nullptr) _ExceptionThrow(env);
     return String::New(env, reinterpret_cast<char16_t *>(raw + 2), PyUnicode_GET_LENGTH(*py));
   }
 
@@ -67,6 +69,7 @@ Napi::Value PyObjectWrap::_ToJS_Tuple(Napi::Env env, const PyWeakRef &py, NapiOb
 
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyTuple_GetItem(*py, i);
+    ExceptionHandler(env, v);
     Napi::Value js = _ToJS(env, v, store);
     r.Set(i, js);
   }
@@ -80,6 +83,7 @@ Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, const PyWeakRef &py, NapiObj
 
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyList_GetItem(*py, i);
+    ExceptionHandler(env, v);
     Napi::Value js = _ToJS(env, v, store);
     r.Set(i, js);
   }
@@ -96,7 +100,7 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
 
   for (size_t i = 0; i < len; i++) {
     PyWeakRef key = PyList_GetItem(*list, i);
-    THROW_IF_NULL(key);
+    ExceptionHandler(env, key);
     PyStrongRef value = PyObject_GetAttr(*py, *key);
     // dir(module) can reference modules that are not installed
     // Typical examples are queue/tkinter or dbm/gdbm

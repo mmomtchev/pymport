@@ -11,6 +11,7 @@ Value PyObjectWrap::String(const CallbackInfo &info) {
   auto raw = NAPI_ARG_STRING(0).Utf16Value();
   PyStrongRef obj =
     PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
+  ExceptionHandler(env, obj);
   return New(env, std::move(obj));
 }
 
@@ -19,6 +20,7 @@ Value PyObjectWrap::Float(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_NUMBER(0).DoubleValue();
   PyStrongRef obj = PyFloat_FromDouble(raw);
+  ExceptionHandler(env, obj);
   return New(env, std::move(obj));
 }
 
@@ -27,6 +29,7 @@ Value PyObjectWrap::Integer(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_NUMBER(0).Int64Value();
   PyStrongRef obj = PyLong_FromLong(raw);
+  ExceptionHandler(env, obj);
   return New(env, std::move(obj));
 }
 
@@ -38,9 +41,10 @@ void PyObjectWrap::_Dictionary(Napi::Object object, const PyStrongRef &target, P
     auto key = ((Napi::Value)el.second).ToString().Utf8Value();
     auto js = object.Get(key);
     PyStrongRef item = _FromJS(js, store);
-    THROW_IF_NULL(item);
+    ExceptionHandler(env, item);
     // This is the only Py***_Set that does not steal a reference
-    PyDict_SetItemString(*target, key.c_str(), *item);
+    int status = PyDict_SetItemString(*target, key.c_str(), *item);
+    ExceptionHandler(env, status);
   }
 }
 
@@ -49,7 +53,7 @@ Value PyObjectWrap::Dictionary(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_OBJECT(0);
   PyStrongRef dict = PyDict_New();
-  THROW_IF_NULL(dict);
+  ExceptionHandler(env, dict);
   PyObjectStore store;
   _Dictionary(raw, dict, store);
 
@@ -62,7 +66,8 @@ void PyObjectWrap::_List(Napi::Array array, const PyStrongRef &target, PyObjectS
 
   for (size_t i = 0; i < len; i++) {
     PyStrongRef el = _FromJS(array.Get(i), store);
-    PyList_SetItem(*target, i, el.gift());
+    int status = PyList_SetItem(*target, i, el.gift());
+    ExceptionHandler(array.Env(), status);
   }
 }
 
@@ -71,7 +76,7 @@ Value PyObjectWrap::List(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_ARRAY(0);
   PyStrongRef list = PyList_New(raw.Length());
-  THROW_IF_NULL(list);
+  ExceptionHandler(env, list);
   PyObjectStore store;
   _List(raw, list, store);
 
@@ -84,7 +89,8 @@ void PyObjectWrap::_Tuple(Napi::Array array, const PyStrongRef &target, PyObject
 
   for (size_t i = 0; i < len; i++) {
     PyStrongRef el = _FromJS(array.Get(i), store);
-    PyTuple_SetItem(*target, i, el.gift());
+    int status = PyTuple_SetItem(*target, i, el.gift());
+    ExceptionHandler(array.Env(), status);
   }
 }
 
@@ -93,7 +99,7 @@ Value PyObjectWrap::Tuple(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_ARRAY(0);
   PyStrongRef tuple = PyTuple_New(raw.Length());
-  THROW_IF_NULL(tuple);
+  ExceptionHandler(env, tuple);
   PyObjectStore store;
   _Tuple(raw, tuple, store);
 
@@ -109,7 +115,7 @@ Value PyObjectWrap::Slice(const CallbackInfo &info) {
   PyObjectStore store;
   PyStrongRef slice =
     PySlice_New(*_FromJS(array[(uint32_t)0], store), *_FromJS(array[1], store), *_FromJS(array[2], store));
-  THROW_IF_NULL(slice);
+  ExceptionHandler(env, slice);
 
   return New(env, std::move(slice));
 }
@@ -146,22 +152,26 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     auto raw = v.ToNumber().DoubleValue();
     double integer;
     double fract = fabs(modf(raw, &integer));
+    PyStrongRef py = nullptr;
     if (fract < std::numeric_limits<float>::epsilon() || fract > 1 - std::numeric_limits<float>::epsilon())
-      return PyLong_FromLong(v.ToNumber().Int64Value());
+      py = PyLong_FromLong(v.ToNumber().Int64Value());
     else
-      return PyFloat_FromDouble(raw);
+      py = PyFloat_FromDouble(raw);
+    ExceptionHandler(env, py);
+    return py;
   }
   if (v.IsString()) {
     auto raw = v.ToString().Utf16Value();
     PyStrongRef py =
       PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
+    ExceptionHandler(env, py);
     store.push_front({v, py});
     return py;
   }
   if (v.IsArray()) {
     auto array = v.As<Array>();
     PyStrongRef list = PyList_New(array.Length());
-    THROW_IF_NULL(list);
+    ExceptionHandler(env, list);
     store.push_front({v, list});
     _List(array, list, store);
     return list;
@@ -184,7 +194,7 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     if (v.IsFunction()) { throw TypeError::New(env, "functions are not supported yet"); }
 
     PyStrongRef dict = PyDict_New();
-    THROW_IF_NULL(dict);
+    ExceptionHandler(env, dict);
     store.push_front({v, dict});
     _Dictionary(obj, dict, store);
     return dict;

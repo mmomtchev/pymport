@@ -96,6 +96,14 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value NewCallable(Napi::Env, PyStrongRef &&);
   static Napi::Function GetClass(Napi::Env);
 
+  static inline void ExceptionHandler(Napi::Env env, const PyWeakRef &py) {
+    if (py == nullptr) _ExceptionThrow(env);
+  }
+
+  static inline void ExceptionHandler(Napi::Env env, int status) {
+    if (status != 0) _ExceptionThrow(env);
+  }
+
     private:
   typedef std::map<PyObject *, Napi::Value> NapiObjectStore;
   typedef std::list<std::pair<Napi::Value, PyWeakRef>> PyObjectStore;
@@ -117,6 +125,8 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
   static bool _InstanceOf(Napi::Value);
   static bool _FunctionOf(Napi::Value);
+
+  static void _ExceptionThrow(Napi::Env);
 
   PyStrongRef self;
   Py_ssize_t memory_hint;

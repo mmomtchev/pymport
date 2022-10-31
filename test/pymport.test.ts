@@ -1,4 +1,4 @@
-import { pymport, PyObject, version } from 'pymport';
+import { pymport, PyObject, PythonError, version } from 'pymport';
 import { assert } from 'chai';
 
 import pkg from '../package.json';
@@ -117,6 +117,25 @@ describe('pymport', () => {
       const a = np.ones([2, 3], { dtype: np.int16 });
       assert.strictEqual(a.get('dtype'), np.dtype('int16'));
       assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
+    });
+  });
+
+  describe('handling of Python exceptions', () => {
+    it('retrieve the Python traceback', () => {
+      const raise = pymport('python_raise_error');
+
+      try {
+        raise.get('raise_exception').call();
+        assert.isTrue(false); // make sure there is an exception
+      } catch (e: any) {
+        const traceback = pymport('traceback');
+        const stack = traceback.get('extract_tb').call((e as PythonError).pythonTrace);
+        const text = stack.get('format').call().toJS();
+        assert.match(text, /python_raise_error.py/);
+        assert.match(text, /line 2/);
+        assert.match(text, /raise_exception/);
+        assert.match(text, /test exception/);
+      }
     });
   });
 });
