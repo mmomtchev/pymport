@@ -161,6 +161,7 @@ Value PyObjectWrap::Length(const CallbackInfo &info) {
   if (PyList_Check(*self)) { return Number::New(env, static_cast<long>(PyList_Size(*self))); }
   if (PyTuple_Check(*self)) return Number::New(env, static_cast<long>(PyTuple_Size(*self)));
   if (PyDict_Check(*self)) return Number::New(env, static_cast<long>(PyDict_Size(*self)));
+  if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));
   if (PyUnicode_Check(*self)) return Number::New(env, static_cast<long>(PyUnicode_GetLength(*self)));
   return env.Undefined();
 }
