@@ -166,6 +166,10 @@ const a = np.arange(15).reshape(3, 5);
 
 Generally, `proxify` is the best way to use `pymport`.
 
+# Architecture Overview
+
+![Architecture Overview](https://raw.githubusercontent.com/mmomtchev/pymport/main/overview.svg)
+
 # Performance Notes / Known Issues
 
 - Simply calling into Python is more expensive than from the native Python interpreter
