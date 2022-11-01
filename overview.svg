@@ -39,9 +39,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="419.68249"
-     inkscape:cy="233.7535"
+     inkscape:zoom="2.8"
+     inkscape:cx="305.78951"
+     inkscape:cy="225.38512"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -150,7 +150,7 @@
     </g>
     <g
        id="g4638"
-       transform="translate(-12.227581,-5.3453906)">
+       transform="matrix(2.7643939,0,0,2.7643939,-111.30816,-88.799051)">
       <rect
          y="43.283482"
          x="41.860863"
@@ -171,76 +171,7 @@
            sodipodi:role="line">V8 object</tspan></text>
     </g>
     <g
-       transform="translate(0.3864011,-1.4238868)"
-       id="g4638-9">
-      <rect
-         y="43.283482"
-         x="41.860863"
-         height="8.031992"
-         width="9.3568573"
-         id="rect4629-3"
-         style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662" />
-      <text
-         id="text4633-9"
-         y="47.689808"
-         x="43.188248"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           style="stroke-width:0.26458332"
-           y="47.689808"
-           x="43.188248"
-           id="tspan4631-9"
-           sodipodi:role="line">V8 object</tspan></text>
-    </g>
-    <g
-       transform="translate(-8.4960389,9.4429294)"
-       id="g4638-3">
-      <rect
-         y="43.283482"
-         x="41.860863"
-         height="8.031992"
-         width="9.3568573"
-         id="rect4629-5"
-         style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662" />
-      <text
-         id="text4633-0"
-         y="47.689808"
-         x="43.188248"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           style="stroke-width:0.26458332"
-           y="47.689808"
-           x="43.188248"
-           id="tspan4631-3"
-           sodipodi:role="line">V8 object</tspan></text>
-    </g>
-    <g
-       id="g4699"
-       transform="translate(32.883929,-6.7090774)">
-      <rect
-         y="46.543526"
-         x="115.14002"
-         height="8.031992"
-         width="9.3568573"
-         id="rect4629-32"
-         style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662" />
-      <text
-         id="text4633-6"
-         y="50.067905"
-         x="119.81052"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           y="50.067905"
-           x="119.81052"
-           id="tspan4691"
-           sodipodi:role="line">Python</tspan><tspan
-           y="51.831795"
-           x="119.81052"
-           id="tspan4693"
-           sodipodi:role="line">object</tspan></text>
-    </g>
-    <g
-       transform="translate(16.347472,-3.3072895)"
+       transform="matrix(1.888704,0,0,1.888704,-93.062792,-50.630119)"
        id="g4699-6">
       <rect
          y="46.543526"
@@ -265,7 +196,7 @@
            sodipodi:role="line">object</tspan></text>
     </g>
     <g
-       transform="translate(-10.204286,-18.941853)"
+       transform="matrix(2.1764707,0,0,2.1764707,-106.19978,-80.888112)"
        id="g4801-9">
       <g
          id="g4699-7-2"
@@ -314,57 +245,8 @@
       </g>
     </g>
     <g
-       id="g4801-6"
-       transform="translate(3.1829343,-0.76277733)">
-      <g
-         id="g4699-7-7"
-         transform="translate(-35.151784,11.1503)">
-        <rect
-           style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662"
-           id="rect4629-32-9-6"
-           width="9.3568573"
-           height="8.031992"
-           x="115.14002"
-           y="46.543526" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           x="119.81052"
-           y="50.067905"
-           id="text4633-6-8-2"><tspan
-             sodipodi:role="line"
-             id="tspan4691-4-7"
-             x="119.81052"
-             y="50.067905">Python</tspan><tspan
-             sodipodi:role="line"
-             id="tspan4693-0-7"
-             x="119.81052"
-             y="51.831795">object</tspan></text>
-      </g>
-      <g
-         id="g4790-7">
-        <rect
-           style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662"
-           id="rect4629-3-2-5"
-           width="9.3568573"
-           height="8.031992"
-           x="79.988235"
-           y="49.661831" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           x="80.90979"
-           y="53.970573"
-           id="text4633-9-6-8"><tspan
-             sodipodi:role="line"
-             id="tspan4785-1"
-             x="80.90979"
-             y="53.970573">PyObjectWrap</tspan></text>
-      </g>
-    </g>
-    <g
        id="g4943"
-       transform="translate(33.072916,3.0238095)">
+       transform="matrix(1.9038002,0,0,1.9038002,-38.107102,-28.852794)">
       <g
          id="g4699-7"
          transform="translate(-45.241209,-3.816794)">
@@ -467,5 +349,52 @@
          x="119.42129"
          sodipodi:role="line"
          id="tspan4986">Managed by the Python GC</tspan></text>
+    <g
+       id="g4638-6"
+       transform="matrix(2.7643939,0,0,2.7643939,-83.237597,-75.633243)">
+      <rect
+         y="43.283482"
+         x="41.860863"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629-5"
+         style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633-65"
+         y="47.689808"
+         x="43.188248"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="47.689808"
+           x="43.188248"
+           id="tspan4631-3"
+           sodipodi:role="line">V8 object</tspan></text>
+    </g>
+    <g
+       transform="matrix(1.888704,0,0,1.888704,-70.89518,-41.599248)"
+       id="g4699-6-8">
+      <rect
+         y="46.543526"
+         x="115.14002"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629-32-8-1"
+         style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633-6-0-5"
+         y="50.067905"
+         x="119.81052"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           y="50.067905"
+           x="119.81052"
+           id="tspan4691-6-6"
+           sodipodi:role="line">Python</tspan><tspan
+           y="51.831795"
+           x="119.81052"
+           id="tspan4693-7-6"
+           sodipodi:role="line">object</tspan></text>
+    </g>
   </g>
 </svg>
