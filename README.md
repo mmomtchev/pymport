@@ -265,7 +265,7 @@ Generally, `proxify` is the best way to use `pymport`.
 
 ## getJSType
 
-Get the TypedArray constructor that corresponds to the Python array.array object
+Get the TypedArray constructor that corresponds to the Python array.array object.
 
 ### Parameters
 
@@ -275,7 +275,7 @@ Returns **ArrayConstructor**&#x20;
 
 ## getPythonType
 
-Get the Python letter code that corresponds to the TypedArray object
+Get the Python letter code that corresponds to the TypedArray object.
 
 ### Parameters
 
@@ -604,8 +604,8 @@ Returns **[PyObject](#pyobject)**&#x20;
 
 ## proxify
 
-Create a profixied version of a PyObject
-that works like a native Python object
+Create a profixied version of a PyObject that works like a native Python object.
+All values returned by its methods will also be profixied.
 
 ### Parameters
 

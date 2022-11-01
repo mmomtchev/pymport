@@ -216,8 +216,9 @@ export class PyObject {
 export function pymport(name: string): PyObject;
 
 /**
- * Create a profixied version of a PyObject
- * that works like a native Python object
+ * Create a profixied version of a PyObject that works like a native Python object.
+ * All values returned by its methods will also be profixied.
+ * 
  * @param {PyObject} object object to proxify
  * @param {string} [name] optional name to be assigned to a proxified function
  * @returns {any}
