@@ -14,6 +14,7 @@ jobs:
       matrix:
         platforms: [ubuntu-20.04, windows-2019, macos-11]
         node-version: [14.x, 16.x, 18.x]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
       - uses: actions/checkout@v3
@@ -21,6 +22,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
       - run: npm i -g npm@latest
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp install

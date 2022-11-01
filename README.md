@@ -180,6 +180,15 @@ Generally, `proxify` is the best way to use `pymport`.
 - In (_upcoming_) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
 - In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
 
+# Supported Versions
+
+`pymport` is unit-tested on all combinations of:
+
+| Platforms | Windows x64, Linux x64 and macOS x64 |
+| --------- | ------------------------------------ |
+| Node.js   | 14.x, 16.x and 18.x                  |
+| Python    | 3.8, 3.9, 3.10 and 3.11              |
+
 # Future Plans
 
 - `Buffer` <-> `bytes[]` equivalence

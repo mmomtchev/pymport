@@ -140,6 +140,6 @@ struct EnvContext {
 
 }; // namespace pymport
 
-#if PY_MAJOR_VERSION < 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 3)
-#error Python 3.3 is required
+#if PY_MAJOR_VERSION < 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 8)
+#error Python 3.8 is required
 #endif

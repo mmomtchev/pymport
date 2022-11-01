@@ -51,7 +51,7 @@ Value Version(const CallbackInfo &info) {
   pythonLibrary.Set("version", String::New(env, to_hex(PY_VERSION_HEX)));
 
 #if PY_MAJOR_VERSION > 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 11)
-  versionInfo.Set("pythonRuntime", String::New(env, to_hex(Py_Version())));
+  versionInfo.Set("pythonRuntime", String::New(env, to_hex(Py_Version)));
 #else
   versionInfo.Set("pythonRuntime", env.Null());
 #endif
