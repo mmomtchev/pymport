@@ -9,23 +9,23 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="172.72002mm"
+   height="93.32933mm"
+   viewBox="0 0 172.72002 93.32933"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="overview.svg">
+   sodipodi:docname="overview.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <defs
      id="defs2">
     <filter
        inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
        id="filter4553"
-       x="-0.33066439"
+       x="-0.3306644"
        width="1.6613288"
-       y="-2.4682771"
-       height="5.9365543">
+       y="-2.4682772"
+       height="5.9365544">
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="6.8559067"
@@ -39,9 +39,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="351.68814"
-     inkscape:cy="871.05548"
+     inkscape:zoom="1.979899"
+     inkscape:cx="419.68249"
+     inkscape:cy="233.7535"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -49,7 +49,11 @@
      inkscape:window-height="1361"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -65,7 +69,8 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-2.7985201,-19.244196)">
     <g
        id="g4613"
        transform="translate(-11.435166,-0.81229925)">
@@ -91,20 +96,9 @@
            id="tspan4579"
            sodipodi:role="line">interpreter</tspan></text>
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffe873;fill-opacity:1;stroke:none;stroke-width:0.26458332;filter:url(#filter4553);"
-       x="101.56143"
-       y="88.098221"
-       id="text3717-2"><tspan
-         sodipodi:role="line"
-         id="tspan3715-0"
-         x="101.56143"
-         y="88.098221"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332;fill:#ffe873;fill-opacity:1;">V8 interpreter</tspan></text>
     <g
        id="g4619"
-       transform="translate(27.592262,-0.66145833)">
+       transform="translate(27.592262,-0.66145286)">
       <rect
          y="70.471855"
          x="90.331024"
@@ -131,7 +125,7 @@
     </g>
     <g
        id="g4625"
-       transform="translate(4.1471631,-46.963552)">
+       transform="translate(4.1471634,-46.963554)">
       <rect
          y="116.77395"
          x="56.313171"
@@ -268,31 +262,6 @@
            y="51.831795"
            x="119.81052"
            id="tspan4693-7"
-           sodipodi:role="line">object</tspan></text>
-    </g>
-    <g
-       transform="translate(21.166668,10.488841)"
-       id="g4699-3">
-      <rect
-         y="46.543526"
-         x="115.14002"
-         height="8.031992"
-         width="9.3568573"
-         id="rect4629-32-0"
-         style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662" />
-      <text
-         id="text4633-6-6"
-         y="50.067905"
-         x="119.81052"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           y="50.067905"
-           x="119.81052"
-           id="tspan4691-1"
-           sodipodi:role="line">Python</tspan><tspan
-           y="51.831795"
-           x="119.81052"
-           id="tspan4693-6"
            sodipodi:role="line">object</tspan></text>
     </g>
     <g
@@ -464,7 +433,7 @@
       </g>
     </g>
     <rect
-       style="fill:none;fill-opacity:1;stroke-width:0.26159102;stroke:#000000;stroke-opacity:1"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.26159102;stroke-opacity:1"
        id="rect4945"
        width="114.99397"
        height="50.433907"
@@ -490,10 +459,12 @@
        y="19.376488" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777778px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="119.42129"
        y="26.784082"
        id="text4949-5"><tspan
+         y="26.784082"
+         x="119.42129"
          sodipodi:role="line"
          id="tspan4986">Managed by the Python GC</tspan></text>
   </g>
