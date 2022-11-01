@@ -6,6 +6,7 @@
 
 #include "pymport.h"
 #include "values.h"
+#include "memview.h"
 
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
@@ -68,6 +69,8 @@ Value Version(const CallbackInfo &info) {
   return versionInfo;
 }
 
+extern void MemInit();
+
 Napi::Object Init(Env env, Object exports) {
   Function pyObjCons = PyObjectWrap::GetClass(env);
 
@@ -107,6 +110,7 @@ Napi::Object Init(Env env, Object exports) {
     }
 #endif
     Py_Initialize();
+    memview::Init();
   }
   active_environments++;
   return exports;

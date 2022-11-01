@@ -15,21 +15,27 @@
   (info.Length() <= arg || !info[arg].IsArray() ? throw Napi::TypeError::New(env, "Argument must be an array")         \
                                                 : info[arg].As<Napi::Array>())
 
+#define NAPI_ARG_BUFFER(arg)                                                                                           \
+  ((info.Length() <= arg || !info[arg].IsBuffer()) ? throw Napi::TypeError::New(env, "Argument must be a Buffer")      \
+                                                   : info[arg].As<Napi::Buffer<char>>())
+
 #define NAPI_ARG_FUNC(arg)                                                                                             \
-  ((info.Length() <= arg || !info[arg].IsFunction()) ? throw Napi::TypeError::New(env, "Argument must be a function"); \
+  ((info.Length() <= arg || !info[arg].IsFunction()) ? throw Napi::TypeError::New(env, "Argument must be a function")  \
                                                      : info[arg].As<Napi::Function>())
 
 #ifdef DEBUG
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
 #define LINEINFO +std::string(" @ " + std::string(__FILE__) + ":" + std::to_string(__LINE__))
+#define INLINE inline
+#define ASSERT(x) assert(x)
 #else
 #define LOG(...)
 #define LINEINFO
+#define INLINE
+#define ASSERT(x)
 #endif
 
 #ifdef DEBUG_VERBOSE
-#define INLINE inline
-#define ASSERT(x) assert(x)
 #define VERBOSE(...) printf(__VA_ARGS__)
 #define VERBOSE_PYOBJ(o, msg)                                                                                          \
   {                                                                                                                    \
@@ -44,9 +50,6 @@
   }
 
 #else
-
-#define INLINE
-#define ASSERT(x)
 #define VERBOSE(...)
 #define VERBOSE_PYOBJ(o, msg)
 #endif

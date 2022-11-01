@@ -36,6 +36,8 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   if (PyModule_Check(*py)) { return _ToJS_Dir(env, py, store); }
 
+  if (PyObject_CheckBuffer(*py)) { return _ToJS_Buffer(env, py, store); }
+
   if (*py == Py_None) { return env.Null(); }
 
   if (*py == Py_False) { return Boolean::New(env, false); }
@@ -107,11 +109,25 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
     // (reading this value leads to an exception in Python too)
     if (value == nullptr) continue;
 
+    VERBOSE_PYOBJ(*key, "key");
     Napi::Value jsKey = _ToJS(env, key, store);
     Napi::Value jsValue = _ToJS(env, value, store);
     r.Set(jsKey, jsValue);
   }
   return r;
+}
+
+Napi::Value PyObjectWrap::_ToJS_Buffer(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+  Py_buffer view;
+  int status = PyObject_GetBuffer(*py, &view, PyBUF_C_CONTIGUOUS);
+  ExceptionHandler(env, status);
+
+  // V8 doesn't like multiple Buffers that point to the same memory location
+  // https://github.com/nodejs/node/issues/32463
+  // For this reason it is impossible to implement shared Buffers between Python and JS
+  Napi::Value buffer = Buffer<char>::Copy(env, reinterpret_cast<char *>(view.buf), view.len);
+  PyBuffer_Release(&view);
+  return buffer;
 }
 
 Napi::Value PyObjectWrap::ToJS(Napi::Env env, const PyWeakRef &py) {

@@ -89,6 +89,9 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value Tuple(const Napi::CallbackInfo &);
   static Napi::Value List(const Napi::CallbackInfo &);
   static Napi::Value Slice(const Napi::CallbackInfo &);
+  static Napi::Value Bytes(const Napi::CallbackInfo &);
+  static Napi::Value ByteArray(const Napi::CallbackInfo &);
+  static Napi::Value MemoryView(const Napi::CallbackInfo &);
 
   static PyStrongRef FromJS(Napi::Value);
 
@@ -115,14 +118,17 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value _ToJS_Tuple(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_List(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_Dir(Napi::Env, const PyWeakRef &, NapiObjectStore &);
+  static Napi::Value _ToJS_Buffer(Napi::Env, const PyWeakRef &, NapiObjectStore &);
 
   static PyStrongRef _FromJS(Napi::Value, PyObjectStore &);
-  static void _Dictionary(Napi::Object, const PyStrongRef &, PyObjectStore &);
-  static void _List(Napi::Array, const PyStrongRef &, PyObjectStore &);
-  static void _Tuple(Napi::Array, const PyStrongRef &, PyObjectStore &);
-  static void _Slice(Napi::Array, const PyObjectStore &);
+  static void _FromJS_Dictionary(Napi::Object, const PyStrongRef &, PyObjectStore &);
+  static void _FromJS_List(Napi::Array, const PyStrongRef &, PyObjectStore &);
+  static void _FromJS_Tuple(Napi::Array, const PyStrongRef &, PyObjectStore &);
+  static PyStrongRef _FromJS_BytesArray(Napi::Buffer<char>);
+
   static Napi::Value _Call(const PyWeakRef &, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
+
   static bool _InstanceOf(Napi::Value);
   static bool _FunctionOf(Napi::Value);
 

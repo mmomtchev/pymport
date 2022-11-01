@@ -52,7 +52,49 @@ export class PyObject {
   static slice: (v: any[3]) => PyObject;
 
   /**
-   * Construct an automatically typed PyObject from a plain JS value
+   * Construct a PyObject bytes from a Buffer. The resulting object is a copy.
+   * @param {Buffer} buffer
+   * @returns {PyObject}
+   */
+  static bytes: (v: any[3]) => PyObject;
+
+  /**
+   * Construct a PyObject bytearray from a Buffer. The resulting object is a copy.
+   * @param {Buffer} buffer
+   * @returns {PyObject}
+   */
+  static bytearray: (v: any[3]) => PyObject;
+
+  /**
+   * Construct a PyObject memoryview from a Buffer.
+   * The resulting object references directly the Buffer.
+   * The Buffer is guaranteed to stay in memory for as long as the memoryview exists.
+   * This is the only case in which V8 objects can be held by the Python GC.
+   * @param {Buffer} buffer
+   * @returns {PyObject}
+   */
+  static memoryview: (v: any[3]) => PyObject;
+
+  /**
+   * Construct an automatically typed PyObject from a plain JS value.
+   * The PyObject is a copy by value unless explicitly mentioned.
+   * 
+   * A number becomes an int when it has no decimal part or a float when it has one.
+   * 
+   * A bool becomes a bool.
+   * 
+   * Undefined and null become None.
+   *
+   * A string becomes an unicode string.
+   * 
+   * An array becomes a list.
+   * 
+   * An object becomes a dictionary.
+   * 
+   * A PyObject or a proxified PyObject is always passed by reference and reverts to its Python type.
+   * 
+   * A Buffer becomes a bytearray.
+   * 
    * @param {any} value
    * @returns {PyObject}
    */
@@ -116,6 +158,28 @@ export class PyObject {
 
   /**
    * Transform the PyObject to a plain JS object. Equivalent to valueOf().
+   * 
+   * A float or an int becomes a Number.
+   * 
+   * A bool becomes a bool.
+   * 
+   * None becomes null.
+   *
+   * An unicode string becomes a string.
+   * 
+   * A list or a tuple become an array.
+   * 
+   * A dictionary becomes an object.
+   * 
+   * Any object implementing the Buffer Protocol - bytes, bytearray or a memoryview - becomes a Buffer.
+   * The memory referenced by the Buffer is a copy of the Python memory.
+   * 
+   * A callable becomes a native (binary) function.
+   * 
+   * A module becomes an object.
+   *
+   * Everything else remains a PyObject.
+   * 
    * @returns {any}
    */
   toJS: () => any;

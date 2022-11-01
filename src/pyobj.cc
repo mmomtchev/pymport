@@ -57,7 +57,10 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::StaticMethod("dict", &PyObjectWrap::Dictionary),
      PyObjectWrap::StaticMethod("list", &PyObjectWrap::List),
      PyObjectWrap::StaticMethod("tuple", &PyObjectWrap::Tuple),
-     PyObjectWrap::StaticMethod("slice", &PyObjectWrap::Slice)});
+     PyObjectWrap::StaticMethod("slice", &PyObjectWrap::Slice),
+     PyObjectWrap::StaticMethod("bytes", &PyObjectWrap::Bytes),
+     PyObjectWrap::StaticMethod("bytearray", &PyObjectWrap::ByteArray),
+     PyObjectWrap::StaticMethod("memoryview", &PyObjectWrap::MemoryView)});
 }
 
 Value PyObjectWrap::ToString(const CallbackInfo &info) {
@@ -109,21 +112,6 @@ Value PyObjectWrap::Type(const CallbackInfo &info) {
 Value PyObjectWrap::Item(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  if (PyList_Check(*self)) {
-    Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
-    PyWeakRef r = PyList_GetItem(*self, idx);
-    ExceptionHandler(env, r);
-    // PyList returns a borrowed reference, New expects a strong one
-    return New(env, std::move(PyStrongRef(r)));
-  }
-  if (PyTuple_Check(*self)) {
-    Py_ssize_t idx = NAPI_ARG_NUMBER(0).Int64Value();
-    PyWeakRef r = PyTuple_GetItem(*self, idx);
-    ExceptionHandler(env, r);
-    // PyTuple returns a borrowed reference, New expects a strong one
-    return New(env, std::move(PyStrongRef(r)));
-  }
-
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
   PyStrongRef item = FromJS(info[0]);
   PyStrongRef r = PyObject_GetItem(*self, *item);
@@ -138,9 +126,9 @@ Value PyObjectWrap::Keys(const CallbackInfo &info) {
   if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
   auto py = ObjectWrap::Unwrap(target);
 
-  if (PyDict_Check(*py->self)) return New(env, PyDict_Keys(*py->self));
+  if (PyMapping_Check(*py->self)) return New(env, PyMapping_Keys(*py->self));
 
-  throw TypeError::New(env, "Object does not implement keys()");
+  throw TypeError::New(env, "Object does not support mapping protocol");
 }
 
 Value PyObjectWrap::Values(const CallbackInfo &info) {
@@ -150,19 +138,16 @@ Value PyObjectWrap::Values(const CallbackInfo &info) {
   if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
   auto py = ObjectWrap::Unwrap(target);
 
-  if (PyDict_Check(*py->self)) return New(env, PyDict_Values(*py->self));
+  if (PyMapping_Check(*py->self)) return New(env, PyMapping_Values(*py->self));
 
-  throw TypeError::New(env, "Object does not implement values()");
+  throw TypeError::New(env, "Object does not support mapping protocol");
 }
 
 Value PyObjectWrap::Length(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  if (PyList_Check(*self)) { return Number::New(env, static_cast<long>(PyList_Size(*self))); }
-  if (PyTuple_Check(*self)) return Number::New(env, static_cast<long>(PyTuple_Size(*self)));
-  if (PyDict_Check(*self)) return Number::New(env, static_cast<long>(PyDict_Size(*self)));
+  if (PySequence_Check(*self)) return Number::New(env, static_cast<long>(PySequence_Size(*self)));
   if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));
-  if (PyUnicode_Check(*self)) return Number::New(env, static_cast<long>(PyUnicode_GetLength(*self)));
   return env.Undefined();
 }
 

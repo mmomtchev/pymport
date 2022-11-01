@@ -10,6 +10,8 @@ namespace pymport {
 class PyStrongRef;
 extern size_t active_environments;
 
+// Note that this is different than the notion of weak reference objects in Python
+// In Python lingo, these would be PyBorrowedRef and PyOwnedRef
 class PyWeakRef {
     protected:
   PyObject *self;
@@ -45,8 +47,7 @@ class PyWeakRef {
     return self;
   };
 
-  INLINE PyObject **operator&() {
-    ASSERT(self == nullptr);
+  INLINE virtual PyObject **operator&() {
     return &self;
   }
 };
@@ -119,6 +120,12 @@ class PyStrongRef : public PyWeakRef {
     self = nullptr;
     return r;
   };
+
+  // Overwriting existing references is supported only on WeakRefs
+  INLINE virtual PyObject **operator&() override {
+    ASSERT(self == nullptr);
+    return &self;
+  }
 
   INLINE virtual ~PyStrongRef() {
 #ifdef DEBUG

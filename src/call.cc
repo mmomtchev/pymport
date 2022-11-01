@@ -15,7 +15,7 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   size_t argc = info.Length();
   if (argc > 0 && info[argc - 1].IsObject() && !info[argc - 1].IsArray() && !_InstanceOf(info[argc - 1])) {
     PyObjectStore store;
-    _Dictionary((info[argc - 1]).ToObject(), kwargs, store);
+    _FromJS_Dictionary((info[argc - 1]).ToObject(), kwargs, store);
     argc--;
   }
 
@@ -75,7 +75,7 @@ void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
     PyStrongRef pstr = PyObject_Str(*v);
     const char *py_err_msg = PyUnicode_AsUTF8(*pstr);
 
-    std::string err_msg = std::string("Python exception: ") + py_err_msg LINEINFO;
+    std::string err_msg = std::string("Python exception: ") + py_err_msg;
 
     auto error_object = Napi::Error::New(env, err_msg);
     if (trace != nullptr) {
@@ -84,5 +84,5 @@ void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
     }
     throw error_object;
   }
-  throw Napi::TypeError::New(env, std::string("Unknown Python error ") LINEINFO);
+  throw Napi::TypeError::New(env, std::string("Unknown Python error"));
 }

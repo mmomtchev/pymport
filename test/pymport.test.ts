@@ -122,7 +122,7 @@ describe('pymport', () => {
 
   describe('handling of Python exceptions', () => {
     it('retrieve the Python traceback', () => {
-      const raise = pymport('python_raise_error');
+      const raise = pymport('python_helpers');
 
       try {
         raise.get('raise_exception').call();
@@ -131,7 +131,7 @@ describe('pymport', () => {
         const traceback = pymport('traceback');
         const stack = traceback.get('extract_tb').call((e as PythonError).pythonTrace);
         const text = stack.get('format').call().toJS();
-        assert.match(text, /python_raise_error.py/);
+        assert.match(text, /python_helpers.py/);
         assert.match(text, /line 2/);
         assert.match(text, /raise_exception/);
         assert.match(text, /test exception/);

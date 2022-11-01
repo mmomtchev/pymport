@@ -16,8 +16,8 @@ describe('types', () => {
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
       assert.throws(() => f.item(0), /not subscriptable/);
-      assert.throws(() => PyObject.keys(f), /does not implement keys/);
-      assert.throws(() => PyObject.values(f), /does not implement values/);
+      assert.throws(() => PyObject.keys(f), /does not support mapping/);
+      assert.throws(() => PyObject.values(f), /does not support mapping/);
       assert.equal(f.type, 'float');
       assert.equal(f.toJS(), 2.3);
       assert.equal(+f, 2.3);
@@ -50,8 +50,8 @@ describe('types', () => {
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
       assert.throws(() => f.item(0), /not subscriptable/);
-      assert.throws(() => PyObject.keys(f), /does not implement keys/);
-      assert.throws(() => PyObject.values(f), /does not implement values/);
+      assert.throws(() => PyObject.keys(f), /does not support mapping/);
+      assert.throws(() => PyObject.values(f), /does not support mapping/);
       assert.equal(f.type, 'int');
       assert.equal(f.toJS(), 2);
       assert.equal(+f, 2);
@@ -97,8 +97,8 @@ describe('types', () => {
       assert.equal(a.length, 3);
       assert.equal(a.item(1).toJS(), 2.1);
       assert.throws(() => a.item(10));
-      assert.throws(() => PyObject.keys(a), /does not implement keys/);
-      assert.throws(() => PyObject.values(a), /does not implement values/);
+      assert.throws(() => PyObject.keys(a), /'list' object has no attribute 'keys'/);
+      assert.throws(() => PyObject.values(a), /'list' object has no attribute 'values'/);
       assert.deepEqual(a.toJS(), array);
     });
 
@@ -140,8 +140,8 @@ describe('types', () => {
       assert.equal(t.length, 3);
       assert.equal(t.item(1).toJS(), 'a');
       assert.throws(() => t.item(10));
-      assert.throws(() => PyObject.keys(t), /does not implement keys/);
-      assert.throws(() => PyObject.values(t), /does not implement values/);
+      assert.throws(() => PyObject.keys(t), /'tuple' object has no attribute 'keys'/);
+      assert.throws(() => PyObject.values(t), /'tuple' object has no attribute 'values'/);
     });
 
     it('toJS()', () => {
@@ -177,8 +177,8 @@ describe('types', () => {
       assert.equal(s.length, 5);
       assert.equal(s.type, 'str');
       assert.equal(s.toJS(), 'hello');
-      assert.throws(() => PyObject.keys(s), /does not implement keys/);
-      assert.throws(() => PyObject.values(s), /does not implement values/);
+      assert.throws(() => PyObject.keys(s), /'str' object has no attribute 'keys'/);
+      assert.throws(() => PyObject.values(s), /str' object has no attribute 'values'/);
     });
 
     it('toJS()', () => {
@@ -306,8 +306,8 @@ describe('types', () => {
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'True');
       assert.equal(bool.toJS(), true);
-      assert.throws(() => PyObject.keys(bool), /does not implement keys/);
-      assert.throws(() => PyObject.values(bool), /does not implement values/);
+      assert.throws(() => PyObject.keys(bool), /does not support mapping/);
+      assert.throws(() => PyObject.values(bool), /does not support mapping/);
     });
 
     it('False is equivalent to false', () => {
@@ -327,8 +327,8 @@ describe('types', () => {
       assert.isTrue(fn.callable);
       assert.isUndefined(fn.length);
       assert.equal(fn.type, 'function');
-      assert.throws(() => PyObject.keys(fn), /does not implement keys/);
-      assert.throws(() => PyObject.values(fn), /does not implement values/);
+      assert.throws(() => PyObject.keys(fn), /does not support mapping/);
+      assert.throws(() => PyObject.values(fn), /does not support mapping/);
     });
 
     it('toJS()', () => {
@@ -344,6 +344,85 @@ describe('types', () => {
       const fn = np.get('ones').toJS();
       assert.instanceOf(fn.__PyObject__, PyObject);
       assert.equal(fn.__PyObject__, np.get('ones'));
+    });
+  });
+
+  describe('Buffer Protocol objects', () => {
+    it('Buffer fromJS()', () => {
+      const text = 'a string';
+      const buf = Buffer.from(text, 'utf-8');
+      const byteArray = PyObject.fromJS(buf);
+      assert.instanceOf(byteArray, PyObject);
+      assert.equal(byteArray.type, 'bytearray');
+      assert.isFalse(byteArray.callable);
+      assert.equal(byteArray.length, text.length);
+      assert.equal(String.fromCharCode(byteArray.item(1).toJS()), text[1]);
+
+      const backToJs = byteArray.toJS();
+      assert.instanceOf(backToJs, Buffer);
+      assert.deepEqual(buf, backToJs);
+    });
+
+    it('bytes toJS()', () => {
+      const text = 'different string';
+      const bytes = PyObject.bytes(Buffer.from(text));
+      assert.equal(bytes.type, 'bytes');
+      assert.instanceOf(bytes, PyObject);
+      assert.isFalse(bytes.callable);
+      assert.equal(bytes.length, text.length);
+      assert.equal(String.fromCharCode(bytes.item(1).toJS()), text[1]);
+
+      const buf = bytes.toJS();
+      assert.equal(buf.length, text.length);
+      assert.instanceOf(buf, Buffer);
+      assert.equal(buf.toString(), text);
+    });
+
+    it('bytearray toJS()', () => {
+      const text = 'another string';
+      const bytearray = PyObject.bytearray(Buffer.from(text));
+      assert.equal(bytearray.type, 'bytearray');
+      assert.instanceOf(bytearray, PyObject);
+      assert.isFalse(bytearray.callable);
+      assert.equal(bytearray.length, text.length);
+      assert.equal(String.fromCharCode(bytearray.item(1).toJS()), text[1]);
+
+      const buf = bytearray.toJS();
+      assert.equal(buf.length, text.length);
+      assert.instanceOf(buf, Buffer);
+      assert.equal(buf.toString(), text);
+    });
+
+    it('memoryview toJS()', () => {
+      const text = 'yet another string';
+      const buf = Buffer.from(text);
+      const mv = PyObject.memoryview(buf);
+      assert.equal(mv.type, 'memoryview');
+      assert.instanceOf(mv, PyObject);
+      assert.isFalse(mv.callable);
+      assert.equal(mv.length, text.length);
+      assert.equal(String.fromCharCode(mv.item(1).toJS()), text[1]);
+
+      const backToJs = mv.toJS();
+      assert.equal(backToJs.length, text.length);
+      assert.instanceOf(backToJs, Buffer);
+      assert.equal(backToJs.toString(), text);
+
+      // This triggers the finalizer chain
+      const del = pymport('python_helpers');
+      del.get('delete_arg').call(mv);
+    });
+
+    it('non-contiguous arrays', () => {
+      const a = np.get('zeros').call([2, 3]).get('T');
+      assert.throws(() => {
+        a.toJS();
+      }, /contiguous/);
+
+      const v = PyObject.memoryview(Buffer.from('123')).item(PyObject.slice([null, null, 2]));
+      assert.throws(() => {
+        v.toJS();
+      }, /contiguous/);
     });
   });
 
@@ -372,8 +451,8 @@ describe('types', () => {
       const cut = list.get('__getitem__').call(slice);
       assert.deepEqual(cut.toJS(), [1, 3]);
 
-      assert.throws(() => PyObject.keys(slice), /does not implement keys/);
-      assert.throws(() => PyObject.values(slice), /does not implement values/);
+      assert.throws(() => PyObject.keys(slice), /does not support mapping/);
+      assert.throws(() => PyObject.values(slice), /does not support mapping/);
     });
 
     it('partial arguments', () => {
@@ -396,6 +475,13 @@ describe('types', () => {
       const loader = np.get('__loader__');
       assert.instanceOf(loader, PyObject);
       assert.equal(loader, loader.toJS());
+    });
+
+    it('URL', () => {
+      const url = new URL('http://localhost');
+      assert.throws(() => {
+        PyObject.fromJS(url);
+      }, 'class objects');
     });
   });
 });

@@ -195,9 +195,7 @@ Generally, `proxify` is the best way to use `pymport`.
 
 # Future Plans
 
-- `Buffer` <-> `bytes[]` equivalence
 - `TypedArray` <-> `array` equivalence
-- Improved memory management in V8 of Python objects (currently their memory size is not being tracked)
 - Passing of JavaScript callbacks to Python
 - More features allowing direct interaction with `PyObject`s from JS
 - (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side

@@ -34,7 +34,7 @@ Value PyObjectWrap::Integer(const CallbackInfo &info) {
 }
 
 // Returns a strong reference
-void PyObjectWrap::_Dictionary(Napi::Object object, const PyStrongRef &target, PyObjectStore &store) {
+void PyObjectWrap::_FromJS_Dictionary(Napi::Object object, const PyStrongRef &target, PyObjectStore &store) {
   Napi::Env env = object.Env();
 
   for (auto const &el : object.GetPropertyNames()) {
@@ -55,13 +55,13 @@ Value PyObjectWrap::Dictionary(const CallbackInfo &info) {
   PyStrongRef dict = PyDict_New();
   ExceptionHandler(env, dict);
   PyObjectStore store;
-  _Dictionary(raw, dict, store);
+  _FromJS_Dictionary(raw, dict, store);
 
   return New(env, std::move(dict));
 }
 
 // Returns a strong reference
-void PyObjectWrap::_List(Napi::Array array, const PyStrongRef &target, PyObjectStore &store) {
+void PyObjectWrap::_FromJS_List(Napi::Array array, const PyStrongRef &target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {
@@ -78,13 +78,13 @@ Value PyObjectWrap::List(const CallbackInfo &info) {
   PyStrongRef list = PyList_New(raw.Length());
   ExceptionHandler(env, list);
   PyObjectStore store;
-  _List(raw, list, store);
+  _FromJS_List(raw, list, store);
 
   return New(env, std::move(list));
 }
 
 // Returns a strong reference
-void PyObjectWrap::_Tuple(Napi::Array array, const PyStrongRef &target, PyObjectStore &store) {
+void PyObjectWrap::_FromJS_Tuple(Napi::Array array, const PyStrongRef &target, PyObjectStore &store) {
   size_t len = array.Length();
 
   for (size_t i = 0; i < len; i++) {
@@ -101,7 +101,7 @@ Value PyObjectWrap::Tuple(const CallbackInfo &info) {
   PyStrongRef tuple = PyTuple_New(raw.Length());
   ExceptionHandler(env, tuple);
   PyObjectStore store;
-  _Tuple(raw, tuple, store);
+  _FromJS_Tuple(raw, tuple, store);
 
   return New(env, std::move(tuple));
 }
@@ -120,6 +120,28 @@ Value PyObjectWrap::Slice(const CallbackInfo &info) {
   return New(env, std::move(slice));
 }
 
+PyStrongRef PyObjectWrap::_FromJS_BytesArray(Buffer<char> buffer) {
+  PyStrongRef bytearray = PyByteArray_FromStringAndSize(buffer.Data(), buffer.ByteLength());
+  ExceptionHandler(buffer.Env(), bytearray);
+  return bytearray;
+}
+
+Value PyObjectWrap::Bytes(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  Buffer<char> buffer = NAPI_ARG_BUFFER(0);
+  PyStrongRef bytes = PyBytes_FromStringAndSize(buffer.Data(), buffer.ByteLength());
+  ExceptionHandler(env, bytes);
+  return New(env, std::move(bytes));
+}
+
+Value PyObjectWrap::ByteArray(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  Buffer<char> buffer = NAPI_ARG_BUFFER(0);
+  PyStrongRef bytearray = PyByteArray_FromStringAndSize(buffer.Data(), buffer.ByteLength());
+  ExceptionHandler(env, bytearray);
+  return New(env, std::move(bytearray));
+}
+
 Value PyObjectWrap::FromJS(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -131,6 +153,15 @@ Value PyObjectWrap::FromJS(const CallbackInfo &info) {
 PyStrongRef PyObjectWrap::FromJS(Napi::Value v) {
   PyObjectStore store;
   return _FromJS(v, store);
+}
+
+// Is this a class instance
+static bool HasPrototype(Napi::Object v) {
+  if (!v.Has("__proto__")) return false;
+  Value proto = v.Get("__proto__");
+  if (!proto.IsObject() || !proto.ToObject().Has("__proto__")) return false;
+  Value proto_proto = proto.ToObject().Get("__proto__");
+  return !proto_proto.IsNull();
 }
 
 // Returns a strong reference
@@ -173,7 +204,7 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     PyStrongRef list = PyList_New(array.Length());
     ExceptionHandler(env, list);
     store.push_front({v, list});
-    _List(array, list, store);
+    _FromJS_List(array, list, store);
     return list;
   }
   if (v.IsObject()) {
@@ -191,12 +222,18 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
       // Copy the strong reference
       return PyStrongRef(py->self);
     }
-    if (v.IsFunction()) { throw TypeError::New(env, "functions are not supported yet"); }
 
+    if (obj.IsBuffer()) { return _FromJS_BytesArray(obj.As<Buffer<char>>()); }
+
+    // These are not supported
+    if (v.IsFunction()) { throw TypeError::New(env, "functions are not supported yet"); }
+    if (HasPrototype(obj)) { throw TypeError::New(env, "class objects cannot be converted to Python"); }
+
+    // Fallback to dictionary
     PyStrongRef dict = PyDict_New();
     ExceptionHandler(env, dict);
     store.push_front({v, dict});
-    _Dictionary(obj, dict, store);
+    _FromJS_Dictionary(obj, dict, store);
     return dict;
   }
   if (v.IsNull() || v.IsUndefined()) { return Py_None; }
