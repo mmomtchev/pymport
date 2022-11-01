@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="overview.svg">
+  <defs
+     id="defs2">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4553"
+       x="-0.33066439"
+       width="1.6613288"
+       y="-2.4682771"
+       height="5.9365543">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="6.8559067"
+         id="feGaussianBlur4555" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="351.68814"
+     inkscape:cy="871.05548"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1361"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g4613"
+       transform="translate(-11.435166,-0.81229925)">
+      <rect
+         y="70.622704"
+         x="14.432554"
+         height="42.763123"
+         width="57.462948"
+         id="rect3713"
+         style="fill:#6cc24a;fill-opacity:1;stroke-width:0.26458332" />
+      <text
+         id="text3717"
+         y="89.56514"
+         x="43.033115"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           y="89.56514"
+           x="43.033115"
+           id="tspan4577"
+           sodipodi:role="line">Node.js/V8</tspan><tspan
+           y="98.384583"
+           x="43.033115"
+           id="tspan4579"
+           sodipodi:role="line">interpreter</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffe873;fill-opacity:1;stroke:none;stroke-width:0.26458332;filter:url(#filter4553);"
+       x="101.56143"
+       y="88.098221"
+       id="text3717-2"><tspan
+         sodipodi:role="line"
+         id="tspan3715-0"
+         x="101.56143"
+         y="88.098221"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332;fill:#ffe873;fill-opacity:1;">V8 interpreter</tspan></text>
+    <g
+       id="g4619"
+       transform="translate(27.592262,-0.66145833)">
+      <rect
+         y="70.471855"
+         x="90.331024"
+         height="42.763123"
+         width="57.462948"
+         id="rect3713-8"
+         style="fill:#ffe873;fill-opacity:1;stroke-width:0.26458332" />
+      <text
+         id="text3717-8"
+         y="89.414291"
+         x="118.75072"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;stroke-width:0.26458332"
+           y="89.414291"
+           x="118.75072"
+           id="tspan3715-5"
+           sodipodi:role="line">Python</tspan><tspan
+           id="tspan4575"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;stroke-width:0.26458332"
+           y="98.233734"
+           x="118.75072"
+           sodipodi:role="line">interpreter</tspan></text>
+    </g>
+    <g
+       id="g4625"
+       transform="translate(4.1471631,-46.963552)">
+      <rect
+         y="116.77395"
+         x="56.313171"
+         height="42.763123"
+         width="57.462948"
+         id="rect3713-9"
+         style="fill:#333333;fill-opacity:1;stroke-width:0.26458332" />
+      <text
+         id="text3717-7"
+         y="136.16942"
+         x="85.018806"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           y="136.16942"
+           x="85.018806"
+           id="tspan4605"
+           sodipodi:role="line">pymport</tspan><tspan
+           y="144.98886"
+           x="85.018806"
+           id="tspan4607"
+           sodipodi:role="line">C++ code</tspan></text>
+    </g>
+    <g
+       id="g4638"
+       transform="translate(-12.227581,-5.3453906)">
+      <rect
+         y="43.283482"
+         x="41.860863"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629"
+         style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633"
+         y="47.689808"
+         x="43.188248"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="47.689808"
+           x="43.188248"
+           id="tspan4631"
+           sodipodi:role="line">V8 object</tspan></text>
+    </g>
+    <g
+       transform="translate(0.3864011,-1.4238868)"
+       id="g4638-9">
+      <rect
+         y="43.283482"
+         x="41.860863"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629-3"
+         style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633-9"
+         y="47.689808"
+         x="43.188248"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="47.689808"
+           x="43.188248"
+           id="tspan4631-9"
+           sodipodi:role="line">V8 object</tspan></text>
+    </g>
+    <g
+       transform="translate(-8.4960389,9.4429294)"
+       id="g4638-3">
+      <rect
+         y="43.283482"
+         x="41.860863"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629-5"
+         style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633-0"
+         y="47.689808"
+         x="43.188248"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="47.689808"
+           x="43.188248"
+           id="tspan4631-3"
+           sodipodi:role="line">V8 object</tspan></text>
+    </g>
+    <g
+       id="g4699"
+       transform="translate(32.883929,-6.7090774)">
+      <rect
+         y="46.543526"
+         x="115.14002"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629-32"
+         style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633-6"
+         y="50.067905"
+         x="119.81052"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           y="50.067905"
+           x="119.81052"
+           id="tspan4691"
+           sodipodi:role="line">Python</tspan><tspan
+           y="51.831795"
+           x="119.81052"
+           id="tspan4693"
+           sodipodi:role="line">object</tspan></text>
+    </g>
+    <g
+       transform="translate(16.347472,-3.3072895)"
+       id="g4699-6">
+      <rect
+         y="46.543526"
+         x="115.14002"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629-32-8"
+         style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633-6-0"
+         y="50.067905"
+         x="119.81052"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           y="50.067905"
+           x="119.81052"
+           id="tspan4691-6"
+           sodipodi:role="line">Python</tspan><tspan
+           y="51.831795"
+           x="119.81052"
+           id="tspan4693-7"
+           sodipodi:role="line">object</tspan></text>
+    </g>
+    <g
+       transform="translate(21.166668,10.488841)"
+       id="g4699-3">
+      <rect
+         y="46.543526"
+         x="115.14002"
+         height="8.031992"
+         width="9.3568573"
+         id="rect4629-32-0"
+         style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662" />
+      <text
+         id="text4633-6-6"
+         y="50.067905"
+         x="119.81052"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           y="50.067905"
+           x="119.81052"
+           id="tspan4691-1"
+           sodipodi:role="line">Python</tspan><tspan
+           y="51.831795"
+           x="119.81052"
+           id="tspan4693-6"
+           sodipodi:role="line">object</tspan></text>
+    </g>
+    <g
+       transform="translate(-10.204286,-18.941853)"
+       id="g4801-9">
+      <g
+         id="g4699-7-2"
+         transform="translate(-35.151784,11.1503)">
+        <rect
+           style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662"
+           id="rect4629-32-9-1"
+           width="9.3568573"
+           height="8.031992"
+           x="115.14002"
+           y="46.543526" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="119.81052"
+           y="50.067905"
+           id="text4633-6-8-9"><tspan
+             sodipodi:role="line"
+             id="tspan4691-4-0"
+             x="119.81052"
+             y="50.067905">Python</tspan><tspan
+             sodipodi:role="line"
+             id="tspan4693-0-0"
+             x="119.81052"
+             y="51.831795">object</tspan></text>
+      </g>
+      <g
+         id="g4790-9">
+        <rect
+           style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662"
+           id="rect4629-3-2-6"
+           width="9.3568573"
+           height="8.031992"
+           x="79.988235"
+           y="49.661831" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="80.90979"
+           y="53.970573"
+           id="text4633-9-6-3"><tspan
+             sodipodi:role="line"
+             id="tspan4785-5"
+             x="80.90979"
+             y="53.970573">PyObjectWrap</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g4801-6"
+       transform="translate(3.1829343,-0.76277733)">
+      <g
+         id="g4699-7-7"
+         transform="translate(-35.151784,11.1503)">
+        <rect
+           style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662"
+           id="rect4629-32-9-6"
+           width="9.3568573"
+           height="8.031992"
+           x="115.14002"
+           y="46.543526" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="119.81052"
+           y="50.067905"
+           id="text4633-6-8-2"><tspan
+             sodipodi:role="line"
+             id="tspan4691-4-7"
+             x="119.81052"
+             y="50.067905">Python</tspan><tspan
+             sodipodi:role="line"
+             id="tspan4693-0-7"
+             x="119.81052"
+             y="51.831795">object</tspan></text>
+      </g>
+      <g
+         id="g4790-7">
+        <rect
+           style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662"
+           id="rect4629-3-2-5"
+           width="9.3568573"
+           height="8.031992"
+           x="79.988235"
+           y="49.661831" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="80.90979"
+           y="53.970573"
+           id="text4633-9-6-8"><tspan
+             sodipodi:role="line"
+             id="tspan4785-1"
+             x="80.90979"
+             y="53.970573">PyObjectWrap</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g4943"
+       transform="translate(33.072916,3.0238095)">
+      <g
+         id="g4699-7"
+         transform="translate(-45.241209,-3.816794)">
+        <rect
+           style="fill:#ffe873;fill-opacity:1;stroke-width:0.18338662"
+           id="rect4629-32-9"
+           width="9.3568573"
+           height="8.031992"
+           x="115.14002"
+           y="46.543526" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111112px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="119.81052"
+           y="50.067905"
+           id="text4633-6-8"><tspan
+             sodipodi:role="line"
+             id="tspan4691-4"
+             x="119.81052"
+             y="50.067905">Python</tspan><tspan
+             sodipodi:role="line"
+             id="tspan4693-0"
+             x="119.81052"
+             y="51.831795">object</tspan></text>
+      </g>
+      <g
+         transform="translate(-10.089425,-14.967094)"
+         id="g4790">
+        <rect
+           style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662"
+           id="rect4629-3-2"
+           width="9.3568573"
+           height="8.031992"
+           x="79.988235"
+           y="49.661831" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="80.90979"
+           y="53.970573"
+           id="text4633-9-6"><tspan
+             sodipodi:role="line"
+             id="tspan4785"
+             x="80.90979"
+             y="53.970573">PyObjectWrap</tspan></text>
+      </g>
+      <g
+         id="g4928">
+        <rect
+           style="fill:#6cc24a;fill-opacity:1;stroke-width:0.18338662"
+           id="rect4629-3-2-2"
+           width="9.3568573"
+           height="8.031992"
+           x="69.898811"
+           y="26.662743" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="72.716888"
+           y="30.976912"
+           id="text4633-9-6-1"><tspan
+             sodipodi:role="line"
+             id="tspan4923"
+             x="72.716888"
+             y="30.976912">proxify</tspan></text>
+      </g>
+    </g>
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:0.26159102;stroke:#000000;stroke-opacity:1"
+       id="rect4945"
+       width="114.99397"
+       height="50.433907"
+       x="2.9293156"
+       y="19.376488" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="4.5357146"
+       y="26.784082"
+       id="text4949"><tspan
+         sodipodi:role="line"
+         id="tspan4947"
+         x="4.5357146"
+         y="26.784082"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332">Managed by the V8 GC</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.26458332;stroke-opacity:1"
+       id="rect4966"
+       width="57.462952"
+       height="50.433907"
+       x="117.92329"
+       y="19.376488" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777778px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       x="119.42129"
+       y="26.784082"
+       id="text4949-5"><tspan
+         sodipodi:role="line"
+         id="tspan4986">Managed by the Python GC</tspan></text>
+  </g>
+</svg>
