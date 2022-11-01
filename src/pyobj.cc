@@ -151,6 +151,7 @@ Value PyObjectWrap::Length(const CallbackInfo &info) {
   return env.Undefined();
 }
 
+// Is the Napi::Value v a PyObject?
 bool PyObjectWrap::_InstanceOf(Napi::Value v) {
   Napi::Env env = v.Env();
   if (!v.IsObject()) return false;
@@ -159,6 +160,8 @@ bool PyObjectWrap::_InstanceOf(Napi::Value v) {
   return obj.ToObject().InstanceOf(cons->Value());
 }
 
+// Is the Napi::Value v a proxified PyObject or a PyObject function?
+// (both of these are recognized by having a __PyObject__ attribute that is a PyObject)
 bool PyObjectWrap::_FunctionOf(Napi::Value v) {
   Napi::Env env = v.Env();
   if (!v.IsObject()) return false;
