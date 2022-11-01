@@ -51,7 +51,7 @@ All Python objects co-exist with the JavaScript objects. The Python GC manages t
 
 Python objects have a `PyObject` type in JavaScript. When calling a Python function, input JavaScript arguments are automatically converted. Automatic conversion to JavaScript is possible if the context permits it through `valueOf` and `Symbol.toPrimitive`. In all other cases, an explicit conversion, using `fromJS()`/`toJS()` is needed.
 
-An additional _(and optional)_ convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
+An additional *(and optional)* convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
 
 At the moment, Python code does not have access to the JavaScript objects - this requires the implementation of a similar `JSObject` type on the Python side. All JavaScript arguments are passed to Python by value. `PyObject`s are passed by reference. See the lambda examples below to get a feeling how it works.
 
@@ -172,17 +172,17 @@ Generally, `proxify` is the best way to use `pymport`.
 
 # Performance Notes / Known Issues
 
-- Simply calling into Python is more expensive than from the native Python interpreter
-  - If working on `numpy` arrays of less than 10 elements, the difference can be very significant (up to 4 times)
-  - `proxify`ed objects have a small additional overhead that, for all practical reasons, can be ignored
-  - Above a few hundred elements, the difference gradually becomes smaller
-  - With very large arrays and very complex operations, Node.js can very slightly outperform stock Python
-    _Large `numpy` arrays are very dependent on the memory allocator and Node.js/V8 has an outstanding memory allocator_
-- `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
-- The two GCs should work well in tandem as for every object there is exactly one of them that can free it
-- In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
-- In (_upcoming_) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
-- In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
+*   Simply calling into Python is more expensive than from the native Python interpreter
+    *   If working on `numpy` arrays of less than 10 elements, the difference can be very significant (up to 4 times)
+    *   `proxify`ed objects have a small additional overhead that, for all practical reasons, can be ignored
+    *   Above a few hundred elements, the difference gradually becomes smaller
+    *   With very large arrays and very complex operations, Node.js can very slightly outperform stock Python
+        *Large `numpy` arrays are very dependent on the memory allocator and Node.js/V8 has an outstanding memory allocator*
+*   `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
+*   The two GCs should work well in tandem as for every object there is exactly one of them that can free it
+*   In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
+*   In (*upcoming*) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
+*   In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
 
 # Supported Versions
 
@@ -195,11 +195,11 @@ Generally, `proxify` is the best way to use `pymport`.
 
 # Future Plans
 
-- `TypedArray` <-> `array` equivalence
-- Passing of JavaScript callbacks to Python
-- More features allowing direct interaction with `PyObject`s from JS
-- (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
-- (longer term) Generate TypeScript bindings from the Python modules
+*   `TypedArray` <-> `array` equivalence
+*   Passing of JavaScript callbacks to Python
+*   More features allowing direct interaction with `PyObject`s from JS
+*   (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
+*   (longer term) Generate TypeScript bindings from the Python modules
 
 # API
 
@@ -207,47 +207,54 @@ Generally, `proxify` is the best way to use `pymport`.
 
 ### Table of Contents
 
-- [PyObject](#pyobject)
-  - [callable](#callable)
-  - [type](#type)
-  - [length](#length)
-  - [get](#get)
-    - [Parameters](#parameters)
-  - [has](#has)
-    - [Parameters](#parameters-1)
-  - [item](#item)
-    - [Parameters](#parameters-2)
-  - [call](#call)
-    - [Parameters](#parameters-3)
-  - [toJS](#tojs)
-  - [valueOf](#valueof)
-  - [toString](#tostring)
-  - [int](#int)
-    - [Parameters](#parameters-4)
-  - [float](#float)
-    - [Parameters](#parameters-5)
-  - [string](#string)
-    - [Parameters](#parameters-6)
-  - [dict](#dict)
-    - [Parameters](#parameters-7)
-  - [list](#list)
-    - [Parameters](#parameters-8)
-  - [tuple](#tuple)
-    - [Parameters](#parameters-9)
-  - [slice](#slice)
-  - [fromJS](#fromjs)
-    - [Parameters](#parameters-10)
-  - [keys](#keys)
-  - [values](#values)
-- [pymport](#pymport)
-  - [Parameters](#parameters-11)
-- [proxify](#proxify)
-  - [Parameters](#parameters-12)
-- [pyval](#pyval)
-  - [Parameters](#parameters-13)
-- [version](#version)
-- [version](#version-1)
-  - [pythonRuntime](#pythonruntime)
+*   [PyObject](#pyobject)
+    *   [callable](#callable)
+    *   [type](#type)
+    *   [length](#length)
+    *   [get](#get)
+        *   [Parameters](#parameters)
+    *   [has](#has)
+        *   [Parameters](#parameters-1)
+    *   [item](#item)
+        *   [Parameters](#parameters-2)
+    *   [call](#call)
+        *   [Parameters](#parameters-3)
+    *   [toJS](#tojs)
+    *   [valueOf](#valueof)
+    *   [toString](#tostring)
+    *   [int](#int)
+        *   [Parameters](#parameters-4)
+    *   [float](#float)
+        *   [Parameters](#parameters-5)
+    *   [string](#string)
+        *   [Parameters](#parameters-6)
+    *   [dict](#dict)
+        *   [Parameters](#parameters-7)
+    *   [list](#list)
+        *   [Parameters](#parameters-8)
+    *   [tuple](#tuple)
+        *   [Parameters](#parameters-9)
+    *   [slice](#slice)
+    *   [bytes](#bytes)
+        *   [Parameters](#parameters-10)
+    *   [bytearray](#bytearray)
+        *   [Parameters](#parameters-11)
+    *   [memoryview](#memoryview)
+        *   [Parameters](#parameters-12)
+    *   [fromJS](#fromjs)
+        *   [Parameters](#parameters-13)
+    *   [keys](#keys)
+    *   [values](#values)
+*   [pymport](#pymport)
+    *   [Parameters](#parameters-14)
+*   [proxify](#proxify)
+    *   [Parameters](#parameters-15)
+*   [pyval](#pyval)
+    *   [Parameters](#parameters-16)
+*   [version](#version)
+*   [version](#version-1)
+    *   [pythonRuntime](#pythonruntime)
+*   [PythonError](#pythonerror)
 
 ## PyObject
 
@@ -279,7 +286,7 @@ Type: function (name: string): [PyObject](#pyobject)
 
 #### Parameters
 
-- `name` **string** property name
+*   `name` **string** property name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -291,7 +298,7 @@ Type: function (name: string): boolean
 
 #### Parameters
 
-- `name` **string** property name
+*   `name` **string** property name
 
 Returns **boolean**&#x20;
 
@@ -303,7 +310,7 @@ Type: function (index: any): [PyObject](#pyobject)
 
 #### Parameters
 
-- `index` **any** index
+*   `index` **any** index
 
 Returns **boolean**&#x20;
 
@@ -315,13 +322,34 @@ Type: function (...args: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `args` **...Array\<any>** function arguments
+*   `args` **...Array\<any>** function arguments
 
 Returns **[PyObject](#pyobject)**&#x20;
 
 ### toJS
 
 Transform the PyObject to a plain JS object. Equivalent to valueOf().
+
+A float or an int becomes a Number.
+
+A bool becomes a bool.
+
+None becomes null.
+
+An unicode string becomes a string.
+
+A list or a tuple become an array.
+
+A dictionary becomes an object.
+
+Any object implementing the Buffer Protocol - bytes, bytearray or a memoryview - becomes a Buffer.
+The memory referenced by the Buffer is a copy of the Python memory.
+
+A callable becomes a native (binary) function.
+
+A module becomes an object.
+
+Everything else remains a PyObject.
 
 Type: function (): any
 
@@ -351,7 +379,7 @@ Type: function (v: number): [PyObject](#pyobject)
 
 #### Parameters
 
-- `number` **number**&#x20;
+*   `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -363,7 +391,7 @@ Type: function (v: number): [PyObject](#pyobject)
 
 #### Parameters
 
-- `number` **number**&#x20;
+*   `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -375,7 +403,7 @@ Type: function (v: string): [PyObject](#pyobject)
 
 #### Parameters
 
-- `string` **string**&#x20;
+*   `string` **string**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -387,7 +415,7 @@ Type: function (v: Record\<string, any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `object` **Record\<string, any>**&#x20;
+*   `object` **Record\<string, any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -399,7 +427,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `array` **Array\<any>**&#x20;
+*   `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -411,7 +439,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `array` **Array\<any>**&#x20;
+*   `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -423,15 +451,71 @@ Type: function (v: any): [PyObject](#pyobject)
 
 Returns **[PyObject](#pyobject)**&#x20;
 
-### fromJS
+### bytes
 
-Construct an automatically typed PyObject from a plain JS value
+Construct a PyObject bytes from a Buffer. The resulting object is a copy.
 
 Type: function (v: any): [PyObject](#pyobject)
 
 #### Parameters
 
-- `value` **any**&#x20;
+*   `buffer` **Buffer**&#x20;
+
+Returns **[PyObject](#pyobject)**&#x20;
+
+### bytearray
+
+Construct a PyObject bytearray from a Buffer. The resulting object is a copy.
+
+Type: function (v: any): [PyObject](#pyobject)
+
+#### Parameters
+
+*   `buffer` **Buffer**&#x20;
+
+Returns **[PyObject](#pyobject)**&#x20;
+
+### memoryview
+
+Construct a PyObject memoryview from a Buffer.
+The resulting object references directly the Buffer.
+The Buffer is guaranteed to stay in memory for as long as the memoryview exists.
+This is the only case in which V8 objects can be held by the Python GC.
+
+Type: function (v: any): [PyObject](#pyobject)
+
+#### Parameters
+
+*   `buffer` **Buffer**&#x20;
+
+Returns **[PyObject](#pyobject)**&#x20;
+
+### fromJS
+
+Construct an automatically typed PyObject from a plain JS value.
+The PyObject is a copy by value unless explicitly mentioned.
+
+A number becomes an int when it has no decimal part or a float when it has one.
+
+A bool becomes a bool.
+
+Undefined and null become None.
+
+A string becomes an unicode string.
+
+An array becomes a list.
+
+An object becomes a dictionary.
+
+A PyObject or a proxified PyObject is always passed by reference and reverts to its Python type.
+
+A Buffer becomes a bytearray.
+
+Type: function (v: any): [PyObject](#pyobject)
+
+#### Parameters
+
+*   `value` **any**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -453,11 +537,21 @@ Returns **[PyObject](#pyobject)**&#x20;
 
 ## pymport
 
-Import a Python module
+Import a Python module.
+
+Default search location is determined by the Python interpreter library.
+It can be overridden by setting the PYTHONPATH environment variable.
+
+If you want to load a Python file in the same directory as the calling JS you can use
+
+process.env\['PYTHONPATH'] = \_\_dirname
+
+before importing pymport - once Python has been initialized further modifications
+will have no effect.
 
 ### Parameters
 
-- `name` **string** Python module name
+*   `name` **string** Python module name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -468,22 +562,24 @@ that works like a native Python object
 
 ### Parameters
 
-- `v` **[PyObject](#pyobject)**&#x20;
-- `name` **string?** optional name to be assigned to a proxified function
-- `object` **[PyObject](#pyobject)** object to proxify
+*   `v` **[PyObject](#pyobject)**&#x20;
+*   `name` **string?** optional name to be assigned to a proxified function
+*   `object` **[PyObject](#pyobject)** object to proxify
 
 Returns **any**&#x20;
 
 ## pyval
 
-Eval a Python fragment
+Eval a Python fragment. Uses Python `eval` which is a special language context.
+The Python code must be an expression that evaluates to a value and not a statement.
+Refer to the Python documentation for more information on what is allowed in this context.
+If you need to execute statements, you should place them in a file and load it as a module.
 
 ### Parameters
 
-- `code` **string**&#x20;
-- `globals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional global context
-- `locals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional local context
-- `name` **string** Python module name
+*   `code` **string** Python code
+*   `globals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional global context
+*   `locals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional local context
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -504,6 +600,12 @@ Type: {pymport: {major: number, minor: number, patch: number, suffix: string}, p
 Supported only on Python 3.11+
 
 Type: (null | string)
+
+## PythonError
+
+Errors thrown from Python have a `pythonTrace` property that contains the Python traceback
+
+Type: any
 
 # Alternatives
 
