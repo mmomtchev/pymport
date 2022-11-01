@@ -16,7 +16,11 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
   auto existing = store.find(*py);
   if (existing != store.end()) { return existing->second; }
 
-  if (PyLong_Check(*py)) { return Number::New(env, PyLong_AsLong(*py)); }
+  if (PyLong_Check(*py)) {
+    int64_t raw = static_cast<int64_t>(PyLong_AsLongLong(*py));
+    if (raw >= MIN_SAFE_JS_INTEGER && raw <= MAX_SAFE_JS_INTEGER) return Number::New(env, static_cast<double>(raw));
+    return BigInt::New(env, static_cast<int64_t>(raw));
+  }
 
   if (PyFloat_Check(*py)) { return Number::New(env, PyFloat_AsDouble(*py)); }
 

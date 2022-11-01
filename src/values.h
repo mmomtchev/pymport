@@ -1,3 +1,8 @@
+#pragma once
+
+#define MAX_SAFE_JS_INTEGER 9007199254740991
+#define MIN_SAFE_JS_INTEGER -9007199254740991
+
 #define NAPI_ARG_STRING(arg)                                                                                           \
   (info.Length() <= arg || !info[arg].IsString() ? throw Napi::TypeError::New(env, "Argument must be a string")        \
                                                  : info[arg].ToString())

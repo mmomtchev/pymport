@@ -27,8 +27,17 @@ Value PyObjectWrap::Float(const CallbackInfo &info) {
 Value PyObjectWrap::Integer(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  auto raw = NAPI_ARG_NUMBER(0).Int64Value();
-  PyStrongRef obj = PyLong_FromLong(raw);
+  if (info.Length() < 1) throw Error::New(env, "No argument given");
+
+  int64_t raw;
+  if (info[0].IsNumber()) {
+    raw = info[0].ToNumber().Int64Value();
+  } else if (info[0].IsBigInt()) {
+    bool lossless;
+    raw = info[0].As<BigInt>().Int64Value(&lossless);
+    if (!lossless) throw RangeError::New(env, "BigInt overflow");
+  }
+  PyStrongRef obj = PyLong_FromLongLong(static_cast<long long>(raw));
   ExceptionHandler(env, obj);
   return New(env, std::move(obj));
 }
@@ -180,14 +189,22 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
   }
 
   if (v.IsNumber()) {
-    auto raw = v.ToNumber().DoubleValue();
+    double raw = v.ToNumber().DoubleValue();
     double integer;
     double fract = fabs(modf(raw, &integer));
     PyStrongRef py = nullptr;
     if (fract < std::numeric_limits<float>::epsilon() || fract > 1 - std::numeric_limits<float>::epsilon())
-      py = PyLong_FromLong(v.ToNumber().Int64Value());
+      py = PyLong_FromLongLong(static_cast<long long>(v.ToNumber().Int64Value()));
     else
       py = PyFloat_FromDouble(raw);
+    ExceptionHandler(env, py);
+    return py;
+  }
+  if (v.IsBigInt()) {
+    bool lossless;
+    int64_t raw = v.As<BigInt>().Int64Value(&lossless);
+    if (!lossless) throw RangeError::New(env, "BigInt overflow");
+    PyStrongRef py = PyLong_FromLongLong(static_cast<long long>(raw));
     ExceptionHandler(env, py);
     return py;
   }

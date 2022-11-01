@@ -75,6 +75,22 @@ describe('types', () => {
     it('throws on invalid value', () => {
       assert.throws(() => PyObject.float({ b: 12 } as unknown as number), /Argument must be/);
     });
+
+    it('min/max numbers w/ constructor', () => {
+      const max = PyObject.int(Number.MAX_SAFE_INTEGER);
+      assert.strictEqual(max.toJS(), Number.MAX_SAFE_INTEGER);
+
+      const min = PyObject.int(Number.MIN_SAFE_INTEGER);
+      assert.strictEqual(min.toJS(), Number.MIN_SAFE_INTEGER);
+    });
+
+    it('min/max numbers w/ fromJS', () => {
+      const max = PyObject.fromJS(Number.MAX_SAFE_INTEGER);
+      assert.strictEqual(max.toJS(), Number.MAX_SAFE_INTEGER);
+
+      const min = PyObject.fromJS(Number.MIN_SAFE_INTEGER);
+      assert.strictEqual(min.toJS(), Number.MIN_SAFE_INTEGER);
+    });
   });
 
   describe('list', () => {
@@ -427,8 +443,28 @@ describe('types', () => {
   });
 
   describe('BigInt', () => {
-    it('fromJS()', () => {
-      assert.throws(() => PyObject.fromJS(BigInt(1)), /not supported/);
+    it('min/max numbers w/ constructor', () => {
+      const max = PyObject.int(BigInt(Number.MAX_SAFE_INTEGER) + BigInt(5));
+      assert.equal(max.type, 'int');
+      assert.typeOf(max.toJS(), 'BigInt');
+      assert.equal(max.toJS(), BigInt(Number.MAX_SAFE_INTEGER) + BigInt(5));
+
+      const min = PyObject.int(BigInt(Number.MIN_SAFE_INTEGER) - BigInt(5));
+      assert.equal(min.type, 'int');
+      assert.typeOf(min.toJS(), 'BigInt');
+      assert.equal(min.toJS(), BigInt(Number.MIN_SAFE_INTEGER) - BigInt(5));
+    });
+
+    it('min/max numbers w/ fromJS', () => {
+      const max = PyObject.fromJS(BigInt(Number.MAX_SAFE_INTEGER) + BigInt(5));
+      assert.equal(max.type, 'int');
+      assert.typeOf(max.toJS(), 'BigInt');
+      assert.equal(max.toJS(), BigInt(Number.MAX_SAFE_INTEGER) + BigInt(5));
+
+      const min = PyObject.fromJS(BigInt(Number.MIN_SAFE_INTEGER) - BigInt(5));
+      assert.equal(min.type, 'int');
+      assert.typeOf(min.toJS(), 'BigInt');
+      assert.equal(min.toJS(), BigInt(Number.MIN_SAFE_INTEGER) - BigInt(5));
     });
   });
 

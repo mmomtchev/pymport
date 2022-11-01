@@ -2,7 +2,7 @@ import { pymport, proxify, PyObject, pyval } from 'pymport';
 import { getPythonType, toPythonArray, toTypedArray } from 'pymport/array';
 import { assert } from 'chai';
 
-const tests = [Uint8Array, Int8Array, Uint16Array, Int16Array, Uint32Array, Int32Array];
+const tests = [Uint8Array, Int8Array, Uint16Array, Int16Array, Uint32Array, Int32Array, BigUint64Array, BigInt64Array];
 
 describe('array', () => {
   const array = proxify(pymport('array'));
@@ -35,7 +35,7 @@ describe('array', () => {
       it('import from TypedArray', () => {
         const t = new cons(10);
         for (let i = 0; i < t.length; i++)
-          t[i] = i;
+          t[i] = cons.BYTES_PER_ELEMENT > 4 ? BigInt(i) : i;
 
         const a = proxify(toPythonArray(t));
 

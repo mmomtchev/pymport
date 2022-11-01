@@ -377,7 +377,9 @@ Returns **[PyObject](#pyobject)**&#x20;
 
 Transform the PyObject to a plain JS object. Equivalent to valueOf().
 
-A float or an int becomes a Number.
+A float becomes a Number.
+
+An int becomes a Number if it is in the safe integer number range or a BigInt otherwise.
 
 A bool becomes a bool.
 
@@ -422,7 +424,7 @@ Returns **string**&#x20;
 
 Construct a PyObject integer from a JS number
 
-Type: function (v: number): [PyObject](#pyobject)
+Type: function (v: (number | bigint)): [PyObject](#pyobject)
 
 #### Parameters
 
@@ -543,6 +545,8 @@ Construct an automatically typed PyObject from a plain JS value.
 The PyObject is a copy by value unless explicitly mentioned.
 
 A number becomes an int when it has no decimal part or a float when it has one.
+
+A BigInt becomes an int.
 
 A bool becomes a bool.
 
