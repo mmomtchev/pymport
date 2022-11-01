@@ -8,6 +8,9 @@
     "paths": {
       "pymport": [
         "."
+      ],
+      "pymport/*": [
+        "./lib/*"
       ]
     }
   }

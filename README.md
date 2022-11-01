@@ -195,7 +195,6 @@ Generally, `proxify` is the best way to use `pymport`.
 
 # Future Plans
 
-*   `TypedArray` <-> `array` equivalence
 *   Passing of JavaScript callbacks to Python
 *   More features allowing direct interaction with `PyObject`s from JS
 *   (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
@@ -207,54 +206,102 @@ Generally, `proxify` is the best way to use `pymport`.
 
 ### Table of Contents
 
+*   [getJSType](#getjstype)
+    *   [Parameters](#parameters)
+*   [getPythonType](#getpythontype)
+    *   [Parameters](#parameters-1)
+*   [toTypedArray](#totypedarray)
+    *   [Parameters](#parameters-2)
+*   [toPythonArray](#topythonarray)
+    *   [Parameters](#parameters-3)
 *   [PyObject](#pyobject)
     *   [callable](#callable)
     *   [type](#type)
     *   [length](#length)
     *   [get](#get)
-        *   [Parameters](#parameters)
+        *   [Parameters](#parameters-4)
     *   [has](#has)
-        *   [Parameters](#parameters-1)
+        *   [Parameters](#parameters-5)
     *   [item](#item)
-        *   [Parameters](#parameters-2)
+        *   [Parameters](#parameters-6)
     *   [call](#call)
-        *   [Parameters](#parameters-3)
+        *   [Parameters](#parameters-7)
     *   [toJS](#tojs)
     *   [valueOf](#valueof)
     *   [toString](#tostring)
     *   [int](#int)
-        *   [Parameters](#parameters-4)
-    *   [float](#float)
-        *   [Parameters](#parameters-5)
-    *   [string](#string)
-        *   [Parameters](#parameters-6)
-    *   [dict](#dict)
-        *   [Parameters](#parameters-7)
-    *   [list](#list)
         *   [Parameters](#parameters-8)
-    *   [tuple](#tuple)
+    *   [float](#float)
         *   [Parameters](#parameters-9)
+    *   [string](#string)
+        *   [Parameters](#parameters-10)
+    *   [dict](#dict)
+        *   [Parameters](#parameters-11)
+    *   [list](#list)
+        *   [Parameters](#parameters-12)
+    *   [tuple](#tuple)
+        *   [Parameters](#parameters-13)
     *   [slice](#slice)
     *   [bytes](#bytes)
-        *   [Parameters](#parameters-10)
+        *   [Parameters](#parameters-14)
     *   [bytearray](#bytearray)
-        *   [Parameters](#parameters-11)
+        *   [Parameters](#parameters-15)
     *   [memoryview](#memoryview)
-        *   [Parameters](#parameters-12)
+        *   [Parameters](#parameters-16)
     *   [fromJS](#fromjs)
-        *   [Parameters](#parameters-13)
+        *   [Parameters](#parameters-17)
     *   [keys](#keys)
     *   [values](#values)
 *   [pymport](#pymport)
-    *   [Parameters](#parameters-14)
+    *   [Parameters](#parameters-18)
 *   [proxify](#proxify)
-    *   [Parameters](#parameters-15)
+    *   [Parameters](#parameters-19)
 *   [pyval](#pyval)
-    *   [Parameters](#parameters-16)
+    *   [Parameters](#parameters-20)
 *   [version](#version)
 *   [version](#version-1)
     *   [pythonRuntime](#pythonruntime)
 *   [PythonError](#pythonerror)
+
+## getJSType
+
+Get the TypedArray constructor that corresponds to the Python array.array object
+
+### Parameters
+
+*   `array` **[PyObject](#pyobject)** Python array.array
+
+Returns **ArrayConstructor**&#x20;
+
+## getPythonType
+
+Get the Python letter code that corresponds to the TypedArray object
+
+### Parameters
+
+*   `array` **ArrayBuffer** TypedArray
+
+Returns **string**&#x20;
+
+## toTypedArray
+
+Convert the Python array.array to JS TypedArray. The array contents are copied.
+
+### Parameters
+
+*   `array` **[PyObject](#pyobject)** Python array.array
+
+Returns **ArrayBuffer**&#x20;
+
+## toPythonArray
+
+Convert the TypedArray to Python array.array. The array contents are copied.
+
+### Parameters
+
+*   `array` **ArrayBuffer** TypedArray
+
+Returns **[PyObject](#pyobject)**&#x20;
 
 ## PyObject
 

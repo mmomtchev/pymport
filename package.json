@@ -39,7 +39,7 @@
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build",
     "test": "mocha",
-    "doc": "documentation readme --section=API --config=documentation.yml lib/index.d.ts",
+    "doc": "documentation readme --section=API --config=documentation.yml lib/*.d.ts",
     "build": "npx node-pre-gyp configure && npx node-pre-gyp build",
     "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
     "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*",
