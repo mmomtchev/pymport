@@ -105,8 +105,7 @@ Value PyObjectWrap::Has(const CallbackInfo &info) {
 Value PyObjectWrap::Type(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  // TODO Fix me
-  return String::New(env, (*self)->ob_type->tp_name);
+  return String::New(env, Py_TYPE(*self)->tp_name);
 }
 
 Value PyObjectWrap::Item(const CallbackInfo &info) {
