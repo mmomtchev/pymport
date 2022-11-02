@@ -63,6 +63,13 @@ describe('pymport', () => {
       ]);
     });
 
+    it('passing a single dict argument', () => {
+      const check_dict_arg = pymport('python_helpers').get('single_dict_arg');
+      assert.doesNotThrow(() => {
+        check_dict_arg.call({ a: 0 }, undefined);
+      });
+    });
+
     it('custom subscripting', () => {
       const pd = pymport('pandas');
       const np = pymport('numpy');

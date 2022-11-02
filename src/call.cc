@@ -17,6 +17,8 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
     PyObjectStore store;
     _FromJS_Dictionary((info[argc - 1]).ToObject(), kwargs, store);
     argc--;
+  } else if (argc > 0 && info[argc - 1].IsUndefined()) {
+    argc--;
   }
 
   PyStrongRef args = PyTuple_New(argc);
