@@ -36,6 +36,8 @@ Value PyObjectWrap::Integer(const CallbackInfo &info) {
     bool lossless;
     raw = info[0].As<BigInt>().Int64Value(&lossless);
     if (!lossless) throw RangeError::New(env, "BigInt overflow");
+  } else {
+    throw Error::New(env, "Argument must be a number");
   }
   PyStrongRef obj = PyLong_FromLongLong(static_cast<long long>(raw));
   EXCEPTION_CHECK(env, obj);

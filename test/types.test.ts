@@ -75,7 +75,7 @@ describe('types', () => {
     });
 
     it('throws on invalid value', () => {
-      assert.throws(() => PyObject.float({ b: 12 } as unknown as number), /Argument must be/);
+      assert.throws(() => PyObject.int({ b: 12 } as unknown as number), /Argument must be/);
     });
 
     it('min/max numbers w/ constructor', () => {
