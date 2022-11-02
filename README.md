@@ -51,7 +51,7 @@ All Python objects co-exist with the JavaScript objects. The Python GC manages t
 
 Python objects have a `PyObject` type in JavaScript. When calling a Python function, input JavaScript arguments are automatically converted. Automatic conversion to JavaScript is possible if the context permits it through `valueOf` and `Symbol.toPrimitive`. In all other cases, an explicit conversion, using `fromJS()`/`toJS()` is needed.
 
-An additional _(and optional)_ convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
+An additional *(and optional)* convenience layer, `pymport.proxify`, allows wrapping a `PyObject` in a JavaScript `Proxy` object that creates the illusion of directly accessing the `PyObject` from JavaScript.
 
 At the moment, Python code does not have access to the JavaScript objects - this requires the implementation of a similar `JSObject` type on the Python side. All JavaScript arguments are passed to Python by value. `PyObject`s are passed by reference. See the lambda examples below to get a feeling how it works.
 
@@ -166,7 +166,7 @@ const a = np.arange(15).reshape(3, 5);
 
 **Generally, `proxify` is the best way to use `pymport`.**
 
-matplotlib example (this is [one of the official examples](https://matplotlib.org/stable/gallery/lines_bars_and_markers/bar_colors.html#sphx-glr-gallery-lines-bars-and-markers-bar-colors-py) _translated_ to JavaScript):
+matplotlib example (this is [one of the official examples](https://matplotlib.org/stable/gallery/lines_bars_and_markers/bar_colors.html#sphx-glr-gallery-lines-bars-and-markers-bar-colors-py) *translated* to JavaScript):
 
 ```js
 const { pymport, proxify } = require("pymport");
@@ -196,17 +196,17 @@ plt.show();
 
 # Performance Notes / Known Issues
 
-- Simply calling into Python is more expensive than from the native Python interpreter
-  - If working on `numpy` arrays of less than 10 elements, the difference can be very significant (up to 4 times)
-  - `proxify`ed objects have a small additional overhead that, for all practical reasons, can be ignored
-  - Above a few hundred elements, the difference gradually becomes smaller
-  - With very large arrays and very complex operations, Node.js can very slightly outperform stock Python
-    _Large `numpy` arrays are very dependent on the memory allocator and Node.js/V8 has an outstanding memory allocator_
-- `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
-- The two GCs should work well in tandem as for every object there is exactly one of them that can free it
-- In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
-- In (_upcoming_) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
-- In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
+*   Simply calling into Python is more expensive than from the native Python interpreter
+    *   If working on `numpy` arrays of less than 10 elements, the difference can be very significant (up to 4 times)
+    *   `proxify`ed objects have a small additional overhead that, for all practical reasons, can be ignored
+    *   Above a few hundred elements, the difference gradually becomes smaller
+    *   With very large arrays and very complex operations, Node.js can very slightly outperform stock Python
+        *Large `numpy` arrays are very dependent on the memory allocator and Node.js/V8 has an outstanding memory allocator*
+*   `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
+*   The two GCs should work well in tandem as for every object there is exactly one of them that can free it
+*   In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
+*   In (*upcoming*) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
+*   In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
 
 # Supported Versions
 
@@ -219,9 +219,9 @@ plt.show();
 
 # Future Plans
 
-- More features allowing direct interaction with `PyObject`s from JS
-- (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
-- (longer term) Generate TypeScript bindings from the Python modules
+*   More features allowing direct interaction with `PyObject`s from JS
+*   (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
+*   (longer term) Generate TypeScript bindings from the Python modules
 
 # API
 
@@ -229,62 +229,64 @@ plt.show();
 
 ### Table of Contents
 
-- [getJSType](#getjstype)
-  - [Parameters](#parameters)
-- [getPythonType](#getpythontype)
-  - [Parameters](#parameters-1)
-- [toTypedArray](#totypedarray)
-  - [Parameters](#parameters-2)
-- [toPythonArray](#topythonarray)
-  - [Parameters](#parameters-3)
-- [PyObject](#pyobject)
-  - [callable](#callable)
-  - [type](#type)
-  - [length](#length)
-  - [get](#get)
-    - [Parameters](#parameters-4)
-  - [has](#has)
-    - [Parameters](#parameters-5)
-  - [item](#item)
-    - [Parameters](#parameters-6)
-  - [call](#call)
-    - [Parameters](#parameters-7)
-  - [toJS](#tojs)
-  - [valueOf](#valueof)
-  - [toString](#tostring)
-  - [int](#int)
-    - [Parameters](#parameters-8)
-  - [float](#float)
-    - [Parameters](#parameters-9)
-  - [string](#string)
-    - [Parameters](#parameters-10)
-  - [dict](#dict)
-    - [Parameters](#parameters-11)
-  - [list](#list)
-    - [Parameters](#parameters-12)
-  - [tuple](#tuple)
-    - [Parameters](#parameters-13)
-  - [slice](#slice)
-  - [bytes](#bytes)
-    - [Parameters](#parameters-14)
-  - [bytearray](#bytearray)
-    - [Parameters](#parameters-15)
-  - [memoryview](#memoryview)
-    - [Parameters](#parameters-16)
-  - [fromJS](#fromjs)
-    - [Parameters](#parameters-17)
-  - [keys](#keys)
-  - [values](#values)
-- [pymport](#pymport)
-  - [Parameters](#parameters-18)
-- [proxify](#proxify)
-  - [Parameters](#parameters-19)
-- [pyval](#pyval)
-  - [Parameters](#parameters-20)
-- [version](#version)
-- [version](#version-1)
-  - [pythonRuntime](#pythonruntime)
-- [PythonError](#pythonerror)
+*   [getJSType](#getjstype)
+    *   [Parameters](#parameters)
+*   [getPythonType](#getpythontype)
+    *   [Parameters](#parameters-1)
+*   [toTypedArray](#totypedarray)
+    *   [Parameters](#parameters-2)
+*   [toPythonArray](#topythonarray)
+    *   [Parameters](#parameters-3)
+*   [PyObject](#pyobject)
+    *   [callable](#callable)
+    *   [type](#type)
+    *   [length](#length)
+    *   [constr](#constr)
+    *   [get](#get)
+        *   [Parameters](#parameters-4)
+    *   [has](#has)
+        *   [Parameters](#parameters-5)
+    *   [item](#item)
+        *   [Parameters](#parameters-6)
+    *   [call](#call)
+        *   [Parameters](#parameters-7)
+    *   [toJS](#tojs)
+    *   [valueOf](#valueof)
+    *   [toString](#tostring)
+    *   [int](#int)
+        *   [Parameters](#parameters-8)
+    *   [float](#float)
+        *   [Parameters](#parameters-9)
+    *   [string](#string)
+        *   [Parameters](#parameters-10)
+    *   [dict](#dict)
+        *   [Parameters](#parameters-11)
+    *   [list](#list)
+        *   [Parameters](#parameters-12)
+    *   [tuple](#tuple)
+        *   [Parameters](#parameters-13)
+    *   [slice](#slice)
+    *   [bytes](#bytes)
+        *   [Parameters](#parameters-14)
+    *   [bytearray](#bytearray)
+        *   [Parameters](#parameters-15)
+    *   [memoryview](#memoryview)
+        *   [Parameters](#parameters-16)
+    *   [func](#func)
+    *   [fromJS](#fromjs)
+        *   [Parameters](#parameters-17)
+    *   [keys](#keys)
+    *   [values](#values)
+*   [pymport](#pymport)
+    *   [Parameters](#parameters-18)
+*   [proxify](#proxify)
+    *   [Parameters](#parameters-19)
+*   [pyval](#pyval)
+    *   [Parameters](#parameters-20)
+*   [version](#version)
+*   [version](#version-1)
+    *   [pythonRuntime](#pythonruntime)
+*   [PythonError](#pythonerror)
 
 ## getJSType
 
@@ -292,7 +294,7 @@ Get the TypedArray constructor that corresponds to the Python array.array object
 
 ### Parameters
 
-- `array` **[PyObject](#pyobject)** Python array.array
+*   `array` **[PyObject](#pyobject)** Python array.array
 
 Returns **ArrayConstructor**&#x20;
 
@@ -302,7 +304,7 @@ Get the Python letter code that corresponds to the TypedArray object.
 
 ### Parameters
 
-- `array` **ArrayBuffer** TypedArray
+*   `array` **ArrayBuffer** TypedArray
 
 Returns **string**&#x20;
 
@@ -312,7 +314,7 @@ Convert the Python array.array to JS TypedArray. The array contents are copied.
 
 ### Parameters
 
-- `array` **[PyObject](#pyobject)** Python array.array
+*   `array` **[PyObject](#pyobject)** Python array.array
 
 Returns **ArrayBuffer**&#x20;
 
@@ -322,7 +324,7 @@ Convert the TypedArray to Python array.array. The array contents are copied.
 
 ### Parameters
 
-- `array` **ArrayBuffer** TypedArray
+*   `array` **ArrayBuffer** TypedArray
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -338,7 +340,7 @@ Type: boolean
 
 ### type
 
-The underlying Python type
+The underlying Python type, equivalent to JavaScript typeof
 
 Type: string
 
@@ -348,6 +350,12 @@ Length of the underlying object if it is defined
 
 Type: (number | undefined)
 
+### constr
+
+The underlying Python type, equivalent to Python type() or JavaScript constructor
+
+Type: function (...args: Array\<any>): any
+
 ### get
 
 Get a property from the object, equivalent to Python member operator .
@@ -356,7 +364,7 @@ Type: function (name: string): [PyObject](#pyobject)
 
 #### Parameters
 
-- `name` **string** property name
+*   `name` **string** property name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -368,7 +376,7 @@ Type: function (name: string): boolean
 
 #### Parameters
 
-- `name` **string** property name
+*   `name` **string** property name
 
 Returns **boolean**&#x20;
 
@@ -380,7 +388,7 @@ Type: function (index: any): [PyObject](#pyobject)
 
 #### Parameters
 
-- `index` **any** index
+*   `index` **any** index
 
 Returns **boolean**&#x20;
 
@@ -392,7 +400,7 @@ Type: function (...args: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `args` **...Array\<any>** function arguments
+*   `args` **...Array\<any>** function arguments
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -451,7 +459,7 @@ Type: function (v: (number | bigint)): [PyObject](#pyobject)
 
 #### Parameters
 
-- `number` **number**&#x20;
+*   `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -463,7 +471,7 @@ Type: function (v: number): [PyObject](#pyobject)
 
 #### Parameters
 
-- `number` **number**&#x20;
+*   `number` **number**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -475,7 +483,7 @@ Type: function (v: string): [PyObject](#pyobject)
 
 #### Parameters
 
-- `string` **string**&#x20;
+*   `string` **string**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -487,7 +495,7 @@ Type: function (v: Record\<string, any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `object` **Record\<string, any>**&#x20;
+*   `object` **Record\<string, any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -499,7 +507,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `array` **Array\<any>**&#x20;
+*   `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -511,7 +519,7 @@ Type: function (v: Array\<any>): [PyObject](#pyobject)
 
 #### Parameters
 
-- `array` **Array\<any>**&#x20;
+*   `array` **Array\<any>**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -527,11 +535,11 @@ Returns **[PyObject](#pyobject)**&#x20;
 
 Construct a PyObject bytes from a Buffer. The resulting object is a copy.
 
-Type: function (v: any): [PyObject](#pyobject)
+Type: function (buffer: Buffer): [PyObject](#pyobject)
 
 #### Parameters
 
-- `buffer` **Buffer**&#x20;
+*   `buffer` **Buffer**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -539,11 +547,11 @@ Returns **[PyObject](#pyobject)**&#x20;
 
 Construct a PyObject bytearray from a Buffer. The resulting object is a copy.
 
-Type: function (v: any): [PyObject](#pyobject)
+Type: function (buffer: Buffer): [PyObject](#pyobject)
 
 #### Parameters
 
-- `buffer` **Buffer**&#x20;
+*   `buffer` **Buffer**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -554,11 +562,20 @@ The resulting object references directly the Buffer.
 The Buffer is guaranteed to stay in memory for as long as the memoryview exists.
 This is the only case in which V8 objects can be held by the Python GC.
 
-Type: function (v: any): [PyObject](#pyobject)
+Type: function (buffer: Buffer): [PyObject](#pyobject)
 
 #### Parameters
 
-- `buffer` **Buffer**&#x20;
+*   `buffer` **Buffer**&#x20;
+
+Returns **[PyObject](#pyobject)**&#x20;
+
+### func
+
+Construct a PyObject pymport.js\_function from a JS function.
+The resulting object is a Python callable.
+
+Type: function (fn: function (...args: Array\<any>): any): [PyObject](#pyobject)
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -585,11 +602,13 @@ A PyObject or a proxified PyObject is always passed by reference and reverts to 
 
 A Buffer becomes a bytearray.
 
+A JS function (including a native function) becomes a callable pymport.js\_function
+
 Type: function (v: any): [PyObject](#pyobject)
 
 #### Parameters
 
-- `value` **any**&#x20;
+*   `value` **any**&#x20;
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -625,7 +644,7 @@ will have no effect.
 
 ### Parameters
 
-- `name` **string** Python module name
+*   `name` **string** Python module name
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -636,9 +655,9 @@ All values returned by its methods will also be profixied.
 
 ### Parameters
 
-- `v` **[PyObject](#pyobject)**&#x20;
-- `name` **string?** optional name to be assigned to a proxified function
-- `object` **[PyObject](#pyobject)** object to proxify
+*   `v` **[PyObject](#pyobject)**&#x20;
+*   `name` **string?** optional name to be assigned to a proxified function
+*   `object` **[PyObject](#pyobject)** object to proxify
 
 Returns **any**&#x20;
 
@@ -651,9 +670,9 @@ If you need to execute statements, you should place them in a file and load it a
 
 ### Parameters
 
-- `code` **string** Python code
-- `globals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional global context
-- `locals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional local context
+*   `code` **string** Python code
+*   `globals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional global context
+*   `locals` **([PyObject](#pyobject) | Record\<string, any>)?** Optional local context
 
 Returns **[PyObject](#pyobject)**&#x20;
 
