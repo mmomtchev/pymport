@@ -56,14 +56,14 @@ export class PyObject {
    * @param {Buffer} buffer
    * @returns {PyObject}
    */
-  static bytes: (v: any[3]) => PyObject;
+  static bytes: (buffer: Buffer) => PyObject;
 
   /**
    * Construct a PyObject bytearray from a Buffer. The resulting object is a copy.
    * @param {Buffer} buffer
    * @returns {PyObject}
    */
-  static bytearray: (v: any[3]) => PyObject;
+  static bytearray: (buffer: Buffer) => PyObject;
 
   /**
    * Construct a PyObject memoryview from a Buffer.
@@ -73,7 +73,16 @@ export class PyObject {
    * @param {Buffer} buffer
    * @returns {PyObject}
    */
-  static memoryview: (v: any[3]) => PyObject;
+  static memoryview: (buffer: Buffer) => PyObject;
+
+  /**
+   * Construct a PyObject pymport.js_function from a JS function.
+   * The resulting object is a Python callable.
+   * @param {(...args: any[]) => any} fn arbitrary JS function
+   * @returns {PyObject}
+   */
+  static func: (fn: (...args: any[]) => any) => PyObject;
+
 
   /**
    * Construct an automatically typed PyObject from a plain JS value.
@@ -96,6 +105,8 @@ export class PyObject {
    * A PyObject or a proxified PyObject is always passed by reference and reverts to its Python type.
    * 
    * A Buffer becomes a bytearray.
+   * 
+   * A JS function (including a native function) becomes a callable pymport.js_function
    * 
    * @param {any} value
    * @returns {PyObject}

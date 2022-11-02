@@ -241,9 +241,9 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     }
 
     if (obj.IsBuffer()) { return _FromJS_BytesArray(obj.As<Buffer<char>>()); }
+    if (v.IsFunction()) { return NewJSFunction(v.As<Function>()); }
 
     // These are not supported
-    if (v.IsFunction()) { throw TypeError::New(env, "functions are not supported yet"); }
     if (HasPrototype(obj)) { throw TypeError::New(env, "class objects cannot be converted to Python"); }
 
     // Fallback to dictionary

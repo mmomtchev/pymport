@@ -355,8 +355,59 @@ describe('types', () => {
     });
 
     it('fromJS()', () => {
-      assert.throws(() => PyObject.fromJS(() => undefined), /not supported/);
+      const fn = PyObject.fromJS((a: number) => a + 1);
+
+      assert.instanceOf(fn, PyObject);
+      assert.isTrue(fn.callable);
+      assert.isUndefined(fn.length);
+      assert.equal(fn.type, 'pymport.js_function');
+
+      const r = fn.call(4);
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'int');
+      assert.equal(r.toJS(), 5);
     });
+
+    it('constructor', () => {
+      const fn = PyObject.func((a: any) => a + 2);
+
+      assert.instanceOf(fn, PyObject);
+      assert.isTrue(fn.callable);
+      assert.isUndefined(fn.length);
+      assert.equal(fn.type, 'pymport.js_function');
+
+      const r = fn.call('a');
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'str');
+      assert.equal(r.toJS(), 'a2');
+    });
+
+    it('named args', () => {
+      const js_fn = (a: number, opts?: { value?: number; }) => a + ((opts ?? {}).value ?? 4);
+
+      const fn = PyObject.func(js_fn);
+
+      assert.equal(fn.call(2).toJS(), 6);
+      assert.equal(fn.call(2, { value: 3 }).toJS(), 5);
+    });
+
+    it('catching JS exceptions from Python', () => {
+      const fn = PyObject.fromJS(() => {
+        throw new Error('JS exception');
+      });
+
+      assert.instanceOf(fn, PyObject);
+      assert.isTrue(fn.callable);
+      assert.equal(fn.type, 'pymport.js_function');
+
+      const py_catch = pymport('python_helpers').get('catch_exception');
+      const r = py_catch.call(fn);
+
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'Exception');
+      assert.equal(r.toString(), 'JS exception');
+    });
+
 
     it('__PyObject__', () => {
       const fn = np.get('ones').toJS();

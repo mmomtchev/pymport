@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] WIP
 
+- Converting JS functions to Python callables
 - Expiring of function objects
 - Converting of `bytes` and `bytearray` to `Buffer` and `Buffer` to `bytearray`
 - Converting between `TypedArray` and `array`

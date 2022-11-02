@@ -34,17 +34,20 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
   Py_RETURN_NONE;
 }
 
-static PyType_Slot memview_finalizer_slots[] = {{Py_tp_call, (void *)MemView_Finalizer}, {0, 0}};
+static PyType_Slot memview_finalizer_slots[] = {{Py_tp_call, reinterpret_cast<void *>(MemView_Finalizer)}, {0, 0}};
 
 static PyType_Spec memview_finalizer_spec = {
   "pymport._memview_finalizer", 0, 0, Py_TPFLAGS_DEFAULT, memview_finalizer_slots};
 
-static PyObject *MemView_Finalizer_Type;
+static PyStrongRef MemView_Finalizer_Type = nullptr;
 
 void memview::Init() {
   MemView_Finalizer_Type = PyType_FromSpec(&memview_finalizer_spec);
 
-  if (MemView_Finalizer_Type == nullptr) printf("Error memview finalizer type\n");
+  if (MemView_Finalizer_Type == nullptr) {
+    fprintf(stderr, "Error memview finalizer type\n");
+    abort();
+  }
 }
 
 Value PyObjectWrap::MemoryView(const CallbackInfo &info) {
@@ -55,7 +58,7 @@ Value PyObjectWrap::MemoryView(const CallbackInfo &info) {
 
   // Create a new instance of MemView_Finalizer_Type
   PyStrongRef args = PyTuple_New(0);
-  PyStrongRef finalizer = PyObject_CallObject(MemView_Finalizer_Type, *args);
+  PyStrongRef finalizer = PyObject_CallObject(*MemView_Finalizer_Type, *args);
 
   // Attach it as a finalizer
   // This is in fact a strong (owned) ref but we need to leave it stale

@@ -111,6 +111,7 @@ Napi::Object Init(Env env, Object exports) {
 #endif
     Py_Initialize();
     memview::Init();
+    PyObjectWrap::InitJSTrampoline();
   }
   active_environments++;
   return exports;

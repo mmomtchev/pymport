@@ -61,7 +61,8 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::StaticMethod("slice", &PyObjectWrap::Slice),
      PyObjectWrap::StaticMethod("bytes", &PyObjectWrap::Bytes),
      PyObjectWrap::StaticMethod("bytearray", &PyObjectWrap::ByteArray),
-     PyObjectWrap::StaticMethod("memoryview", &PyObjectWrap::MemoryView)});
+     PyObjectWrap::StaticMethod("memoryview", &PyObjectWrap::MemoryView),
+     PyObjectWrap::StaticMethod("func", &PyObjectWrap::Functor)});
 }
 
 Value PyObjectWrap::ToString(const CallbackInfo &info) {

@@ -93,12 +93,15 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value Bytes(const Napi::CallbackInfo &);
   static Napi::Value ByteArray(const Napi::CallbackInfo &);
   static Napi::Value MemoryView(const Napi::CallbackInfo &);
+  static Napi::Value Functor(const Napi::CallbackInfo &);
 
   static PyStrongRef FromJS(Napi::Value);
 
   static Napi::Value New(Napi::Env, PyStrongRef &&);
   static Napi::Value NewCallable(Napi::Env, PyStrongRef &&);
+
   static Napi::Function GetClass(Napi::Env);
+  static void InitJSTrampoline();
 
   static inline void ExceptionHandler(Napi::Env env, const PyWeakRef &py) {
     if (py == nullptr) _ExceptionThrow(env);
@@ -130,11 +133,14 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value _Call(const PyWeakRef &, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
 
+  static PyStrongRef NewJSFunction(Napi::Function js_fn);
+
   static bool _InstanceOf(Napi::Value);
   static bool _FunctionOf(Napi::Value);
 
   static void _ExceptionThrow(Napi::Env);
 
+  static PyStrongRef JSCall_Trampoline_Type;
   PyStrongRef self;
   Py_ssize_t memory_hint;
 };

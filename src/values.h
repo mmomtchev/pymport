@@ -50,7 +50,7 @@
       (o),                                                                                                             \
       (o) != nullptr ? (o)->ob_type->tp_name : "null",                                                                 \
       (o) != nullptr ? (unsigned long)((o)->ob_refcnt) : 0);                                                           \
-    PyObject_Print(o, stdout, 0);                                                                                      \
+    if (o != nullptr) PyObject_Print(o, stdout, 0);                                                                    \
     printf("\n");                                                                                                      \
   }
 

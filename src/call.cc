@@ -1,9 +1,97 @@
+
+#include <vector>
+
 #include "pymport.h"
 #include "pystackobject.h"
 #include "values.h"
 
 using namespace Napi;
 using namespace pymport;
+
+// An object of JSCall_Trampoline represents the Python view of a JS function
+// This callable type cannot be constructed from Python and is normally not visible
+// except when inspecting a function object passed from JS
+typedef struct {
+  PyObject_HEAD;
+  Napi::FunctionReference js_fn;
+} JSCall_Trampoline;
+
+static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *args, PyObject *kw) {
+  auto me = reinterpret_cast<JSCall_Trampoline *>(type->tp_alloc(type, 0));
+  if (me == nullptr) return PyErr_NoMemory();
+
+  // Make sure we don't segfault if someone manages to call us from Python
+  memset(reinterpret_cast<void *>(&me->js_fn), 0, sizeof(Napi::FunctionReference));
+  me->js_fn = FunctionReference();
+  return reinterpret_cast<PyObject *>(me);
+}
+
+// Synchronous call into JS from Python
+static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject *kw) {
+  JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
+  Napi::Env env = me->js_fn.Env();
+  if (me->js_fn.IsEmpty()) {
+    fprintf(stderr, "Called an empty JS function, don't manually construct objects of pymport.js_function type\n");
+    Py_RETURN_NOTIMPLEMENTED;
+  }
+
+  ASSERT(PyTuple_Check(args));
+  ASSERT(kw == nullptr || PyDict_Check(kw));
+
+  std::vector<napi_value> js_args;
+
+  // Positional arguments
+  size_t len = PyTuple_Size(args);
+  for (size_t i = 0; i < len; i++) {
+    PyWeakRef v = PyTuple_GetItem(args, i);
+    PyObjectWrap::ExceptionHandler(env, v);
+    Napi::Value js = PyObjectWrap::ToJS(env, v);
+    js_args.push_back(js);
+  }
+
+  // Named arguments -> placed in a object as a last argument
+  if (kw != nullptr) {
+    Napi::Value js_kwargs = PyObjectWrap::ToJS(env, kw);
+    js_args.push_back(js_kwargs);
+  }
+
+  try {
+    Value js_ret = me->js_fn.Call(js_args);
+    PyStrongRef ret = PyObjectWrap::FromJS(js_ret);
+    PyObjectWrap::ExceptionHandler(env, ret);
+    return ret.gift();
+  } catch (const Error &err) { PyErr_SetString(PyExc_Exception, err.what()); }
+
+  return nullptr;
+}
+
+static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
+  VERBOSE_PYOBJ(self, "jscall_trampoline finalizer");
+  JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
+  me->js_fn.Reset();
+  Py_RETURN_NONE;
+}
+
+static PyType_Slot jscall_trampoline_slots[] = {
+  {Py_tp_alloc, reinterpret_cast<void *>(PyType_GenericAlloc)},
+  {Py_tp_new, reinterpret_cast<void *>(JSCall_Trampoline_Constructor)},
+  {Py_tp_call, reinterpret_cast<void *>(JSCall_Trampoline_Call)},
+  {Py_tp_dealloc, reinterpret_cast<void *>(JSCall_Trampoline_Finalizer)},
+  {0, 0}};
+
+static PyType_Spec jscall_trampoline_spec = {
+  "pymport.js_function", sizeof(JSCall_Trampoline), 0, Py_TPFLAGS_DEFAULT, jscall_trampoline_slots};
+
+PyStrongRef PyObjectWrap::JSCall_Trampoline_Type = nullptr;
+
+void PyObjectWrap::InitJSTrampoline() {
+  JSCall_Trampoline_Type = PyType_FromSpec(&jscall_trampoline_spec);
+
+  if (JSCall_Trampoline_Type == nullptr) {
+    fprintf(stderr, "Error initalizing js_function type\n");
+    abort();
+  }
+}
 
 Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -87,4 +175,31 @@ void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
     throw error_object;
   }
   throw Napi::TypeError::New(env, std::string("Unknown Python error"));
+}
+
+PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
+  Napi::Env env = js_fn.Env();
+
+  // Create a new instance of JSCall_Trampoline
+  PyStrongRef args = PyTuple_New(0);
+  ExceptionHandler(env, args);
+
+  // create the Python trampoline object
+  PyStrongRef trampoline = PyObject_CallObject(*JSCall_Trampoline_Type, *args);
+  ExceptionHandler(env, trampoline);
+
+  // Pass the JS reference to the callback
+  auto *raw = reinterpret_cast<JSCall_Trampoline *>(*trampoline);
+  raw->js_fn = Persistent(js_fn);
+
+  return trampoline;
+}
+
+Value PyObjectWrap::Functor(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  auto fn = NAPI_ARG_FUNC(0);
+  PyStrongRef obj = NewJSFunction(fn);
+  ExceptionHandler(env, obj);
+  return New(env, std::move(obj));
 }

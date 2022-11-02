@@ -219,7 +219,6 @@ plt.show();
 
 # Future Plans
 
-- Passing of JavaScript callbacks to Python
 - More features allowing direct interaction with `PyObject`s from JS
 - (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
 - (longer term) Generate TypeScript bindings from the Python modules
