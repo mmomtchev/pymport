@@ -61,7 +61,11 @@ describe('proxy', () => {
     const d = proxify(PyObject.int(12));
 
     assert.equal(d.type, 'int');
-    assert.equal(d.toJS(), 12);
+    assert.strictEqual(d.toJS(), 12);
+
+    const n = d.constr(14);
+    assert.strictEqual(n.toJS(), 14);
+    assert.equal(n, 14);
   });
 
   it('chaining getters', () => {

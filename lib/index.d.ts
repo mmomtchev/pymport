@@ -109,7 +109,7 @@ export class PyObject {
   readonly callable: boolean;
 
   /**
-   * The underlying Python type
+   * The underlying Python type, equivalent to JavaScript typeof
    */
   readonly type: string;
 
@@ -117,6 +117,11 @@ export class PyObject {
    * Length of the underlying object if it is defined
    */
   readonly length: number | undefined;
+
+  /**
+   * The underlying Python type, equivalent to Python type() or JavaScript constructor
+   */
+  readonly constr: (...args: any[]) => any;
 
   /**
    * Get a property from the object, equivalent to Python member operator .

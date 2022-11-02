@@ -71,6 +71,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   Napi::Value Type(const Napi::CallbackInfo &);
   Napi::Value Length(const Napi::CallbackInfo &);
   Napi::Value Callable(const Napi::CallbackInfo &);
+  Napi::Value Constructor(const Napi::CallbackInfo &);
 
   static Napi::Value Import(const Napi::CallbackInfo &);
   static Napi::Value Eval(const Napi::CallbackInfo &);

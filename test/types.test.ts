@@ -22,6 +22,7 @@ describe('types', () => {
       assert.equal(f.toJS(), 2.3);
       assert.equal(+f, 2.3);
       assert.equal(f.valueOf(), 2.3);
+      assert.instanceOf(f.constr.call(1), PyObject);
     });
 
     it('fromJS()', () => {
@@ -56,6 +57,7 @@ describe('types', () => {
       assert.equal(f.toJS(), 2);
       assert.equal(+f, 2);
       assert.equal(f.valueOf(), 2);
+      assert.instanceOf(f.constr.call(1), PyObject);
     });
 
     it('fromJS()', () => {
