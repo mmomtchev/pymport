@@ -14,6 +14,10 @@
   "parserOptions": {
     "ecmaVersion": 2019
   },
+  "globals": {
+    "BigInt64Array": "readonly",
+    "BigUint64Array": "readonly"
+  },
   "rules": {
     "max-len": [
       1,
@@ -23,9 +27,6 @@
         "ignoreUrls": true
       }
     ],
-    "mocha/no-exclusive-tests": "error",
-    "mocha/no-identical-title": "error",
-    "mocha/no-nested-tests": "error",
     "semi": [
       2,
       "always"
@@ -44,7 +45,7 @@
     {
       "files": [
         "./test/*",
-        "lib/index.d.ts"
+        "lib/*.d.ts"
       ],
       "extends": [
         "eslint:recommended",
@@ -58,6 +59,9 @@
         "prefer-arrow"
       ],
       "rules": {
+        "mocha/no-exclusive-tests": "error",
+        "mocha/no-identical-title": "error",
+        "mocha/no-nested-tests": "error",
         "@typescript-eslint/no-explicit-any": "off"
       }
     }
