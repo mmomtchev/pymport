@@ -54,7 +54,7 @@ Value PyObjectWrap::MemoryView(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   Buffer<char> buffer = NAPI_ARG_BUFFER(0);
   PyStrongRef memoryView = PyMemoryView_FromMemory(buffer.Data(), buffer.ByteLength(), PyBUF_WRITE);
-  ExceptionHandler(env, memoryView);
+  EXCEPTION_CHECK(env, memoryView);
 
   // Create a new instance of MemView_Finalizer_Type
   PyStrongRef args = PyTuple_New(0);

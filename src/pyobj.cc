@@ -69,7 +69,7 @@ Value PyObjectWrap::ToString(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   PyStrongRef r = PyObject_Str(*self);
-  ExceptionHandler(env, r);
+  EXCEPTION_CHECK(env, r);
   return ToJS(env, r);
 }
 
@@ -90,7 +90,7 @@ Value PyObjectWrap::Import(const CallbackInfo &info) {
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef pyname = PyUnicode_DecodeFSDefault(name.c_str());
-  ExceptionHandler(env, pyname);
+  EXCEPTION_CHECK(env, pyname);
 
   PyStrongRef obj = PyImport_Import(*pyname);
   return New(env, std::move(obj));
@@ -122,7 +122,7 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
   PyStrongRef item = FromJS(info[0]);
   PyStrongRef r = PyObject_GetItem(*self, *item);
-  ExceptionHandler(env, r);
+  EXCEPTION_CHECK(env, r);
   return New(env, std::move(r));
 }
 

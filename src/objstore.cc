@@ -16,7 +16,7 @@ using namespace pymport;
 
 // New steals the py reference
 Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
-  ExceptionHandler(env, obj);
+  EXCEPTION_CHECK(env, obj);
 
   auto context = env.GetInstanceData<EnvContext>();
   VERBOSE_PYOBJ(*obj, "Objstore new");
@@ -49,7 +49,7 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
 
 // NewCallable steals the reference
 Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
-  ExceptionHandler(env, py);
+  EXCEPTION_CHECK(env, py);
 
   VERBOSE_PYOBJ(*py, "Funcstore new callable");
   auto context = env.GetInstanceData<EnvContext>();

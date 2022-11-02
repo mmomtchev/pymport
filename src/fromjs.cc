@@ -11,7 +11,7 @@ Value PyObjectWrap::String(const CallbackInfo &info) {
   auto raw = NAPI_ARG_STRING(0).Utf16Value();
   PyStrongRef obj =
     PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
-  ExceptionHandler(env, obj);
+  EXCEPTION_CHECK(env, obj);
   return New(env, std::move(obj));
 }
 
@@ -20,7 +20,7 @@ Value PyObjectWrap::Float(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_NUMBER(0).DoubleValue();
   PyStrongRef obj = PyFloat_FromDouble(raw);
-  ExceptionHandler(env, obj);
+  EXCEPTION_CHECK(env, obj);
   return New(env, std::move(obj));
 }
 
@@ -29,7 +29,7 @@ Value PyObjectWrap::Integer(const CallbackInfo &info) {
 
   if (info.Length() < 1) throw Error::New(env, "No argument given");
 
-  int64_t raw;
+  int64_t raw = 0;
   if (info[0].IsNumber()) {
     raw = info[0].ToNumber().Int64Value();
   } else if (info[0].IsBigInt()) {
@@ -38,7 +38,7 @@ Value PyObjectWrap::Integer(const CallbackInfo &info) {
     if (!lossless) throw RangeError::New(env, "BigInt overflow");
   }
   PyStrongRef obj = PyLong_FromLongLong(static_cast<long long>(raw));
-  ExceptionHandler(env, obj);
+  EXCEPTION_CHECK(env, obj);
   return New(env, std::move(obj));
 }
 
@@ -50,10 +50,10 @@ void PyObjectWrap::_FromJS_Dictionary(Napi::Object object, const PyStrongRef &ta
     auto key = ((Napi::Value)el.second).ToString().Utf8Value();
     auto js = object.Get(key);
     PyStrongRef item = _FromJS(js, store);
-    ExceptionHandler(env, item);
+    EXCEPTION_CHECK(env, item);
     // This is the only Py***_Set that does not steal a reference
     int status = PyDict_SetItemString(*target, key.c_str(), *item);
-    ExceptionHandler(env, status);
+    EXCEPTION_CHECK(env, status);
   }
 }
 
@@ -62,7 +62,7 @@ Value PyObjectWrap::Dictionary(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_OBJECT(0);
   PyStrongRef dict = PyDict_New();
-  ExceptionHandler(env, dict);
+  EXCEPTION_CHECK(env, dict);
   PyObjectStore store;
   _FromJS_Dictionary(raw, dict, store);
 
@@ -76,7 +76,7 @@ void PyObjectWrap::_FromJS_List(Napi::Array array, const PyStrongRef &target, Py
   for (size_t i = 0; i < len; i++) {
     PyStrongRef el = _FromJS(array.Get(i), store);
     int status = PyList_SetItem(*target, i, el.gift());
-    ExceptionHandler(array.Env(), status);
+    EXCEPTION_CHECK(array.Env(), status);
   }
 }
 
@@ -85,7 +85,7 @@ Value PyObjectWrap::List(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_ARRAY(0);
   PyStrongRef list = PyList_New(raw.Length());
-  ExceptionHandler(env, list);
+  EXCEPTION_CHECK(env, list);
   PyObjectStore store;
   _FromJS_List(raw, list, store);
 
@@ -99,7 +99,7 @@ void PyObjectWrap::_FromJS_Tuple(Napi::Array array, const PyStrongRef &target, P
   for (size_t i = 0; i < len; i++) {
     PyStrongRef el = _FromJS(array.Get(i), store);
     int status = PyTuple_SetItem(*target, i, el.gift());
-    ExceptionHandler(array.Env(), status);
+    EXCEPTION_CHECK(array.Env(), status);
   }
 }
 
@@ -108,7 +108,7 @@ Value PyObjectWrap::Tuple(const CallbackInfo &info) {
 
   auto raw = NAPI_ARG_ARRAY(0);
   PyStrongRef tuple = PyTuple_New(raw.Length());
-  ExceptionHandler(env, tuple);
+  EXCEPTION_CHECK(env, tuple);
   PyObjectStore store;
   _FromJS_Tuple(raw, tuple, store);
 
@@ -124,14 +124,14 @@ Value PyObjectWrap::Slice(const CallbackInfo &info) {
   PyObjectStore store;
   PyStrongRef slice =
     PySlice_New(*_FromJS(array[(uint32_t)0], store), *_FromJS(array[1], store), *_FromJS(array[2], store));
-  ExceptionHandler(env, slice);
+  EXCEPTION_CHECK(env, slice);
 
   return New(env, std::move(slice));
 }
 
 PyStrongRef PyObjectWrap::_FromJS_BytesArray(Buffer<char> buffer) {
   PyStrongRef bytearray = PyByteArray_FromStringAndSize(buffer.Data(), buffer.ByteLength());
-  ExceptionHandler(buffer.Env(), bytearray);
+  EXCEPTION_CHECK(buffer.Env(), bytearray);
   return bytearray;
 }
 
@@ -139,7 +139,7 @@ Value PyObjectWrap::Bytes(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   Buffer<char> buffer = NAPI_ARG_BUFFER(0);
   PyStrongRef bytes = PyBytes_FromStringAndSize(buffer.Data(), buffer.ByteLength());
-  ExceptionHandler(env, bytes);
+  EXCEPTION_CHECK(env, bytes);
   return New(env, std::move(bytes));
 }
 
@@ -147,7 +147,7 @@ Value PyObjectWrap::ByteArray(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   Buffer<char> buffer = NAPI_ARG_BUFFER(0);
   PyStrongRef bytearray = PyByteArray_FromStringAndSize(buffer.Data(), buffer.ByteLength());
-  ExceptionHandler(env, bytearray);
+  EXCEPTION_CHECK(env, bytearray);
   return New(env, std::move(bytearray));
 }
 
@@ -197,7 +197,7 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
       py = PyLong_FromLongLong(static_cast<long long>(v.ToNumber().Int64Value()));
     else
       py = PyFloat_FromDouble(raw);
-    ExceptionHandler(env, py);
+    EXCEPTION_CHECK(env, py);
     return py;
   }
   if (v.IsBigInt()) {
@@ -205,21 +205,21 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     int64_t raw = v.As<BigInt>().Int64Value(&lossless);
     if (!lossless) throw RangeError::New(env, "BigInt overflow");
     PyStrongRef py = PyLong_FromLongLong(static_cast<long long>(raw));
-    ExceptionHandler(env, py);
+    EXCEPTION_CHECK(env, py);
     return py;
   }
   if (v.IsString()) {
     auto raw = v.ToString().Utf16Value();
     PyStrongRef py =
       PyUnicode_DecodeUTF16(reinterpret_cast<const char *>(raw.c_str()), raw.size() * 2, nullptr, nullptr);
-    ExceptionHandler(env, py);
+    EXCEPTION_CHECK(env, py);
     store.push_front({v, py});
     return py;
   }
   if (v.IsArray()) {
     auto array = v.As<Array>();
     PyStrongRef list = PyList_New(array.Length());
-    ExceptionHandler(env, list);
+    EXCEPTION_CHECK(env, list);
     store.push_front({v, list});
     _FromJS_List(array, list, store);
     return list;
@@ -248,7 +248,7 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
 
     // Fallback to dictionary
     PyStrongRef dict = PyDict_New();
-    ExceptionHandler(env, dict);
+    EXCEPTION_CHECK(env, dict);
     store.push_front({v, dict});
     _FromJS_Dictionary(obj, dict, store);
     return dict;

@@ -103,13 +103,23 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Function GetClass(Napi::Env);
   static void InitJSTrampoline();
 
-  static inline void ExceptionHandler(Napi::Env env, const PyWeakRef &py) {
+#ifdef DEBUG
+  static inline void ExceptionCheck(Napi::Env env, const PyWeakRef &py, const std::string msg) {
+    if (py == nullptr) _ExceptionThrow(env, msg);
+  }
+
+  static inline void ExceptionCheck(Napi::Env env, int status, const std::string msg) {
+    if (status != 0) _ExceptionThrow(env, msg);
+  }
+#else
+  static inline void ExceptionCheck(Napi::Env env, const PyWeakRef &py) {
     if (py == nullptr) _ExceptionThrow(env);
   }
 
-  static inline void ExceptionHandler(Napi::Env env, int status) {
+  static inline void ExceptionCheck(Napi::Env env, int status) {
     if (status != 0) _ExceptionThrow(env);
   }
+#endif
 
     private:
   typedef std::map<PyObject *, Napi::Value> NapiObjectStore;
@@ -138,7 +148,11 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static bool _InstanceOf(Napi::Value);
   static bool _FunctionOf(Napi::Value);
 
+#ifdef DEBUG
+  static void _ExceptionThrow(Napi::Env, const std::string msg);
+#else
   static void _ExceptionThrow(Napi::Env);
+#endif
 
   static PyStrongRef JSCall_Trampoline_Type;
   PyStrongRef self;

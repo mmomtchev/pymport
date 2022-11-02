@@ -28,9 +28,9 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   if (PyUnicode_Check(*py)) {
     PyStrongRef utf16 = PyUnicode_AsUTF16String(*py);
-    ExceptionHandler(env, utf16);
+    EXCEPTION_CHECK(env, utf16);
     auto raw = PyBytes_AsString(*utf16);
-    if (raw == nullptr) _ExceptionThrow(env);
+    EXCEPTION_CHECK(env, static_cast<int>(raw == nullptr));
     return String::New(env, reinterpret_cast<char16_t *>(raw + 2), PyUnicode_GET_LENGTH(*py));
   }
 
@@ -75,7 +75,7 @@ Napi::Value PyObjectWrap::_ToJS_Tuple(Napi::Env env, const PyWeakRef &py, NapiOb
 
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyTuple_GetItem(*py, i);
-    ExceptionHandler(env, v);
+    EXCEPTION_CHECK(env, v);
     Napi::Value js = _ToJS(env, v, store);
     r.Set(i, js);
   }
@@ -89,7 +89,7 @@ Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, const PyWeakRef &py, NapiObj
 
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyList_GetItem(*py, i);
-    ExceptionHandler(env, v);
+    EXCEPTION_CHECK(env, v);
     Napi::Value js = _ToJS(env, v, store);
     r.Set(i, js);
   }
@@ -106,7 +106,7 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
 
   for (size_t i = 0; i < len; i++) {
     PyWeakRef key = PyList_GetItem(*list, i);
-    ExceptionHandler(env, key);
+    EXCEPTION_CHECK(env, key);
     PyStrongRef value = PyObject_GetAttr(*py, *key);
     // dir(module) can reference modules that are not installed
     // Typical examples are queue/tkinter or dbm/gdbm
@@ -124,7 +124,7 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
 Napi::Value PyObjectWrap::_ToJS_Buffer(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
   Py_buffer view;
   int status = PyObject_GetBuffer(*py, &view, PyBUF_C_CONTIGUOUS);
-  ExceptionHandler(env, status);
+  EXCEPTION_CHECK(env, status);
 
   // V8 doesn't like multiple Buffers that point to the same memory location
   // https://github.com/nodejs/node/issues/32463

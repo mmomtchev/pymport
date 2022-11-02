@@ -44,7 +44,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
   size_t len = PyTuple_Size(args);
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyTuple_GetItem(args, i);
-    PyObjectWrap::ExceptionHandler(env, v);
+    PyObjectWrap::EXCEPTION_CHECK(env, v);
     Napi::Value js = PyObjectWrap::ToJS(env, v);
     js_args.push_back(js);
   }
@@ -58,7 +58,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
   try {
     Value js_ret = me->js_fn.Call(js_args);
     PyStrongRef ret = PyObjectWrap::FromJS(js_ret);
-    PyObjectWrap::ExceptionHandler(env, ret);
+    PyObjectWrap::EXCEPTION_CHECK(env, ret);
     return ret.gift();
   } catch (const Error &err) { PyErr_SetString(PyExc_Exception, err.what()); }
 
@@ -99,7 +99,7 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   if (!PyCallable_Check(*py)) { throw Napi::TypeError::New(env, "Value not callable"); }
 
   PyStrongRef kwargs = PyDict_New();
-  ExceptionHandler(env, kwargs);
+  EXCEPTION_CHECK(env, kwargs);
   size_t argc = info.Length();
   if (argc > 0 && info[argc - 1].IsObject() && !info[argc - 1].IsArray() && !_InstanceOf(info[argc - 1])) {
     PyObjectStore store;
@@ -110,17 +110,17 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   }
 
   PyStrongRef args = PyTuple_New(argc);
-  ExceptionHandler(env, args);
+  EXCEPTION_CHECK(env, args);
   for (size_t i = 0; i < argc; i++) {
     PyStrongRef v = FromJS(info[i]);
-    ExceptionHandler(env, v);
+    EXCEPTION_CHECK(env, v);
     // FromJS returns a strong reference and PyTuple_SetItem steals it
     int status = PyTuple_SetItem(*args, i, v.gift());
-    ExceptionHandler(env, status);
+    EXCEPTION_CHECK(env, status);
   }
 
   PyStrongRef r = PyObject_Call(*py, *args, *kwargs);
-  ExceptionHandler(env, r);
+  EXCEPTION_CHECK(env, r);
 
   return New(env, std::move(r));
 }
@@ -144,17 +144,21 @@ Value PyObjectWrap::Eval(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   auto text = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef globals = info.Length() > 1 ? FromJS(info[1]) : PyStrongRef(PyDict_New());
-  ExceptionHandler(env, globals);
+  EXCEPTION_CHECK(env, globals);
   PyStrongRef locals = info.Length() > 2 ? FromJS(info[2]) : PyStrongRef(PyDict_New());
-  ExceptionHandler(env, locals);
+  EXCEPTION_CHECK(env, locals);
 
   PyStrongRef result = PyRun_String(text.c_str(), Py_eval_input, *globals, *locals);
-  ExceptionHandler(env, result);
+  EXCEPTION_CHECK(env, result);
 
   return New(env, std::move(result));
 }
 
+#ifdef DEBUG
+void PyObjectWrap::_ExceptionThrow(Napi::Env env, std::string msg) {
+#else
 void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
+#endif
   PyWeakRef err = PyErr_Occurred();
   if (err != nullptr) {
     PyStrongRef type = nullptr, v = nullptr, trace = nullptr;
@@ -165,7 +169,11 @@ void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
     PyStrongRef pstr = PyObject_Str(*v);
     const char *py_err_msg = PyUnicode_AsUTF8(*pstr);
 
-    std::string err_msg = std::string("Python exception: ") + py_err_msg;
+    std::string err_msg = std::string("Python exception: ") + py_err_msg
+#ifdef DEBUG
+      + msg
+#endif
+      ;
 
     auto error_object = Napi::Error::New(env, err_msg);
     if (trace != nullptr) {
@@ -174,7 +182,14 @@ void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
     }
     throw error_object;
   }
-  throw Napi::TypeError::New(env, std::string("Unknown Python error"));
+  throw Napi::TypeError::New(
+    env,
+    std::string("Unknown Python error")
+#ifdef DEBUG
+      + msg
+#endif
+
+  );
 }
 
 PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
@@ -182,11 +197,11 @@ PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
 
   // Create a new instance of JSCall_Trampoline
   PyStrongRef args = PyTuple_New(0);
-  ExceptionHandler(env, args);
+  EXCEPTION_CHECK(env, args);
 
   // create the Python trampoline object
   PyStrongRef trampoline = PyObject_CallObject(*JSCall_Trampoline_Type, *args);
-  ExceptionHandler(env, trampoline);
+  EXCEPTION_CHECK(env, trampoline);
 
   // Pass the JS reference to the callback
   auto *raw = reinterpret_cast<JSCall_Trampoline *>(*trampoline);
@@ -200,6 +215,6 @@ Value PyObjectWrap::Functor(const CallbackInfo &info) {
 
   auto fn = NAPI_ARG_FUNC(0);
   PyStrongRef obj = NewJSFunction(fn);
-  ExceptionHandler(env, obj);
+  EXCEPTION_CHECK(env, obj);
   return New(env, std::move(obj));
 }
