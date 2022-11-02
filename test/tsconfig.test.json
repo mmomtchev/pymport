@@ -6,8 +6,11 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "paths": {
-      "@mapbox/node-pre-gyp": [
-        "./mapbox-node-pre-gyp"
+      "pymport": [
+        "."
+      ],
+      "pymport/*": [
+        "./lib/*"
       ]
     }
   }
