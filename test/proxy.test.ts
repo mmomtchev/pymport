@@ -110,4 +110,14 @@ describe('proxy', () => {
     // call the underlying item() method instead of the PyObject.item()
     assert.closeTo(d.item().toJS(), 1.5, 1e-6);
   });
+
+  it('PyObject.keys()', () => {
+    const dict = PyObject.dict({ a: 0, b: 1 });
+    assert.deepEqual(PyObject.keys(dict).toJS(), ['a', 'b']);
+  });
+
+  it('PyObject.values()', () => {
+    const dict = PyObject.dict({ a: 0, b: 1 });
+    assert.deepEqual(PyObject.values(dict).toJS(), [0, 1]);
+  });
 });
