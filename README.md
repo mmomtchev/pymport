@@ -57,7 +57,9 @@ At the moment, Python code does not have access to the JavaScript objects - this
 
 `pymport` itself supports `worker_thread` but does not provide any locking. Unlike Node.js, Python threads share the same single environment and `PyObject`s will be shared among all threads.
 
-## Examples
+## Quick Start
+
+### Using raw `PyObject`s
 
 You can directly use the raw `PyObject` object and call `get`/`call` each time you need to access a Python attribute or call a Python function:
 
@@ -82,13 +84,17 @@ const b = np.get("ones").call([2, 3], { dtype: np.get("int16") });
 console.log(a.get("tolist").call().toJS());
 ```
 
-Or you can use `proxify` to create a JS `Proxy`:
+### Using `proxify`
+
+`profixy` is usually the best method to use `pymport`. It wraps every `PyObject` in a JS `Proxy` object that automatically calls `.get()` when accessing a property and `.call()` when calling a method. It also ensures that all returned values are also wrapped in a `Proxy`.
+
+It allows for a truly natural interaction with the Python objects:
 
 ```js
 import { pymport, proxify } from "pymport";
 
 // Python: import numpy as np
-// np is a JS proxy object
+// np is a JS proxy object and everything returned through this object will also be proxified
 const np = proxify(pymport("numpy"));
 
 // Python: a = np.arange(15).reshape(3, 5)
@@ -103,7 +109,9 @@ const b = np.ones([2, 3], { dtype: np.int16 });
 console.log(a.tolist().toJS());
 ```
 
-Even the most perverted pandas syntax can be expressed:
+However comfort comes at a price and `proxify` has a significant performance impact for very short calls.
+
+Unlike Python, JavaScript does not support operator overloading. This means that some shortcuts in Python are to be expressed using their method call counterparts. For example `a[1]` is equivalent to `a.__getitem__(1)` and `a > b` is equivalent to `a.__gt__(b)`. Knowing this, even the most perverted pandas syntax can be expressed:
 
 ```js
 // df = pd.DataFrame(np.arange(15).reshape(5, 3), columns=list(['ABC']) })
@@ -130,7 +138,6 @@ Inline Python is supported through `pyval` (using Python `eval` - note that it e
 // fn is a PyObject
 const fn = pyval("lambda x: (x + 42)");
 
-assert.instanceOf(fn, PyObject);
 assert.isTrue(fn.callable);
 assert.strictEqual(fn.call(-42).toJS(), 0);
 
@@ -152,9 +159,12 @@ assert.strictEqual(lambda.call(-4).toJS(), 0);
 // Modules can be passed too
 const np = pymport("numpy");
 const py_array = pyval("np.array([2, 1, 0]).tolist()", { np });
-assert.instanceOf(py_array, PyObject);
 assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 ```
+
+`pyval` can be used to create any value that is not easily created in JavaScript.
+
+### Using `toJS()` on the module object
 
 Direct conversion of the Python module object itself to a JavaScript object is supported too, but this is the least compatible mode, as some Python constructs cannot be expressed in JS:
 
@@ -166,6 +176,8 @@ const a = np.arange(15).reshape(3, 5);
 
 **Generally, `proxify` is the best way to use `pymport`.**
 
+### More Examples
+
 matplotlib example (this is [one of the official examples](https://matplotlib.org/stable/gallery/lines_bars_and_markers/bar_colors.html#sphx-glr-gallery-lines-bars-and-markers-bar-colors-py) *translated* to JavaScript):
 
 ```js
@@ -173,8 +185,8 @@ const { pymport, proxify } = require("pymport");
 
 const plt = proxify(pymport("matplotlib.pyplot"));
 
-const plots = plt.subplots();
-const ax = plots.item(1);
+const plots = plt.subplots(); // In Python we write fig,ax = plt.subplots()
+const ax = plots.item(1);     // This a list assignment and ax is the [1] element
 
 const fruits = ["apple", "blueberry", "cherry", "orange"];
 const counts = [40, 100, 30, 55];
@@ -190,23 +202,29 @@ ax.legend({ title: "Fruit color" });
 plt.show();
 ```
 
+# Performance
+
+* Generally Python continues to run at the usual Python speed, Node.js continues to tun at the usual Node.js speed
+* Calling into Python from JS is more expensive than Python to Python, tests show that using Node.js for numpy arrays:
+  - of 8 elements is 4 times slower using raw access and 20 times slower using `proxify`
+  - of 512 elements is 3 times slower using raw access and 10 times slower using `proxify`
+  - of 8192 elements, there is no significant difference with raw access and `proxify` is 30% slower
+  - of 32768 elements, there is no significant difference whatever the access method is
+* `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
+  - For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
+  - This applies to automatic conversion of arguments, calling Python with `(1)` is slower than `PyObject.int(1)` if you can keep that second object between calls
+* The memory usage of your program will be the sum of the memory usage of a Python interpreter (not that much) and a Node.js interpreter (more significant)
+* The two GCs should work very well in tandem
+
 # Architecture Overview
 
 ![Architecture Overview](https://raw.githubusercontent.com/mmomtchev/pymport/main/overview.svg)
 
-# Performance Notes / Known Issues
+# Known Issues
 
-*   Simply calling into Python is more expensive than from the native Python interpreter
-    *   If working on `numpy` arrays of less than 10 elements, the difference can be very significant (up to 4 times)
-    *   `proxify`ed objects have a small additional overhead that, for all practical reasons, can be ignored
-    *   Above a few hundred elements, the difference gradually becomes smaller
-    *   With very large arrays and very complex operations, Node.js can very slightly outperform stock Python
-        *Large `numpy` arrays are very dependent on the memory allocator and Node.js/V8 has an outstanding memory allocator*
-*   `fromJS()` and `toJS()` are expensive functions that deep copy the data between the V8 and the Python heap
-*   The two GCs should work well in tandem as for every object there is exactly one of them that can free it
-*   In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
-*   In (*upcoming*) 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
-*   In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
+* In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
+* In 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
+* In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
 
 # Supported Versions
 
