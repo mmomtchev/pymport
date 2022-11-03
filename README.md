@@ -204,12 +204,13 @@ plt.show();
 
 # Performance
 
-* Generally Python continues to run at the usual Python speed, Node.js continues to tun at the usual Node.js speed
+* Generally when using Python, you will get the usual Python performance, while when using Node.js, you will get the usual Node.js performance
 * Calling into Python from JS is more expensive than Python to Python, tests show that using Node.js for numpy arrays:
   - of 8 elements is 4 times slower using raw access and 20 times slower using `proxify`
   - of 512 elements is 3 times slower using raw access and 10 times slower using `proxify`
   - of 8192 elements, there is no significant difference with raw access and `proxify` is 30% slower
   - of 32768 elements, there is no significant difference whatever the access method is
+* It is possible to mix raw access and `proxify` - the underlying `PyObject` can be accessed as the `__PyObject__` from a proxy object
 * `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
   - For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
   - This applies to automatic conversion of arguments, calling Python with `(1)` is slower than `PyObject.int(1)` if you can keep that second object between calls
