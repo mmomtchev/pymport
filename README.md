@@ -226,6 +226,7 @@ plt.show();
 * In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
 * In 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
 * In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
+* [#3](https://github.com/mmomtchev/pymport/issues/3), `PyOBject`s are leaking memory in synchronous loops
 
 # Supported Versions
 
