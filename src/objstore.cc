@@ -1,4 +1,3 @@
-#include <Python.h>
 #include "pymport.h"
 #include "pystackobject.h"
 #include "values.h"

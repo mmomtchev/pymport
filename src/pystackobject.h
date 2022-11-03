@@ -1,5 +1,14 @@
 #pragma once
+
+// This allows building in debug mode on Windows without having the Python debug build
+#ifdef _DEBUG
+#undef _DEBUG
 #include <Python.h>
+#define _DEBUG
+#else
+#include <Python.h>
+#endif
+
 #include "values.h"
 
 // These two classes express the Strong/Weak reference rules

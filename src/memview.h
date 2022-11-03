@@ -1,5 +1,4 @@
 #pragma once
-#include <Python.h>
 #include "values.h"
 
 namespace pymport {
