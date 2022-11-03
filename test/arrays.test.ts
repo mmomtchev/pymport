@@ -18,8 +18,6 @@ const tests = [
 describe('array', () => {
   const array = proxify(pymport('array'));
 
-  afterEach('gc', global.gc);
-
   it('constructor', () => {
     const a = array.array('l', pyval('range(10)'));
 

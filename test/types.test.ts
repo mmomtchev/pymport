@@ -7,8 +7,6 @@ describe('types', () => {
     np = pymport('numpy');
   });
 
-  afterEach('gc', global.gc);
-
   describe('float', () => {
     it('toJS()', () => {
       const f = PyObject.float(2.3);

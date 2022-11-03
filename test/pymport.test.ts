@@ -4,8 +4,6 @@ import { assert } from 'chai';
 import pkg from '../package.json';
 
 describe('pymport', () => {
-  afterEach('gc', global.gc);
-
   it('version', () => {
     assert.strictEqual(version.pymport.major, +pkg.version.split('.')[0]);
     assert.strictEqual(version.pymport.minor, +pkg.version.split('.')[1]);
