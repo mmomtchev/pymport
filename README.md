@@ -132,7 +132,23 @@ const df3 = df.item(df.item("C").__le__(3));
 assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
 ```
 
-Inline Python is supported through `pyval` (using Python `eval` - note that it expects a Python expression and not a Python statement):
+Slices can be expressed too:
+```js
+//memoryview(b'123')[::2]
+PyObject.memoryview(Buffer.from('123')).item(PyObject.slice([null, null, 2]))
+```
+
+### Inline Python
+
+Inline Python is supported through `pyval` which uses Python `eval`.
+
+`pyval` can be used to create any value that is not easily expressed in JavaScript:
+
+```js
+const memviewSlice = pyval("memoryview(b'123')[::2]");
+```
+
+Every Python **expression** can be used in `pyval` - note that `eval` expects a Python expression and not a Python statement:
 
 ```js
 // fn is a PyObject
@@ -162,7 +178,7 @@ const py_array = pyval("np.array([2, 1, 0]).tolist()", { np });
 assert.deepEqual(py_array.toJS(), [2, 1, 0]);
 ```
 
-`pyval` can be used to create any value that is not easily created in JavaScript.
+`pyval` runs the whole Python compiler chain and it is an expensive function.
 
 ### Using `toJS()` on the module object
 
@@ -174,7 +190,7 @@ const np = pymport("numpy").toJS();
 const a = np.arange(15).reshape(3, 5);
 ```
 
-**Generally, `proxify` is the best way to use `pymport`.**
+In theory, this allows to combine the performance of the raw access with the comfort of the `proxify`ed object. In reality however, not everything works as expected. For example, chaining won't work unless the `PyObject` is converted back to JS at every step which will outweigh all performance benefits. **Generally, `proxify` is the best way to use `pymport`.**
 
 ### More Examples
 

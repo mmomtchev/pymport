@@ -486,6 +486,7 @@ describe('types', () => {
         a.toJS();
       }, /contiguous/);
 
+      // Equivalent to memoryview(b'123')[::2]
       const v = PyObject.memoryview(Buffer.from('123')).item(PyObject.slice([null, null, 2]));
       assert.throws(() => {
         v.toJS();
