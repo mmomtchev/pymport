@@ -98,10 +98,11 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
 
   if (!PyCallable_Check(*py)) { throw Napi::TypeError::New(env, "Value not callable"); }
 
-  PyStrongRef kwargs = PyDict_New();
-  EXCEPTION_CHECK(env, kwargs);
+  PyStrongRef kwargs = nullptr;
   size_t argc = info.Length();
   if (argc > 0 && info[argc - 1].IsObject() && !info[argc - 1].IsArray() && !_InstanceOf(info[argc - 1])) {
+    kwargs = PyDict_New();
+    EXCEPTION_CHECK(env, kwargs);
     PyObjectStore store;
     _FromJS_Dictionary((info[argc - 1]).ToObject(), kwargs, store);
     argc--;
