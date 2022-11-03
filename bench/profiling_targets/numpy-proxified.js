@@ -8,7 +8,7 @@ async function run() {
     setImmediate(() => {
       const a = np.matmul(np.arange(size * size * 2).reshape([size, size * 2]).T,
         np.arange(size * size * 2).reshape([size, size * 2]));
-      resolve(np.average(a).get('item')().toJS());
+      resolve(np.average(a).item().toJS());
     });
   });
 }
