@@ -229,7 +229,6 @@ plt.show();
 * It is possible to mix raw access and `proxify` - the underlying `PyObject` can be accessed as the `__PyObject__` from a proxy object
 * `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
   - For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
-  - This applies to automatic conversion of arguments, calling Python with `(1)` is slower than `PyObject.int(1)` if you can keep that second object between calls
 * The memory usage of your program will be the sum of the memory usage of a Python interpreter (not that much) and a Node.js interpreter (more significant)
 * The two GCs should work very well in tandem
 

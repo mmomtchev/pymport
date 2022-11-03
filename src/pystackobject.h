@@ -102,11 +102,13 @@ class PyStrongRef : public PyWeakRef {
   // * Assign a reference to a null reference
   //    With deferred initialization
   // Overwriting an existing PyStrongRef is not a valid operation
+  // Also, reassigning null to null is a valid operation
+  // (happens when returning from a function that raised an exception)
   INLINE PyStrongRef &operator=(PyStrongRef &&v) {
     ASSERT(self == nullptr || v.self == nullptr);
     if (self == nullptr) {
       VERBOSE_PYOBJ(v.self, "StrongRef move-assignment");
-      ASSERT(v.self->ob_refcnt > 0);
+      ASSERT(v.self == nullptr || v.self->ob_refcnt > 0);
       self = v.self;
       v.self = nullptr;
     } else if (v.self == nullptr) {

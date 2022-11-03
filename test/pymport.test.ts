@@ -48,19 +48,6 @@ describe('pymport', () => {
       assert.deepEqual(d.get('to_numpy').call().get('tolist').call().toJS(), [1, 3, 5, NaN, 6, 8]);
     });
 
-    it('named arguments', () => {
-      const pd = pymport('pandas');
-      const d = pd.get('date_range').call('20130101', { periods: 6 });
-      assert.deepEqual(d.get('tolist').call().toJS().map((e: PyObject) => e.toString()), [
-        '2013-01-01 00:00:00',
-        '2013-01-02 00:00:00',
-        '2013-01-03 00:00:00',
-        '2013-01-04 00:00:00',
-        '2013-01-05 00:00:00',
-        '2013-01-06 00:00:00'
-      ]);
-    });
-
     it('passing a single dict argument', () => {
       const check_dict_arg = pymport('python_helpers').get('single_dict_arg');
       assert.doesNotThrow(() => {
@@ -76,7 +63,6 @@ describe('pymport', () => {
       const df2 = df.get('__getitem__').call('A');
       assert.deepEqual(df2.get('tolist').call().toJS(), [1, 1, 1, 1, 1, 1, 1, 1]);
     });
-
   });
 
   describe('object store', () => {
@@ -108,12 +94,32 @@ describe('pymport', () => {
   });
 
   describe('named arguments', () => {
-    it('PyObject mode', () => {
+    it('numpy arguments', () => {
       const np = pymport('numpy');
 
       const a = np.get('ones').call([2, 3], { dtype: np.get('int16') });
       assert.strictEqual(a.get('dtype'), np.get('dtype').call('int16'));
       assert.deepEqual(a.get('tolist').call().toJS(), [[1, 1, 1], [1, 1, 1]]);
+    });
+
+    it('pandas arguments', () => {
+      const pd = pymport('pandas');
+      const d = pd.get('date_range').call('20130101', { periods: 6 });
+      assert.deepEqual(d.get('tolist').call().toJS().map((e: PyObject) => e.toString()), [
+        '2013-01-01 00:00:00',
+        '2013-01-02 00:00:00',
+        '2013-01-03 00:00:00',
+        '2013-01-04 00:00:00',
+        '2013-01-05 00:00:00',
+        '2013-01-06 00:00:00'
+      ]);
+    });
+
+    it('single named argument', () => {
+      const np = pymport('numpy');
+      const a = np.get('array').call([[1, 2, 3], [4, 5, 6]]);
+      const max = a.get('max').call({ axis: 1 });
+      assert.deepEqual(max.get('tolist').call().toJS(), [3, 6]);
     });
 
     it('JS mode', () => {

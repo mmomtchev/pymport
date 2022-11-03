@@ -93,14 +93,32 @@ void PyObjectWrap::InitJSTrampoline() {
   }
 }
 
+#define IS_INFO_ARG_KWARGS(n) (info[n].IsObject() && !info[n].IsArray() && !_InstanceOf(info[n]))
+
 Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   if (!PyCallable_Check(*py)) { throw Napi::TypeError::New(env, "Value not callable"); }
 
-  PyStrongRef kwargs = nullptr;
   size_t argc = info.Length();
-  if (argc > 0 && info[argc - 1].IsObject() && !info[argc - 1].IsArray() && !_InstanceOf(info[argc - 1])) {
+#if PY_MAJOR_VERSION > 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 9)
+  if (argc == 0) {
+    PyStrongRef r = PyObject_CallNoArgs(*py);
+    EXCEPTION_CHECK(env, r);
+
+    return New(env, std::move(r));
+  } else if (argc == 1 && !IS_INFO_ARG_KWARGS(0)) {
+    PyStrongRef arg = FromJS(info[0]);
+    EXCEPTION_CHECK(env, arg);
+    PyStrongRef r = PyObject_CallOneArg(*py, *arg);
+    EXCEPTION_CHECK(env, r);
+
+    return New(env, std::move(r));
+  }
+#endif
+
+  PyStrongRef kwargs = nullptr;
+  if (argc > 0 && IS_INFO_ARG_KWARGS(argc - 1)) {
     kwargs = PyDict_New();
     EXCEPTION_CHECK(env, kwargs);
     PyObjectStore store;
@@ -110,17 +128,25 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
     argc--;
   }
 
-  PyStrongRef args = PyTuple_New(argc);
-  EXCEPTION_CHECK(env, args);
-  for (size_t i = 0; i < argc; i++) {
-    PyStrongRef v = FromJS(info[i]);
-    EXCEPTION_CHECK(env, v);
-    // FromJS returns a strong reference and PyTuple_SetItem steals it
-    int status = PyTuple_SetItem(*args, i, v.gift());
-    EXCEPTION_CHECK(env, status);
+  PyStrongRef args = nullptr;
+  if (argc > 0 || kwargs != nullptr) {
+    args = PyTuple_New(argc);
+    EXCEPTION_CHECK(env, args);
+    for (size_t i = 0; i < argc; i++) {
+      PyStrongRef v = FromJS(info[i]);
+      EXCEPTION_CHECK(env, v);
+      // FromJS returns a strong reference and PyTuple_SetItem steals it
+      int status = PyTuple_SetItem(*args, i, v.gift());
+      EXCEPTION_CHECK(env, status);
+    }
   }
 
-  PyStrongRef r = PyObject_Call(*py, *args, *kwargs);
+  PyStrongRef r = nullptr;
+  if (kwargs == nullptr) {
+    r = PyObject_CallObject(*py, *args);
+  } else {
+    r = PyObject_Call(*py, *args, *kwargs);
+  }
   EXCEPTION_CHECK(env, r);
 
   return New(env, std::move(r));
