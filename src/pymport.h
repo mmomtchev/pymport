@@ -2,8 +2,16 @@
 
 #include <map>
 #include <list>
-#include <Python.h>
 #include <napi.h>
+
+// This allows building in debug mode on Windows without having the Python debug build
+#ifdef _DEBUG
+#undef _DEBUG
+#include <Python.h>
+#define _DEBUG
+#else
+#include <Python.h>
+#endif
 
 #include "pystackobject.h"
 
