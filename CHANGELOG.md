@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Return the Python traceback in `pythonTrace` and add a `PythonError` TypeScript type
 - Do not allow `PYTHONPATH` to override `PYTHONHOME` when using the builtin
 - Ignore the last argument of a Python function call if it is `undefined` - this allows to pass a last argument as a dictionary by calling `fn(obj, undefined)` instead of `fn(obj)` which will transform `obj` into named kw arguments
+- Support `PyObject.keys` and `PyObject.values` on `profixy`ed objects
 - (internals) New automatic reference counting
 
 ### [1.0.1] 2022-10-29
