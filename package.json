@@ -47,7 +47,8 @@
     "codecov": "cd coverage && curl -s https://codecov.io/bash | bash",
     "preversion": "npm run lint && npm run test && npm run doc && git add README.md",
     "postversion": "git push && git push --tags && node ./scripts/publish-packages.js",
-    "postpublish": "gh workflow run test-package.yml -F version=$npm_package_version"
+    "postpublish": "gh workflow run test-package.yml -F version=$npm_package_version",
+    "bench": "node bench/bench.js"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
