@@ -112,12 +112,12 @@ describe('proxy', () => {
   });
 
   it('PyObject.keys()', () => {
-    const dict = PyObject.dict({ a: 0, b: 1 });
+    const dict = proxify(PyObject.dict({ a: 0, b: 1 }));
     assert.deepEqual(PyObject.keys(dict).toJS(), ['a', 'b']);
   });
 
   it('PyObject.values()', () => {
-    const dict = PyObject.dict({ a: 0, b: 1 });
+    const dict = proxify(PyObject.dict({ a: 0, b: 1 }));
     assert.deepEqual(PyObject.values(dict).toJS(), [0, 1]);
   });
 });

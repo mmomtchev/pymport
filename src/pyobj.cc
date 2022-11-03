@@ -129,8 +129,7 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
 Value PyObjectWrap::Keys(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  Object target = NAPI_ARG_OBJECT(0);
-  if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
+  Object target = NAPI_ARG_PYOBJECT(0);
   auto py = ObjectWrap::Unwrap(target);
 
   if (PyMapping_Check(*py->self)) return New(env, PyMapping_Keys(*py->self));
@@ -141,8 +140,7 @@ Value PyObjectWrap::Keys(const CallbackInfo &info) {
 Value PyObjectWrap::Values(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  Object target = NAPI_ARG_OBJECT(0);
-  if (!_InstanceOf(target)) TypeError::New(env, "Object is not PyObject");
+  Object target = NAPI_ARG_PYOBJECT(0);
   auto py = ObjectWrap::Unwrap(target);
 
   if (PyMapping_Check(*py->self)) return New(env, PyMapping_Values(*py->self));

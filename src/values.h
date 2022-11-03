@@ -12,7 +12,6 @@
                                                  : info[arg].ToNumber())
 
 #define NAPI_ARG_OBJECT(arg)                                                                                           \
-                                                                                                                       \
   (info.Length() <= arg || !info[arg].IsObject() ? throw Napi::TypeError::New(env, "Argument must be an object")       \
                                                  : info[arg].ToObject())
 
@@ -27,6 +26,12 @@
 #define NAPI_ARG_FUNC(arg)                                                                                             \
   ((info.Length() <= arg || !info[arg].IsFunction()) ? throw Napi::TypeError::New(env, "Argument must be a function")  \
                                                      : info[arg].As<Napi::Function>())
+
+#define NAPI_ARG_PYOBJECT(arg)                                                                                         \
+  (info.Length() <= arg || !info[arg].IsObject() || !_InstanceOf(info[arg])                                            \
+     ? throw Napi::TypeError::New(env, "Argument must be a PyObject")                                                  \
+     : (info[arg].ToObject().Has("__PyObject__") ? info[arg].ToObject().Get("__PyObject__").ToObject()                 \
+                                                 : info[arg].ToObject()))
 
 #ifdef DEBUG
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
