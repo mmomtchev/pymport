@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] WIP
 
+#### New Features
 - Converting JS functions to Python callables
 - Expiring of function objects
 - Converting of `bytes` and `bytearray` to `Buffer` and `Buffer` to `bytearray`
@@ -20,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ignore the last argument of a Python function call if it is `undefined` - this allows to pass a last argument as a dictionary by calling `fn(obj, undefined)` instead of `fn(obj)` which will transform `obj` into named kw arguments
 - Support `PyObject.keys` and `PyObject.values` on `profixy`ed objects
 - (internals) New automatic reference counting
+
+#### Bug Fixes
+- Fix [[#6](https://github.com/mmomtchev/pymport/issues/6)], proxified objects are wrongly caching values returned by getters
 
 ### [1.0.1] 2022-10-29
 
