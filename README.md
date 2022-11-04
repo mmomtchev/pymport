@@ -218,6 +218,8 @@ ax.legend({ title: "Fruit color" });
 plt.show();
 ```
 
+As a last step, you should probably check the [`graph-tool` example](https://github.com/mmomtchev/pymport/blob/main/examples/graph_tool.js) for some advanced concepts when using operator overloading, lvalue references (assigning to list arrays), iterators and generators.
+
 # Performance
 
 * Generally when using Python, you will get the usual Python performance, while when using Node.js, you will get the usual Node.js performance
@@ -255,6 +257,7 @@ plt.show();
 # Future Plans
 
 *   More features allowing direct interaction with `PyObject`s from JS
+*   Natural iterator and generator objects
 *   (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
 *   (longer term) Generate TypeScript bindings from the Python modules
 
