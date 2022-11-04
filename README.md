@@ -133,6 +133,7 @@ assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
 ```
 
 Slices can be expressed too:
+
 ```js
 //memoryview(b'123')[::2]
 PyObject.memoryview(Buffer.from('123')).item(PyObject.slice([null, null, 2]))
@@ -222,17 +223,17 @@ As a last step, you should probably check the [`graph-tool` example](https://git
 
 # Performance
 
-* Generally when using Python, you will get the usual Python performance, while when using Node.js, you will get the usual Node.js performance
-* Calling into Python from JS is more expensive than Python to Python, tests show that using Node.js for numpy arrays:
-  - of 8 elements is 4 times slower using raw access and 20 times slower using `proxify`
-  - of 512 elements is 3 times slower using raw access and 10 times slower using `proxify`
-  - of 8192 elements, there is no significant difference with raw access and `proxify` is 30% slower
-  - of 32768 elements, there is no significant difference whatever the access method is
-* It is possible to mix raw access and `proxify` - the underlying `PyObject` can be accessed as the `__PyObject__` from a proxy object
-* `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
-  - For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
-* The memory usage of your program will be the sum of the memory usage of a Python interpreter (not that much) and a Node.js interpreter (more significant)
-* The two GCs should work very well in tandem
+*   Generally when using Python, you will get the usual Python performance, while when using Node.js, you will get the usual Node.js performance
+*   Calling into Python from JS is more expensive than Python to Python, tests show that using Node.js for numpy arrays:
+    *   of 8 elements is 4 times slower using raw access and 20 times slower using `proxify`
+    *   of 512 elements is 3 times slower using raw access and 10 times slower using `proxify`
+    *   of 8192 elements, there is no significant difference with raw access and `proxify` is 30% slower
+    *   of 32768 elements, there is no significant difference whatever the access method is
+*   It is possible to mix raw access and `proxify` - the underlying `PyObject` can be accessed as the `__PyObject__` from a proxy object
+*   `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
+    *   For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
+*   The memory usage of your program will be the sum of the memory usage of a Python interpreter (not that much) and a Node.js interpreter (more significant)
+*   The two GCs should work very well in tandem
 
 # Architecture Overview
 
@@ -240,10 +241,10 @@ As a last step, you should probably check the [`graph-tool` example](https://git
 
 # Known Issues
 
-* In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
-* In 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
-* In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
-* [#3](https://github.com/mmomtchev/pymport/issues/3), `PyOBject`s are leaking memory in synchronous loops
+*   In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
+*   In 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
+*   In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
+*   [#3](https://github.com/mmomtchev/pymport/issues/3), `PyOBject`s are leaking memory in synchronous loops
 
 # Supported Versions
 
@@ -276,6 +277,7 @@ As a last step, you should probably check the [`graph-tool` example](https://git
 *   [toPythonArray](#topythonarray)
     *   [Parameters](#parameters-3)
 *   [PyObject](#pyobject)
+    *   [id](#id)
     *   [callable](#callable)
     *   [type](#type)
     *   [length](#length)
@@ -369,6 +371,12 @@ Returns **[PyObject](#pyobject)**&#x20;
 ## PyObject
 
 JavaScript representation of a Python object
+
+### id
+
+Numeric id of the object, it is generally the same as the one returned by id()
+
+Type: number
 
 ### callable
 

@@ -1,6 +1,6 @@
 {
   "name": "pymport",
-  "version": "1.1.0-beta.0",
+  "version": "1.1.0-beta.1",
   "description": "Use Python libraries from Node.js",
   "repository": {
     "type": "git",
