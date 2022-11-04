@@ -128,4 +128,14 @@ describe('proxy', () => {
     assert.deepEqual(obj1.toJS(), obj2.toJS());
     assert.notEqual(obj1, obj2);
   });
+
+  describe('list', () => {
+    it('append()', () => {
+      const list = proxify(PyObject.list([1]));
+      assert.lengthOf(list, 1);
+      list.append(2);
+      assert.deepEqual(list.toJS(), [1, 2]);
+      assert.lengthOf(list, 2);
+    });
+  });
 });

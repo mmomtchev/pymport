@@ -129,6 +129,15 @@ describe('types', () => {
       assert.deepEqual(a.toJS(), array);
     });
 
+    it('append()', () => {
+      const a = PyObject.list([1]);
+      assert.lengthOf(a, 1);
+      a.get('append').call(2);
+      assert.equal(a.type, 'list');
+      assert.deepEqual(a.toJS(), [1, 2]);
+      assert.lengthOf(a, 2);
+    });
+
     it('throws on invalid value', () => {
       assert.throws(() => PyObject.list({ b: 12 } as unknown as number[]), /Argument must be/);
     });
