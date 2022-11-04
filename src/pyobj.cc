@@ -45,6 +45,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::InstanceMethod("call", &PyObjectWrap::Call),
      PyObjectWrap::InstanceMethod("toJS", &PyObjectWrap::ToJS),
      PyObjectWrap::InstanceMethod("valueOf", &PyObjectWrap::ToJS),
+     PyObjectWrap::InstanceAccessor("id", &PyObjectWrap::Id, nullptr),
      PyObjectWrap::InstanceAccessor("type", &PyObjectWrap::Type, nullptr),
      PyObjectWrap::InstanceAccessor("callable", &PyObjectWrap::Callable, nullptr),
      PyObjectWrap::InstanceAccessor("length", &PyObjectWrap::Length, nullptr),
@@ -71,6 +72,12 @@ Value PyObjectWrap::ToString(const CallbackInfo &info) {
   PyStrongRef r = PyObject_Str(*self);
   EXCEPTION_CHECK(env, r);
   return ToJS(env, r);
+}
+
+Value PyObjectWrap::Id(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  return Number::New(env, reinterpret_cast<uint64_t>(*self));
 }
 
 Value PyObjectWrap::Get(const CallbackInfo &info) {
