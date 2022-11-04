@@ -4,14 +4,6 @@
     "strict": true,
     "strictNullChecks": true,
     "baseUrl": ".",
-    "resolveJsonModule": true,
-    "paths": {
-      "pymport": [
-        "."
-      ],
-      "pymport/*": [
-        "./lib/*"
-      ]
-    }
+    "resolveJsonModule": true
   }
 }

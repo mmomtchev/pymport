@@ -1,4 +1,4 @@
-const { PyObject, pymport } = require('./index.js');
+const { PyObject, pymport } = require('..');
 const array = pymport('array');
 
 function getJSType(py_array) {

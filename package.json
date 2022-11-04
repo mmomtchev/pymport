@@ -8,6 +8,10 @@
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "exports": {
+    ".": "./lib/index.js",
+    "./array": "./array/index.js"
+  },
   "keywords": [
     "python",
     "node.js",

@@ -9,8 +9,8 @@
       "pymport": [
         "."
       ],
-      "pymport/*": [
-        "./lib/*"
+      "pymport/array": [
+        "./array"
       ]
     }
   }
