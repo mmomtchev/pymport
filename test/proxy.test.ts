@@ -120,4 +120,12 @@ describe('proxy', () => {
     const dict = proxify(PyObject.dict({ a: 0, b: 1 }));
     assert.deepEqual(PyObject.values(dict).toJS(), [0, 1]);
   });
+
+  it('does not mismatch objects with identical string representation', () => {
+    const obj1 = proxify(PyObject.fromJS({ a: 1 }));
+    const obj2 = proxify(PyObject.fromJS({ a: 1 }));
+
+    assert.deepEqual(obj1.toJS(), obj2.toJS());
+    assert.notEqual(obj1, obj2);
+  });
 });

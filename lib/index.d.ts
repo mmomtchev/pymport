@@ -114,6 +114,12 @@ export class PyObject {
   static fromJS: (v: any) => PyObject;
 
   /**
+   * Numeric id of the object, it is generally the same as the one returned by id()
+   * @type {number}
+   */
+  readonly id: number;
+
+  /**
    * Is the property callable
    * @type {boolean}
    */

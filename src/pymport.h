@@ -62,6 +62,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
 
   Napi::Value ToString(const Napi::CallbackInfo &);
 
+  Napi::Value Id(const Napi::CallbackInfo &);
   Napi::Value Get(const Napi::CallbackInfo &);
   Napi::Value Call(const Napi::CallbackInfo &);
   Napi::Value Item(const Napi::CallbackInfo &);
