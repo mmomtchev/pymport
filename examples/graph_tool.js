@@ -88,7 +88,7 @@ const err = np.sqrt(y);
 err.__setitem__(err.__ge__(y), err.__getitem__(err.__ge__(y)).__sub__(1e2));
 
 pl.figure({ figsize: [6, 4] });
-pl.errorbar(in_hist.item(1).__getitem__(PyObject.slice([null, -1, null])), in_hist.item(0), {
+pl.errorbar(in_hist.item(1).__getitem__(PyObject.slice({ stop: -1 })), in_hist.item(0), {
   fmt: 'o', yerr: err, label: 'in'
 });
 

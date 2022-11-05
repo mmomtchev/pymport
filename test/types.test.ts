@@ -515,7 +515,7 @@ describe('types', () => {
       }, /contiguous/);
 
       // Equivalent to memoryview(b'123')[::2]
-      const v = PyObject.memoryview(Buffer.from('123')).item(PyObject.slice([null, null, 2]));
+      const v = PyObject.memoryview(Buffer.from('123')).item(PyObject.slice({ step: 2 }));
       assert.throws(() => {
         v.toJS();
       }, /contiguous/);
@@ -582,6 +582,19 @@ describe('types', () => {
 
       const cut = list.get('__getitem__').call(slice);
       assert.deepEqual(cut.toJS(), [0, 1, 2]);
+    });
+
+    it('object arguments', () => {
+      const slice = PyObject.slice({ start: 1, stop: 3 });
+      const list = PyObject.list([0, 1, 2, 3, 4, 5, 6, 7]);
+
+      assert.instanceOf(slice, PyObject);
+      assert.isFalse(slice.callable);
+      assert.isUndefined(slice.length);
+      assert.equal(slice.type, 'slice');
+
+      const cut = list.get('__getitem__').call(slice);
+      assert.deepEqual(cut.toJS(), [1, 2]);
     });
 
   });

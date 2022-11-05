@@ -121,12 +121,21 @@ Value PyObjectWrap::Tuple(const CallbackInfo &info) {
 Value PyObjectWrap::Slice(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  Array array = NAPI_ARG_ARRAY(0);
-  if (array.Length() != 3)
-    throw RangeError::New(env, "Slices must have exactly three arguments - start, stop and step");
+  Object indices = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
-  PyStrongRef slice =
-    PySlice_New(*_FromJS(array[(uint32_t)0], store), *_FromJS(array[1], store), *_FromJS(array[2], store));
+  PyStrongRef slice = nullptr;
+  if (indices.IsArray()) {
+    Array array = indices.As<Array>();
+    if (array.Length() != 3)
+      throw RangeError::New(env, "Slices must have exactly three arguments - start, stop and step");
+
+    slice = PySlice_New(*_FromJS(array[(uint32_t)0], store), *_FromJS(array[1], store), *_FromJS(array[2], store));
+  } else {
+    slice = PySlice_New(
+      *_FromJS(indices.Get("start"), store),
+      *_FromJS(indices.Get("stop"), store),
+      *_FromJS(indices.Get("step"), store));
+  }
   EXCEPTION_CHECK(env, slice);
 
   return New(env, std::move(slice));

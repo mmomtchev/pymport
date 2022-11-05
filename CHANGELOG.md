@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `proxify`ed object do not intercept and redirect calls to `PyObject` methods if the Python object has a method with the same name - ie. calling `item()` on a non-proxified PyObject invokes `PyObject.item()` but if the underlying Python object of a proxified object also has an `item()` function, calling `item()` on the proxified object will invoke the Python method
 - `profixy` always return the same reference if called with a previously seen `PyObject` reference
 - Support `BigInt`
+- `PyObject.slice` accepts named arguments
 - Return the Python traceback in `pythonTrace` and add a `PythonError` TypeScript type
 - Do not allow `PYTHONPATH` to override `PYTHONHOME` when using the builtin
 - Ignore the last argument of a Python function call if it is `undefined` - this allows to pass a last argument as a dictionary by calling `fn(obj, undefined)` instead of `fn(obj)` which will transform `obj` into named kw arguments

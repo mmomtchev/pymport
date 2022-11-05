@@ -19,7 +19,7 @@ describe('proxy', () => {
     assert.deepEqual(df.columns.tolist().toJS(), ['A', 'B', 'C']);
 
     // df[2:3]
-    const df2 = df.item(PyObject.slice([2, 3, null]));
+    const df2 = df.item(PyObject.slice({ start: 2, stop: 3 }));
     assert.deepEqual(df2.values.tolist().toJS(), [[6, 7, 8]]);
 
     // df[df["C"] <= 3]

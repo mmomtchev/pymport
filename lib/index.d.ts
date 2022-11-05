@@ -1,3 +1,5 @@
+export type PyNumber = number | PyObject | null;
+
 /**
  * JavaScript representation of a Python object
  */
@@ -46,10 +48,11 @@ export class PyObject {
 
   /**
    * Construct a PyObject slice from three elements (start, stop, step)
-   * @param {any[3]} array
+   * @param {PyNumber[] | { start?: PyNumber; stop?: PyNumber, step?: PyNumber; }} slice slice indices
    * @returns {PyObject}
    */
-  static slice: (v: any[3]) => PyObject;
+  static slice: (slice: [PyNumber, PyNumber, PyNumber] |
+  { start?: PyNumber; stop?: PyNumber, step?: PyNumber; }) => PyObject;
 
   /**
    * Construct a PyObject bytes from a Buffer. The resulting object is a copy.
