@@ -123,6 +123,8 @@ assert.deepEqual(df.columns.tolist().toJS(), ["A", "B", "C"]);
 // df[2:3]
 // In Python this is equivalent to df.__getitem__(2:3)
 // In pymport item is a shortcut for __getitem__
+// Note that if the underlying object also defines an item() function, it will take precedence
+// (for example numpy.ndarray.item will be preferred to PyObject.item)
 const df2 = df.item(PyObject.slice([2, 3, null]));
 assert.deepEqual(df2.values.tolist().toJS(), [[6, 7, 8]]);
 

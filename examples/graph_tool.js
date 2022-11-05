@@ -84,6 +84,7 @@ const err = np.sqrt(y);
 // including the subtraction which is between two numpy arrays
 // In Python we have:
 // err[err >= y] = y[err >= y] - 1e-2
+// Also, note that we cannot use err.item() because numpy.ndarray.item() will take precedence
 err.__setitem__(err.__ge__(y), err.__getitem__(err.__ge__(y)).__sub__(1e2));
 
 pl.figure({ figsize: [6, 4] });
