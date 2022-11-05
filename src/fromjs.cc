@@ -1,3 +1,4 @@
+#include <cmath>
 #include "pymport.h"
 #include "pystackobject.h"
 #include "values.h"
@@ -195,7 +196,9 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
     double integer;
     double fract = fabs(modf(raw, &integer));
     PyStrongRef py = nullptr;
-    if (fract < std::numeric_limits<float>::epsilon() || fract > 1 - std::numeric_limits<float>::epsilon())
+    if (
+      (fract < std::numeric_limits<float>::epsilon() || fract > 1 - std::numeric_limits<float>::epsilon()) &&
+      !std::isinf(raw))
       py = PyLong_FromLongLong(static_cast<long long>(v.ToNumber().Int64Value()));
     else
       py = PyFloat_FromDouble(raw);

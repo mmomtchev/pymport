@@ -40,6 +40,25 @@ describe('types', () => {
     it('throws on invalid value', () => {
       assert.throws(() => PyObject.float('a' as unknown as number), /Argument must be/);
     });
+
+    it('nan', () => {
+      const f = PyObject.fromJS(NaN);
+      assert.equal(f.type, 'float');
+      assert.deepEqual(f.toString(), 'nan');
+      assert.isNaN(f.toJS());
+    });
+
+    it('inf', () => {
+      const pf = PyObject.fromJS(Infinity);
+      assert.equal(pf.type, 'float');
+      assert.deepEqual(pf.toString(), 'inf');
+      assert.equal(pf.toJS(), Infinity);
+
+      const nf = PyObject.fromJS(-Infinity);
+      assert.equal(nf.type, 'float');
+      assert.deepEqual(nf.toString(), '-inf');
+      assert.equal(nf.toJS(), -Infinity);
+    });
   });
 
   describe('int', () => {

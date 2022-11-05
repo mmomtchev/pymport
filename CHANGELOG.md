@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (internals) New automatic reference counting
 
 #### Bug Fixes
-- Fix [[#6](https://github.com/mmomtchev/pymport/issues/6)], proxified objects are wrongly caching values returned by getters
+- Fix [#6](https://github.com/mmomtchev/pymport/issues/6), proxified objects are wrongly caching values returned by getters
+- Fix [#8](https://github.com/mmomtchev/pymport/issues/8), `Infinity` is not recognized as a float by the automatic conversion
 
 ### [1.0.1] 2022-10-29
 
