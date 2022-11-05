@@ -55,7 +55,7 @@ describe('pymport', () => {
       });
     });
 
-    it('custom subscripting', () => {
+    it('operator[] with a string', () => {
       const pd = pymport('pandas');
       const np = pymport('numpy');
 
@@ -63,6 +63,23 @@ describe('pymport', () => {
       const df2 = df.get('__getitem__').call('A');
       assert.deepEqual(df2.get('tolist').call().toJS(), [1, 1, 1, 1, 1, 1, 1, 1]);
     });
+
+    it('operator[] with an object', () => {
+      const pd = pymport('pandas');
+      const np = pymport('numpy');
+
+      const ones = np.get('ones').call([4, 1]);
+      const zeros = np.get('zeros').call([4, 1]);
+      const cols = np.get('concatenate').call([ones, zeros], { axis: 1 });
+      const df = pd.get('DataFrame').call(cols, { columns: ['ones', 'zeroes'] });
+      const selector = df.get('__ge__').call(1);
+      const df2 = df.get('__getitem__').call(selector).get('values');
+      const out = df2.get('tolist').call().toJS();
+      assert.strictEqual(out[0][0], 1);
+      assert.isNaN(out[1][1]);
+      assert.deepEqual(out, [[1, NaN], [1, NaN], [1, NaN], [1, NaN]]);
+    });
+
   });
 
   describe('object store', () => {
