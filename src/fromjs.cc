@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 #include "pymport.h"
 #include "pystackobject.h"
 #include "values.h"
