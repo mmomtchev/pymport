@@ -92,6 +92,28 @@
           "ignoreFailures": true
         }
       ]
-    }
+    },
+    {
+      "name": "Run current file (gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/usr/bin/node",
+      "args": [
+        "--expose-gc",
+        "${file}"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
   ]
 }
