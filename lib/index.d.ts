@@ -3,7 +3,7 @@ export type PyNumber = number | PyObject | null;
 /**
  * JavaScript representation of a Python object
  */
-export class PyObject {
+export class PyObject implements Iterable<PyObject> {
   /**
    * Construct a PyObject integer from a JS number
    * @param {number} number
@@ -224,6 +224,13 @@ export class PyObject {
    * @returns {string}
    */
   toString: () => string;
+
+  /**
+   * Return an iterator over the object's elements.
+   * An object is iterable if it has length.
+   * @returns {string}
+   */
+  [Symbol.iterator]: () => Iterator<PyObject>;
 }
 
 /**
@@ -292,11 +299,11 @@ declare const version: {
      */
     readonly version: string;
   };
+  readonly pythonHome: string;
   /**
    * Supported only on Python 3.11+
    */
   readonly pythonRuntime: null | string;
-  readonly pythonHome: string;
 };
 
 /**

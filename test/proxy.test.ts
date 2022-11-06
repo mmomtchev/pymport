@@ -137,5 +137,17 @@ describe('proxy', () => {
       assert.deepEqual(list.toJS(), [1, 2]);
       assert.lengthOf(list, 2);
     });
+
+    it('iterator', () => {
+      const list = proxify(PyObject.list([8, 9, 3]));
+
+      const result = [];
+      for (const el of list) {
+        // check that the returned elements are also proxified
+        assert.instanceOf(el.__PyObject__, PyObject);
+        result.push(el.toJS());
+      }
+      assert.deepEqual(result, [8, 9, 3]);
+    });
   });
 });

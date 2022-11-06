@@ -33,6 +33,22 @@ describe('pymport', () => {
       const a = np.arange(3);
       assert.deepEqual(a.get('tolist').call().toJS(), [0, 1, 2]);
     });
+
+    it('iterators/generators', () => {
+      const np = pymport('numpy');
+      const a = np.get('arange').call(6);
+      const it = np.get('nditer').call(a);
+
+      const result = [];
+      for (const el of it) {
+        // nditer over an 1D numpy array does not return scalar values
+        // it returns 0D numpy arrays which are a very special case
+        // Python can make it look as these were scalars, but in fact you
+        // have to call item() w/o index to get the real scalar reference
+        result.push(el.get('item').call().toJS());
+      }
+      assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
+    });
   });
 
   describe('pandas', () => {
