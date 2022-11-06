@@ -270,14 +270,6 @@ As a last step, you should probably check the [`graph-tool` example](https://git
 
 ### Table of Contents
 
-*   [getJSType](#getjstype)
-    *   [Parameters](#parameters)
-*   [getPythonType](#getpythontype)
-    *   [Parameters](#parameters-1)
-*   [toTypedArray](#totypedarray)
-    *   [Parameters](#parameters-2)
-*   [toPythonArray](#topythonarray)
-    *   [Parameters](#parameters-3)
 *   [PyObject](#pyobject)
     *   [id](#id)
     *   [callable](#callable)
@@ -285,90 +277,51 @@ As a last step, you should probably check the [`graph-tool` example](https://git
     *   [length](#length)
     *   [constr](#constr)
     *   [get](#get)
-        *   [Parameters](#parameters-4)
+        *   [Parameters](#parameters)
     *   [has](#has)
-        *   [Parameters](#parameters-5)
+        *   [Parameters](#parameters-1)
     *   [item](#item)
-        *   [Parameters](#parameters-6)
+        *   [Parameters](#parameters-2)
     *   [call](#call)
-        *   [Parameters](#parameters-7)
+        *   [Parameters](#parameters-3)
     *   [toJS](#tojs)
     *   [valueOf](#valueof)
     *   [toString](#tostring)
+    *   [iterator](#iterator)
     *   [int](#int)
-        *   [Parameters](#parameters-8)
+        *   [Parameters](#parameters-4)
     *   [float](#float)
-        *   [Parameters](#parameters-9)
+        *   [Parameters](#parameters-5)
     *   [string](#string)
-        *   [Parameters](#parameters-10)
+        *   [Parameters](#parameters-6)
     *   [dict](#dict)
-        *   [Parameters](#parameters-11)
+        *   [Parameters](#parameters-7)
     *   [list](#list)
-        *   [Parameters](#parameters-12)
+        *   [Parameters](#parameters-8)
     *   [tuple](#tuple)
-        *   [Parameters](#parameters-13)
+        *   [Parameters](#parameters-9)
     *   [slice](#slice)
     *   [bytes](#bytes)
-        *   [Parameters](#parameters-14)
+        *   [Parameters](#parameters-10)
     *   [bytearray](#bytearray)
-        *   [Parameters](#parameters-15)
+        *   [Parameters](#parameters-11)
     *   [memoryview](#memoryview)
-        *   [Parameters](#parameters-16)
+        *   [Parameters](#parameters-12)
     *   [func](#func)
     *   [fromJS](#fromjs)
-        *   [Parameters](#parameters-17)
+        *   [Parameters](#parameters-13)
     *   [keys](#keys)
     *   [values](#values)
 *   [pymport](#pymport)
-    *   [Parameters](#parameters-18)
+    *   [Parameters](#parameters-14)
 *   [proxify](#proxify)
-    *   [Parameters](#parameters-19)
+    *   [Parameters](#parameters-15)
 *   [pyval](#pyval)
-    *   [Parameters](#parameters-20)
+    *   [Parameters](#parameters-16)
 *   [version](#version)
 *   [version](#version-1)
     *   [pythonRuntime](#pythonruntime)
 *   [PythonError](#pythonerror)
-
-## getJSType
-
-Get the TypedArray constructor that corresponds to the Python array.array object.
-
-### Parameters
-
-*   `array` **[PyObject](#pyobject)** Python array.array
-
-Returns **ArrayConstructor**&#x20;
-
-## getPythonType
-
-Get the Python letter code that corresponds to the TypedArray object.
-
-### Parameters
-
-*   `array` **ArrayBuffer** TypedArray
-
-Returns **string**&#x20;
-
-## toTypedArray
-
-Convert the Python array.array to JS TypedArray. The array contents are copied.
-
-### Parameters
-
-*   `array` **[PyObject](#pyobject)** Python array.array
-
-Returns **ArrayBuffer**&#x20;
-
-## toPythonArray
-
-Convert the TypedArray to Python array.array. The array contents are copied.
-
-### Parameters
-
-*   `array` **ArrayBuffer** TypedArray
-
-Returns **[PyObject](#pyobject)**&#x20;
 
 ## PyObject
 
@@ -499,6 +452,15 @@ Type: function (): string
 
 Returns **string**&#x20;
 
+### iterator
+
+Return an iterator over the object's elements.
+An object is iterable if it has length.
+
+Type: function (): Iterator<[PyObject](#pyobject)>
+
+Returns **string**&#x20;
+
 ### int
 
 Construct a PyObject integer from a JS number
@@ -575,7 +537,7 @@ Returns **[PyObject](#pyobject)**&#x20;
 
 Construct a PyObject slice from three elements (start, stop, step)
 
-Type: function (v: any): [PyObject](#pyobject)
+Type: function (slice: (\[PyNumber, PyNumber, PyNumber] | {start: PyNumber?, stop: PyNumber?, step: PyNumber?})): [PyObject](#pyobject)
 
 Returns **[PyObject](#pyobject)**&#x20;
 
@@ -734,7 +696,7 @@ Type: string
 
 Version information
 
-Type: {pymport: {major: number, minor: number, patch: number, suffix: string}, pythonLibrary: {builtin: boolean, major: number, minor: number, micro: number, release: number, serial: number, version: string}, pythonRuntime: (null | string), pythonHome: string}
+Type: {pymport: {major: number, minor: number, patch: number, suffix: string}, pythonLibrary: {builtin: boolean, major: number, minor: number, micro: number, release: number, serial: number, version: string}, pythonHome: string, pythonRuntime: (null | string)}
 
 ### pythonRuntime
 
