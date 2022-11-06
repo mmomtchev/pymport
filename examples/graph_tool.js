@@ -69,7 +69,7 @@ const err = np.sqrt(y);
 
 // Unlike Python, JavaScript does not have operator overloading meaning that
 // we have to unroll all operators to their method equivalents
-// including the subtraction which is between two numpy arrays
+// including the subtraction which is between a numpy array and a scalar
 // In Python we have:
 // err[err >= y] = y[err >= y] - 1e-2
 // Also, note that we cannot use err.item() because numpy.ndarray.item() will take precedence
