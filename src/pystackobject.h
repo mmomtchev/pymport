@@ -19,6 +19,9 @@ namespace pymport {
 class PyStrongRef;
 extern size_t active_environments;
 
+// A PyStrongRef/PyWeakRef can (temporally) be null
+// A PyObjectWrap can never be null
+
 // Note that this is different than the notion of weak reference objects in Python
 // In Python lingo, these would be PyBorrowedRef and PyOwnedRef
 class PyWeakRef {
