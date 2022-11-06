@@ -30,11 +30,14 @@ jobs:
         run: |
           curl https://codeload.github.com/mmomtchev/pymport/zip/refs/tags/v${{ github.event.inputs.version }} --output repo.zip
           unzip repo.zip
-          mv pymport-${{ github.event.inputs.version }}/package.json .
           mv pymport-${{ github.event.inputs.version }}/test .
-          npm install
-      - name: Install from npm
+      - name: Install dependencies
+        run: |
+          npm i @types/chai @types/mocha @types/node chai mocha ts-node
+      - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }}
+      - name: Set package.json version
+        run: node -e "const pkg=JSON.parse(fs.readFileSync('package.json')); pkg.version='${{ github.event.inputs.version }}'; fs.writeFileSync('package.json', JSON.stringify(pkg));"
       - run: npx pympip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
@@ -61,11 +64,14 @@ jobs:
         run: |
           curl https://codeload.github.com/mmomtchev/pymport/zip/refs/tags/v${{ github.event.inputs.version }} --output repo.zip
           unzip repo.zip
-          mv pymport-${{ github.event.inputs.version }}/package.json .
           mv pymport-${{ github.event.inputs.version }}/test .
-          npm install
-      - name: Rebuild with npm
-        run: npm install --verbose --force pymport@${{ github.event.inputs.version }} --build-from-source
+      - name: Install dependencies
+        run: |
+          npm i @types/chai @types/mocha @types/node chai mocha ts-node
+      - name: Install pymport from npm
+        run: npm install --force pymport@${{ github.event.inputs.version }}
+      - name: Set package.json version
+        run: node -e "const pkg=JSON.parse(fs.readFileSync('package.json')); pkg.version='${{ github.event.inputs.version }}'; fs.writeFileSync('package.json', JSON.stringify(pkg));"
       - run: pip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
