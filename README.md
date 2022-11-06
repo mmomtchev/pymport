@@ -260,7 +260,6 @@ As a last step, you should probably check the [`graph-tool` example](https://git
 # Future Plans
 
 *   More features allowing direct interaction with `PyObject`s from JS
-*   Natural iterator and generator objects
 *   (longer term) Asynchronous calling / Promises on the JS side vs multi-threading on the Python side
 *   (longer term) Generate TypeScript bindings from the Python modules
 
