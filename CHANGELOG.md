@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Expiring of function objects
 - Converting of `bytes` and `bytearray` to `Buffer` and `Buffer` to `bytearray`
 - Converting between `TypedArray` and `array`
+- Convert Python iterators and generators to JavaScript `Symbol.iterator`
 - Basic tracking of the memory held by Python objects referenced in JS by the V8 GC
 - `proxify`ed object do not intercept and redirect calls to `PyObject` methods if the Python object has a method with the same name - ie. calling `item()` on a non-proxified PyObject invokes `PyObject.item()` but if the underlying Python object of a proxified object also has an `item()` function, calling `item()` on the proxified object will invoke the Python method
 - `profixy` always return the same reference if called with a previously seen `PyObject` reference

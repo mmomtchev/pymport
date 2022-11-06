@@ -4,6 +4,7 @@
     "strict": true,
     "strictNullChecks": true,
     "baseUrl": ".",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
   }
 }

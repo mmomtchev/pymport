@@ -50,20 +50,8 @@ for (; ;) {
 
   // v.out_neighbors() returns a Python generator object
   const it = v.out_neighbors();
-
-  // Here we call manually its __next__ method
-  let w = it.__next__();
-  while (w != null) {
+  for (const w of it) {
     n_list.append(w);
-
-    // Python generators and iterators are a remarkably weird beast
-    // They signal they have reached the end by raising a special exception
-    // called StopIteration
-    try {
-      w = it.__next__();
-    } catch (e) {
-      break;
-    }
   }
 
   v = n_list.item(np.random.randint(0, n_list.length));

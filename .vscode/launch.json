@@ -115,5 +115,17 @@
         }
       ]
     },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run current file (JS)",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": [
+        "--expose-gc",
+      ],
+      "program": "${file}"
+    }
   ]
 }

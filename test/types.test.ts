@@ -1,6 +1,14 @@
 import { pymport, PyObject, pyval } from 'pymport';
 import { assert } from 'chai';
 
+function toArray(obj: PyObject) {
+  const r = [];
+  for (const i of obj) {
+    r.push(i);
+  }
+  return r;
+}
+
 let np: PyObject;
 describe('types', () => {
   before(() => {
@@ -59,6 +67,10 @@ describe('types', () => {
       assert.deepEqual(nf.toString(), '-inf');
       assert.equal(nf.toJS(), -Infinity);
     });
+
+    it('iterator', () => {
+      assert.throws(() => toArray(PyObject.float(2.3)), /float is not iterable/);
+    });
   });
 
   describe('int', () => {
@@ -109,6 +121,10 @@ describe('types', () => {
 
       const min = PyObject.fromJS(Number.MIN_SAFE_INTEGER);
       assert.strictEqual(min.toJS(), Number.MIN_SAFE_INTEGER);
+    });
+
+    it('iterator', () => {
+      assert.throws(() => toArray(PyObject.int(2)), /int is not iterable/);
     });
   });
 
@@ -171,6 +187,10 @@ describe('types', () => {
       assert.deepEqual(circular, d.toJS());
       assert.equal(d.toString(), '[[...]]');
     });
+
+    it('iterator', () => {
+      assert.deepEqual(toArray(PyObject.list([8, 9, 3])).map(el => el.toJS()), [8, 9, 3]);
+    });
   });
 
   describe('tuple', () => {
@@ -211,6 +231,10 @@ describe('types', () => {
       assert.deepEqual(circular, t.toJS());
       assert.equal(t.toString(), '([[...]],)');
     });
+
+    it('iterator', () => {
+      assert.deepEqual(toArray(PyObject.tuple([3, 5, 8])).map(el => el.toJS()), [3, 5, 8]);
+    });
   });
 
   describe('string', () => {
@@ -246,6 +270,10 @@ describe('types', () => {
 
     it('throws on invalid value', () => {
       assert.throws(() => PyObject.string({ b: 12 } as unknown as string), /Argument must be/);
+    });
+
+    it('iterator', () => {
+      assert.deepEqual(toArray(PyObject.string('abc')).map(el => el.toJS()), ['a', 'b', 'c']);
     });
   });
 
@@ -303,6 +331,10 @@ describe('types', () => {
       assert.isUndefined(obj.get('notAtest'));
       assert.throws(() => pyval('invalid'), /invalid/);
     });
+
+    it('iterator', () => {
+      assert.deepEqual(toArray(PyObject.dict({ x: 0, y: 1, z: 2 })).map(el => el.toJS()), ['x', 'y', 'z']);
+    });
   });
 
   describe('PyObject pass-through', () => {
@@ -340,6 +372,10 @@ describe('types', () => {
       const undef = PyObject.fromJS(null);
       assert.isNull(undef.toJS());
     });
+
+    it('iterator', () => {
+      assert.throws(() => toArray(PyObject.fromJS(undefined)), /NoneType is not iterable/);
+    });
   });
 
   describe('bool', () => {
@@ -361,6 +397,10 @@ describe('types', () => {
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'False');
       assert.equal(bool.toJS(), false);
+    });
+
+    it('iterator', () => {
+      assert.throws(() => toArray(PyObject.fromJS(true)), /bool is not iterable/);
     });
   });
 
@@ -439,6 +479,10 @@ describe('types', () => {
       const fn = np.get('ones').toJS();
       assert.instanceOf(fn.__PyObject__, PyObject);
       assert.equal(fn.__PyObject__, np.get('ones'));
+    });
+
+    it('iterator', () => {
+      assert.throws(() => toArray(PyObject.fromJS(() => undefined)), /function is not iterable/);
     });
   });
 
@@ -597,6 +641,9 @@ describe('types', () => {
       assert.deepEqual(cut.toJS(), [1, 2]);
     });
 
+    it('iterator', () => {
+      assert.throws(() => toArray(PyObject.slice({})), /slice is not iterable/);
+    });
   });
 
   describe('types w/o equivalence', () => {

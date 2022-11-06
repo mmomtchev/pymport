@@ -5,6 +5,7 @@
     "strict": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
+    "downlevelIteration": true,
     "paths": {
       "pymport": [
         "."
