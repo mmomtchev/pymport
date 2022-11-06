@@ -68,7 +68,6 @@
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "mocha": "^10.1.0",
-    "node-addon-api": "^5.0.0",
     "node-gyp": "^9.3.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
@@ -79,6 +78,7 @@
   },
   "dependencies": {
     "@mapbox/node-pre-gyp": "^1.0.10",
-    "@mmomtchev/node-pre-gyp-github": "^2.0.6"
+    "@mmomtchev/node-pre-gyp-github": "^2.0.6",
+    "node-addon-api": "^5.0.0"
   }
 }
