@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Bug Fixes
 - Fix [#6](https://github.com/mmomtchev/pymport/issues/6), proxified objects are wrongly caching values returned by getters
 - Fix [#8](https://github.com/mmomtchev/pymport/issues/8), `Infinity` is not recognized as a float by the automatic conversion
+- Fix [#11](https://github.com/mmomtchev/pymport/issues/11), `npm install --build-from-source` fails
 
 ### [1.0.1] 2022-10-29
 
