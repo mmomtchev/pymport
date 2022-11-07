@@ -55,6 +55,33 @@ jobs:
       - run: node ./scripts/pympip install -r test/requirements.txt
       - run: npm test
 
+  external_python:
+    runs-on: ${{ matrix.platform }}
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-11]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: set LIBS
+        run: echo LIBS=`pkg-config --libs python3-embed` >> $GITHUB_ENV
+      - name: set CXXFLAGS
+        run: echo CXXFLAGS=`pkg-config --cflags python3-embed` >> $GITHUB_ENV
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --external_python
+      - run: npx @mapbox/node-pre-gyp build -j max -v
+      - run: python3 -m pip install --upgrade pip
+      - run: pip3 install -r test/requirements.txt
+      - run: npm test
+
   debug_build:
     runs-on: ${{ matrix.platform }}
 

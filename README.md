@@ -32,7 +32,21 @@ npm i pymport --build-from-source
 
 This will download and rebuild `pymport` against your own already existing Python environment.
 
-You will need a working `node-gyp` supported C++ development environment. Additionally, on Linux you will need the `libpython3-dev` package. On macOS the Homebrew install has everything required. On Windows you should have a working `python` command in your shell.
+You will need a working `node-gyp` supported C++ development environment. Additionally, on Linux and macOS you will need that the `python3-embed` package in `pkg-config` works. For this, on Linux you will need the `libpython3-dev` package. On macOS the Homebrew install has everything required. On Windows you should have a working `python` command in your shell.
+
+If you want to skip the Python library auto-detection and manually point it to an existing location, you can set `CXXFLAGS` and `LIBS` so that Python is accessible to the C++ compiler and then run
+
+```shell
+export CXXFLAGS="..."
+export LIBS="..."
+npm i pymport --build-from-source --external_python
+```
+
+If you need to reproduce the fully integrated Python build you can run
+
+```shell
+npm i pymport --build-from-source --builtin_python
+```
 
 `node-gyp` has first class support for `g++` on Linux, `clang` on macOS and MSVC 2019 on Windows.
 It also has a somewhat lower grade support for `clang` on Linux and on Windows.

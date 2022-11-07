@@ -4,6 +4,7 @@
     'enable_coverage%': 'false',
     'debug_verbose%': 'false',
     'builtin_python%': 'false',
+    'external_python%': 'false',
     'binding_dir': '<!(node -e "console.log(path.dirname(require(\'@mapbox/node-pre-gyp\').find(\'package.json\')))")',
   },
   'targets': [
@@ -51,7 +52,7 @@
             'VCCLCompilerTool': { 'ExceptionHandling': 1 },
           },
           'conditions': [
-            ['builtin_python == "false"', {
+            ['builtin_python == "false" and external_python == "false"', {
               'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
               'msvs_settings': {
                 'VCLinkerTool': {
@@ -71,9 +72,12 @@
         }],
         ['OS != "win"', {
           'conditions': [
-            ['builtin_python == "false"', {
+            ['builtin_python == "false" and external_python == "false"', {
               'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
               'libraries': [ '<!@(pkg-config --libs python3-embed)' ]
+            }],
+            ['builtin_python == "false" and external_python == "true"', {
+              'libraries': [ '<!(echo $LIBS)' ]
             }],
             ['builtin_python == "true"', {
               'dependencies': [ 'builtin_python' ],
