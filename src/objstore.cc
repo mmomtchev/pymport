@@ -54,7 +54,12 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
   auto context = env.GetInstanceData<EnvContext>();
   auto it = context->function_store.find(*py);
   Function js;
-  if (it == context->function_store.end()) {
+  if (it == context->function_store.end() || it->second->Value().IsEmpty()) {
+    if (it != context->function_store.end()) {
+      // The function has been GCed but it hasn't been destroyed, same situation as objects above
+      VERBOSE_PYOBJ(fini_py, "Funcstore evict dying");
+      context->function_store.erase(*py);
+    }
     VERBOSE_PYOBJ(*py, "Funcstore insert");
     // py is a strong reference that will be duplicated here
     // - one copy goes to the __PyObject__ property of the function which is a normal PyObject
@@ -73,7 +78,17 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
       [](Napi::Env env, FunctionReference *fini_fn, PyObject *fini_py) {
         VERBOSE_PYOBJ(fini_py, "Funcstore erase");
         auto context = env.GetInstanceData<EnvContext>();
-        context->function_store.erase(fini_py);
+        auto stored = context->function_store.find(fini_py);
+        // Does the stored function match our reference?
+        // The only case where there could be a mismatch is if a dying function
+        // has been evicted by the code above, in this case we should not delete
+        // the reference which is that of the replacement function
+        // (the function might not exist in the store with two consecutive dying scenarios)
+        if (stored != context->function_store.end() && stored->second == fini_fn) {
+          context->function_store.erase(fini_py);
+        } else {
+          VERBOSE_PYOBJ(fini_py, "Funcstore already erased");
+        }
         delete fini_fn;
       },
       jsRef,
@@ -82,7 +97,6 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
     js.DefineProperty(Napi::PropertyDescriptor::Value("__PyObject__", New(env, std::move(py)), napi_default));
   } else {
     VERBOSE_PYOBJ(*py, "Funcstore retrieve");
-    // TODO: confirm that deferred destruction does not apply to functions??
     assert(!it->second->Value().IsEmpty());
     js = it->second->Value();
   }
