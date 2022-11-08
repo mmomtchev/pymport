@@ -241,9 +241,9 @@ As a last step, you should probably check the [`graph-tool` example](https://git
 
 *   Generally when using Python, you will get the usual Python performance, while when using Node.js, you will get the usual Node.js performance
 *   Calling into Python from JS is more expensive than Python to Python, tests show that using Node.js for numpy arrays:
-    *   of 8 elements is 4 times slower using raw access and 20 times slower using `proxify`
-    *   of 512 elements is 3 times slower using raw access and 10 times slower using `proxify`
-    *   of 8192 elements, there is no significant difference with raw access and `proxify` is 30% slower
+    *   of 8 elements is 4 times slower using raw access and 10 times slower using `proxify`
+    *   of 512 elements is 3 times slower using raw access and 4 times slower using `proxify`
+    *   of 8192 elements, there is no significant difference with raw access and `proxify` is 25% slower
     *   of 32768 elements, there is no significant difference whatever the access method is
 *   It is possible to mix raw access and `proxify` - the underlying `PyObject` can be accessed as the `__PyObject__` from a proxy object
 *   `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
