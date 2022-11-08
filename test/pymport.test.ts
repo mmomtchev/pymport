@@ -124,6 +124,13 @@ describe('pymport', () => {
       const npJS = pymport('numpy').toJS();
       assert.equal(np.get('ones').toJS(), npJS.ones);
     });
+
+    it('member functions on different instances of the same class are identical', () => {
+      const np = pymport('numpy');
+      const a = np.get('arange').call(6);
+      const b = np.get('arange').call(4);
+      assert.equal(a.get('matmul'), b.get('matmul'));
+    });
   });
 
   describe('named arguments', () => {
