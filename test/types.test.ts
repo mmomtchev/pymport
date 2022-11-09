@@ -418,6 +418,14 @@ describe('types', () => {
     it('toJS()', () => {
       const fn = np.get('ones').toJS();
       assert.typeOf(fn, 'function');
+      const array = fn(5);
+      assert.instanceOf(array, PyObject);
+      assert.equal(array.type, 'numpy.ndarray');
+
+      const backToPython = PyObject.fromJS(fn);
+      assert.instanceOf(backToPython, PyObject);
+      assert.equal(backToPython.type, 'function');
+      assert.equal(backToPython.call(4).type, 'numpy.ndarray');
     });
 
     it('fromJS()', () => {
