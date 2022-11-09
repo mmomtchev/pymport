@@ -169,7 +169,7 @@ bool PyObjectWrap::_InstanceOf(Napi::Value v) {
   if (!v.IsObject()) return false;
   auto obj = v.ToObject();
   FunctionReference *cons = env.GetInstanceData<EnvContext>()->pyObj;
-  return obj.ToObject().InstanceOf(cons->Value());
+  return obj.InstanceOf(cons->Value());
 }
 
 // Is the Napi::Value v a proxified PyObject or a PyObject function?
