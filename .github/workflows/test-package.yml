@@ -26,6 +26,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: npm i -g npm@latest
+      - name: Create package.json
+        run: npm init --yes
       - name: Set up the unit tests
         run: |
           curl https://codeload.github.com/mmomtchev/pymport/zip/refs/tags/v${{ github.event.inputs.version }} --output repo.zip
@@ -36,8 +38,6 @@ jobs:
           npm i @types/chai @types/mocha @types/node chai mocha ts-node
       - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }}
-      - name: Set package.json version
-        run: node -e "const pkg=JSON.parse(fs.readFileSync('package.json')); pkg.version='${{ github.event.inputs.version }}'; fs.writeFileSync('package.json', JSON.stringify(pkg));"
       - run: npx pympip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
@@ -64,6 +64,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: npm i -g npm@latest
+      - name: Create package.json
+        run: npm init --yes
       - name: Set up the unit tests
         run: |
           curl https://codeload.github.com/mmomtchev/pymport/zip/refs/tags/v${{ github.event.inputs.version }} --output repo.zip
@@ -74,8 +76,6 @@ jobs:
           npm i @types/chai @types/mocha @types/node chai mocha ts-node
       - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }} --build-from-source
-      - name: Set package.json version
-        run: node -e "const pkg=JSON.parse(fs.readFileSync('package.json')); pkg.version='${{ github.event.inputs.version }}'; fs.writeFileSync('package.json', JSON.stringify(pkg));"
       - run: pip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
@@ -104,6 +104,8 @@ jobs:
       - name: set CXXFLAGS
         run: echo CXXFLAGS=`pkg-config --cflags python3-embed` >> $GITHUB_ENV
       - run: npm i -g npm@latest
+      - name: Create package.json
+        run: npm init --yes
       - name: Set up the unit tests
         run: |
           curl https://codeload.github.com/mmomtchev/pymport/zip/refs/tags/v${{ github.event.inputs.version }} --output repo.zip
@@ -114,8 +116,6 @@ jobs:
           npm i @types/chai @types/mocha @types/node chai mocha ts-node
       - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }} --build-from-source --external_python
-      - name: Set package.json version
-        run: node -e "const pkg=JSON.parse(fs.readFileSync('package.json')); pkg.version='${{ github.event.inputs.version }}'; fs.writeFileSync('package.json', JSON.stringify(pkg));"
       - run: pip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
