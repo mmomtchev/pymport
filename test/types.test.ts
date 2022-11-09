@@ -421,7 +421,8 @@ describe('types', () => {
     });
 
     it('fromJS()', () => {
-      const fn = PyObject.fromJS((a: number) => a + 1);
+      const js_fn = (a: number) => a + 1;
+      const fn = PyObject.fromJS(js_fn);
 
       assert.instanceOf(fn, PyObject);
       assert.isTrue(fn.callable);
@@ -432,6 +433,8 @@ describe('types', () => {
       assert.instanceOf(r, PyObject);
       assert.equal(r.type, 'int');
       assert.equal(r.toJS(), 5);
+
+      assert.equal(fn.toJS(), js_fn);
     });
 
     it('constructor', () => {

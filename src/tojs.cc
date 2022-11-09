@@ -42,6 +42,8 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   if (PyObject_CheckBuffer(*py)) { return _ToJS_Buffer(env, py, store); }
 
+  if (PyObject_Type(*py) == *JSCall_Trampoline_Type) { return _ToJS_JSFunction(env, py); }
+
   if (*py == Py_None) { return env.Null(); }
 
   if (*py == Py_False) { return Boolean::New(env, false); }

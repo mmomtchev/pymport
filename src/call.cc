@@ -93,6 +93,11 @@ void PyObjectWrap::InitJSTrampoline() {
   }
 }
 
+Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env, const PyWeakRef &py) {
+  JSCall_Trampoline *raw = reinterpret_cast<JSCall_Trampoline *>(*py);
+  return raw->js_fn.Value();
+}
+
 #define IS_INFO_ARG_KWARGS(n) (info[n].IsObject() && !info[n].IsArray() && !_InstanceOf(info[n]))
 
 Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
