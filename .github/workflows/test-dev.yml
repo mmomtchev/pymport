@@ -29,7 +29,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: npm install --ignore-scripts
-      - run: npm run build -j max
+      - run: npx @mapbox/node-pre-gyp configure
+      - run: npx @mapbox/node-pre-gyp build -j max -v
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npm test
@@ -50,7 +51,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
-      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: npx @mapbox/node-pre-gyp build -j max -v
       - run: node ./scripts/pympip install --upgrade pip
       - run: node ./scripts/pympip install -r test/requirements.txt
       - run: npm test
