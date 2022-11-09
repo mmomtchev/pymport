@@ -237,6 +237,33 @@ plt.show();
 
 As a last step, you should probably check the [`graph-tool` example](https://github.com/mmomtchev/pymport/blob/main/examples/graph_tool.js) for some advanced concepts when using operator overloading, lvalue references (assigning to list arrays), iterators and generators.
 
+### Notes on functions
+
+Since 1.1 functions can be freely passed between Python and JavaScript.
+
+All arguments will be automatically converted when possible.
+
+If JavaScript calls a Python function with an unsupported type (`Symbol` for example), the call will throw.
+
+Here are a few examples of different ways of getting a Python function and calling it:
+```js
+// a is a callable PyObject, can be called with a.call()
+const a = np.get('ones');
+
+// b is a proxified callable PyObject, can be called with b()
+// All objects return by b() will also be called
+const b = proxify(np).ones;
+
+// c is a native code JS function, can be called with c()
+const c = np.get('ones').toJS();
+```
+
+If passed to a Python function, all three of those will revert back to the original Python function.
+
+When the Python function throws, JavaScript will receive a normal JavaScript `Error` object containing the Python error message prefixed with `Python exception`. This object will be extended with an additional attribute, `pythonTrace` which will be a `PyObject` containing the Python traceback.
+
+When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If Python calls this function with an supported argument type, the JavaScript function will receive a `PyObject` for this argument. When the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
+
 # Performance
 
 *   Generally when using Python, you will get the usual Python performance, while when using Node.js, you will get the usual Node.js performance

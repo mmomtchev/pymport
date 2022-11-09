@@ -14,3 +14,6 @@ def catch_exception(callable):
     return None
   except Exception as err:
     return err
+
+def dont_catch_exception(callable):
+    callable()

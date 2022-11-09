@@ -422,6 +422,10 @@ describe('types', () => {
       assert.instanceOf(array, PyObject);
       assert.equal(array.type, 'numpy.ndarray');
 
+      assert.throws(() => {
+        fn(Symbol(1));
+      }, /Object type is not supported/);
+
       const backToPython = PyObject.fromJS(fn);
       assert.instanceOf(backToPython, PyObject);
       assert.equal(backToPython.type, 'function');
@@ -485,6 +489,20 @@ describe('types', () => {
       assert.equal(r.toString(), 'JS exception');
     });
 
+    it('catching JS exceptions propagated through Python', () => {
+      const fn = PyObject.fromJS(() => {
+        throw new Error('JS exception');
+      });
+
+      assert.isTrue(fn.callable);
+      assert.equal(fn.type, 'pymport.js_function');
+
+      const py_catch = pymport('python_helpers').get('dont_catch_exception');
+
+      assert.throws(() => {
+        py_catch.call(fn);
+      }, /Python exception: JS exception/);
+    });
 
     it('__PyObject__', () => {
       const fn = np.get('ones').toJS();
