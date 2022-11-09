@@ -245,6 +245,7 @@ describe('types', () => {
       assert.equal(s.length, 5);
       assert.equal(s.type, 'str');
       assert.equal(s.toJS(), 'hello');
+      assert.equal(s.item(1).toJS(), 'e');
       assert.throws(() => PyObject.keys(s), /'str' object has no attribute 'keys'/);
       assert.throws(() => PyObject.values(s), /str' object has no attribute 'values'/);
     });
@@ -687,6 +688,7 @@ describe('types', () => {
     it('object arguments', () => {
       const slice = PyObject.slice({ start: 1, stop: 3 });
       const list = PyObject.list([0, 1, 2, 3, 4, 5, 6, 7]);
+      const string = PyObject.string('abcde');
 
       assert.instanceOf(slice, PyObject);
       assert.isFalse(slice.callable);
@@ -695,6 +697,8 @@ describe('types', () => {
 
       const cut = list.item(slice);
       assert.deepEqual(cut.toJS(), [1, 2]);
+
+      assert.strictEqual(string.item(slice).toJS(), 'bc');
     });
 
     it('iterator', () => {
