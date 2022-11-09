@@ -579,6 +579,18 @@ describe('types', () => {
       assert.equal(min.toJS(), BigInt(Number.MIN_SAFE_INTEGER) - BigInt(5));
     });
 
+    it('min/max numbers from number', () => {
+      const max = PyObject.fromJS(Number.MAX_SAFE_INTEGER + 5);
+      assert.equal(max.type, 'int');
+      assert.typeOf(max.toJS(), 'BigInt');
+      assert.equal(max.toJS(), Number.MAX_SAFE_INTEGER + 5);
+
+      const min = PyObject.int(Number.MIN_SAFE_INTEGER - 5);
+      assert.equal(min.type, 'int');
+      assert.typeOf(min.toJS(), 'BigInt');
+      assert.equal(min.toJS(), Number.MIN_SAFE_INTEGER - 5);
+    });
+
     it('min/max numbers w/ fromJS', () => {
       const max = PyObject.fromJS(BigInt(Number.MAX_SAFE_INTEGER) + BigInt(5));
       assert.equal(max.type, 'int');
