@@ -1,5 +1,5 @@
 coverage:
-  range: 70..100
+  range: 90..100
   round: down
   precision: 2
   status:
@@ -12,4 +12,5 @@ coverage:
           - "src"
           - "lib"
     patch:
-      default: 80%
+      default:
+        target: 90%
