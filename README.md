@@ -258,11 +258,11 @@ const b = proxify(np).ones;
 const c = np.get('ones').toJS();
 ```
 
-If passed to a Python function, all three of those will revert back to the original Python function.
+All three of those can also be used as a Python object to be passed as an argument to a Python function.
 
-When the Python function throws, JavaScript will receive a normal JavaScript `Error` object containing the Python error message prefixed with `Python exception`. This object will be extended with an additional attribute, `pythonTrace` which will be a `PyObject` containing the Python traceback.
+If the Python function throws, JavaScript will receive a normal JavaScript `Error` object containing the Python error message prefixed with `Python exception`. This object will be extended with an additional attribute, `pythonTrace` which will be a `PyObject` containing the Python traceback.
 
-When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If Python calls this function with an unsupported argument type, the JavaScript function will receive a `PyObject` for this argument. When the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
+When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If Python calls this function with an unsupported argument type, the JavaScript function will receive a `PyObject` for this argument. If the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
 
 # Performance
 
