@@ -649,7 +649,7 @@ describe('types', () => {
       assert.isUndefined(slice.length);
       assert.equal(slice.type, 'slice');
 
-      const cut = list.get('__getitem__').call(slice);
+      const cut = list.item(slice);
       assert.deepEqual(cut.toJS(), [1, 2]);
     });
 
