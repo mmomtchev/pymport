@@ -29,6 +29,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: npm install --ignore-scripts
+      - run: pkg-config --cflags python3-embed
+      - run: pkg-config --libs python3-embed
       - run: npx @mapbox/node-pre-gyp configure
       - run: npx @mapbox/node-pre-gyp build -j max -v
       - run: python3 -m pip install --upgrade pip
