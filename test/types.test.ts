@@ -385,7 +385,7 @@ describe('types', () => {
       assert.isUndefined(bool.length);
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'True');
-      assert.equal(bool.toJS(), true);
+      assert.strictEqual(bool.toJS(), true);
       assert.throws(() => PyObject.keys(bool), /does not support mapping/);
       assert.throws(() => PyObject.values(bool), /does not support mapping/);
     });
@@ -396,7 +396,7 @@ describe('types', () => {
       assert.isUndefined(bool.length);
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'False');
-      assert.equal(bool.toJS(), false);
+      assert.strictEqual(bool.toJS(), false);
     });
 
     it('iterator', () => {

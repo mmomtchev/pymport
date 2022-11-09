@@ -16,6 +16,12 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
   auto existing = store.find(*py);
   if (existing != store.end()) { return existing->second; }
 
+  // Fixed values before anything else
+  // Especially since PyLong_Check succeeds for booleans
+  if (*py == Py_None) { return env.Null(); }
+  if (*py == Py_False) { return Boolean::New(env, false); }
+  if (*py == Py_True) { return Boolean::New(env, true); }
+
   if (PyLong_Check(*py)) {
     int64_t raw = static_cast<int64_t>(PyLong_AsLongLong(*py));
     if (raw >= MIN_SAFE_JS_INTEGER && raw <= MAX_SAFE_JS_INTEGER) return Number::New(env, static_cast<double>(raw));
@@ -41,11 +47,6 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
   if (PyModule_Check(*py)) { return _ToJS_Dir(env, py, store); }
 
   if (PyObject_CheckBuffer(*py)) { return _ToJS_Buffer(env, py, store); }
-
-  if (*py == Py_None) { return env.Null(); }
-
-  if (*py == Py_False) { return Boolean::New(env, false); }
-  if (*py == Py_True) { return Boolean::New(env, true); }
 
   // Everything else is kept as a PyObject
   // (New/NewCallable expect a strong reference and steal it)
