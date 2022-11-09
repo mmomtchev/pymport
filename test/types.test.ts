@@ -504,6 +504,22 @@ describe('types', () => {
       }, /Python exception: JS exception/);
     });
 
+    it('unsupported arguments', () => {
+      const fn = PyObject.fromJS((arg: any) => {
+        assert.instanceOf(arg, PyObject);
+        assert.equal(arg.type, 'slice');
+        console.log('here', arg);
+        return { signed: true };
+      });
+
+      const py_call_cheee = pymport('python_helpers').get('call_with_cheese');
+      const r = py_call_cheee.call(fn);
+
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'dict');
+      assert.deepEqual(r.toJS(), { signed: true });
+    });
+
     it('__PyObject__', () => {
       const fn = np.get('ones').toJS();
       assert.instanceOf(fn.__PyObject__, PyObject);
