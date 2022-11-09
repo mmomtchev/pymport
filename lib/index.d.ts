@@ -47,7 +47,9 @@ export class PyObject implements Iterable<PyObject> {
   static tuple: (v: any[]) => PyObject;
 
   /**
-   * Construct a PyObject slice from three elements (start, stop, step)
+   * Construct a PyObject slice from three elements (start, stop, step).
+   * In Python, a slice and a range are two different object types:
+   * https://til.hashrocket.com/posts/5zuzolqlcb-range-v-slice
    * @param {PyNumber[] | { start?: PyNumber; stop?: PyNumber, step?: PyNumber; }} slice slice indices
    * @returns {PyObject}
    */
