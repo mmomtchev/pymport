@@ -51,7 +51,7 @@
           'msvs_settings': {
             'VCCLCompilerTool': { 
               'ExceptionHandling': 1,
-              'AdditionalOptions': '/std:c++14'
+              'AdditionalOptions': [' /std:c++14' ]
             },
           },
           'conditions': [
@@ -77,7 +77,10 @@
           'conditions': [
             ['builtin_python == "false" and external_python == "false"', {
               'cflags': [ '<!@(pkg-config --cflags python3-embed)' ],
-              'libraries': [ '<!@(pkg-config --libs python3-embed)' ]
+              'libraries': [ '<!@(pkg-config --libs python3-embed)' ],
+              'xcode_settings': {
+                'OTHER_CPLUSPLUSFLAGS': [ '<!@(pkg-config --cflags python3-embed)' ],
+              }
             }],
             ['builtin_python == "false" and external_python == "true"', {
               'libraries': [ '<!(echo $LIBS)' ]
@@ -93,7 +96,6 @@
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
             'CLANG_CXX_LIBRARY': 'libc++',
             'MACOSX_DEPLOYMENT_TARGET': '10.7',
-            'OTHER_CFLAGS': [ '<!@(pkg-config --cflags python3-embed)' ],
             'OTHER_CPLUSPLUSFLAGS': [ '-std=c++14' ]
           },
           'cflags_cc': [ '-std=c++14' ],
