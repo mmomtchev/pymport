@@ -418,10 +418,23 @@ describe('types', () => {
     it('toJS()', () => {
       const fn = np.get('ones').toJS();
       assert.typeOf(fn, 'function');
+      const array = fn(5);
+      assert.instanceOf(array, PyObject);
+      assert.equal(array.type, 'numpy.ndarray');
+
+      assert.throws(() => {
+        fn(Symbol(1));
+      }, /Object type is not supported/);
+
+      const backToPython = PyObject.fromJS(fn);
+      assert.instanceOf(backToPython, PyObject);
+      assert.equal(backToPython.type, 'function');
+      assert.equal(backToPython.call(4).type, 'numpy.ndarray');
     });
 
     it('fromJS()', () => {
-      const fn = PyObject.fromJS((a: number) => a + 1);
+      const js_fn = (a: number) => a + 1;
+      const fn = PyObject.fromJS(js_fn);
 
       assert.instanceOf(fn, PyObject);
       assert.isTrue(fn.callable);
@@ -432,6 +445,8 @@ describe('types', () => {
       assert.instanceOf(r, PyObject);
       assert.equal(r.type, 'int');
       assert.equal(r.toJS(), 5);
+
+      assert.equal(fn.toJS(), js_fn);
     });
 
     it('constructor', () => {
@@ -474,6 +489,35 @@ describe('types', () => {
       assert.equal(r.toString(), 'JS exception');
     });
 
+    it('catching JS exceptions propagated through Python', () => {
+      const fn = PyObject.fromJS(() => {
+        throw new Error('JS exception');
+      });
+
+      assert.isTrue(fn.callable);
+      assert.equal(fn.type, 'pymport.js_function');
+
+      const py_catch = pymport('python_helpers').get('dont_catch_exception');
+
+      assert.throws(() => {
+        py_catch.call(fn);
+      }, /Python exception: JS exception/);
+    });
+
+    it('unsupported arguments', () => {
+      const fn = PyObject.fromJS((arg: any) => {
+        assert.instanceOf(arg, PyObject);
+        assert.equal(arg.type, 'slice');
+        return { signed: true };
+      });
+
+      const py_call_cheee = pymport('python_helpers').get('call_with_cheese');
+      const r = py_call_cheee.call(fn);
+
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'dict');
+      assert.deepEqual(r.toJS(), { signed: true });
+    });
 
     it('__PyObject__', () => {
       const fn = np.get('ones').toJS();

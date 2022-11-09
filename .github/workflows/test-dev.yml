@@ -77,7 +77,7 @@ jobs:
         run: echo CXXFLAGS=`pkg-config --cflags python3-embed` >> $GITHUB_ENV
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --external_python
-      - run: npx @mapbox/node-pre-gyp build -j max -v
+      - run: npx @mapbox/node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npm test

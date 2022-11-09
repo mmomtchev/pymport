@@ -14,3 +14,9 @@ def catch_exception(callable):
     return None
   except Exception as err:
     return err
+
+def dont_catch_exception(callable):
+  callable()
+
+def call_with_cheese(callable):
+  return callable(slice(1, 2, 3))
