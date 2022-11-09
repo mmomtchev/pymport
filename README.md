@@ -277,6 +277,7 @@ When passing a JavaScript function to Python, the resulting object has a special
 *   `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
     *   For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
 *   The memory usage of your program will be the sum of the memory usage of a Python interpreter (not that much) and a Node.js interpreter (more significant)
+  - All Python objects referenced in JavaScript have an additional 56-byte header that is a V8 object - in fact most of the performance loss when processing very small Python objects is related to the creation and the handling of this additional V8 object - that is the V8 tip of the Python iceberg.
 *   The two GCs should work very well in tandem
 
 # Architecture Overview
