@@ -48,6 +48,8 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   if (PyObject_CheckBuffer(*py)) { return _ToJS_Buffer(env, py, store); }
 
+  if (PyObject_Type(*py) == *JSCall_Trampoline_Type) { return _ToJS_JSFunction(env, py); }
+
   // Everything else is kept as a PyObject
   // (New/NewCallable expect a strong reference and steal it)
   PyStrongRef strong(py);
