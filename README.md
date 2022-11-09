@@ -251,7 +251,7 @@ Here are a few examples of different ways of getting a Python function and calli
 const a = np.get('ones');
 
 // b is a proxified callable PyObject, can be called with b()
-// All objects return by b() will also be called
+// All objects returned by b() will also be called
 const b = proxify(np).ones;
 
 // c is a native code JS function, can be called with c()
