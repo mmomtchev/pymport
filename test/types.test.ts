@@ -508,7 +508,6 @@ describe('types', () => {
       const fn = PyObject.fromJS((arg: any) => {
         assert.instanceOf(arg, PyObject);
         assert.equal(arg.type, 'slice');
-        console.log('here', arg);
         return { signed: true };
       });
 

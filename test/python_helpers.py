@@ -19,5 +19,4 @@ def dont_catch_exception(callable):
   callable()
 
 def call_with_cheese(callable):
-  print(callable(slice(1, 2, 3)))
   return callable(slice(1, 2, 3))
