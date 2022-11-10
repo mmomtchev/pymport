@@ -1,24 +1,32 @@
 import { pymport, PyObject, PythonError, version } from 'pymport';
 import { assert } from 'chai';
-
-import pkg from '../package.json';
+import * as fs from 'fs';
+import * as path from 'path';
 
 describe('pymport', () => {
   it('version', () => {
+    const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'package.json'), 'utf-8'));
     assert.strictEqual(version.pymport.major, +pkg.version.split('.')[0]);
     assert.strictEqual(version.pymport.minor, +pkg.version.split('.')[1]);
     assert.strictEqual(version.pymport.patch, +pkg.version.split('-')[0].split('.')[2]);
     assert.isBoolean(version.pythonLibrary.builtin);
-    assert.isNumber(version.pythonLibrary.major);
-    assert.isNumber(version.pythonLibrary.minor);
-    assert.isNumber(version.pythonLibrary.micro);
-    assert.isNumber(version.pythonLibrary.release);
-    assert.isNumber(version.pythonLibrary.serial);
-    assert.isString(version.pythonLibrary.version);
-    if (version.pythonLibrary.builtin)
+    if (version.pythonLibrary.builtin) {
       assert.isString(version.pythonHome);
-    else
+      assert.strictEqual(version.pythonLibrary.major, 3);
+      assert.strictEqual(version.pythonLibrary.minor, 10);
+      assert.strictEqual(version.pythonLibrary.micro, 8);
+      assert.strictEqual(version.pythonLibrary.release, 15);
+      assert.strictEqual(version.pythonLibrary.serial, 0);
+      assert.isString(version.pythonLibrary.version);
+    } else {
       assert.isNull(version.pythonHome);
+      assert.isNumber(version.pythonLibrary.major);
+      assert.isNumber(version.pythonLibrary.minor);
+      assert.isNumber(version.pythonLibrary.micro);
+      assert.isNumber(version.pythonLibrary.release);
+      assert.isNumber(version.pythonLibrary.serial);
+      assert.isString(version.pythonLibrary.version);
+    }
   });
 
   describe('numpy', () => {
