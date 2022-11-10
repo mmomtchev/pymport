@@ -245,6 +245,7 @@ describe('types', () => {
       assert.equal(s.length, 5);
       assert.equal(s.type, 'str');
       assert.equal(s.toJS(), 'hello');
+      assert.equal(s.item(1).toJS(), 'e');
       assert.throws(() => PyObject.keys(s), /'str' object has no attribute 'keys'/);
       assert.throws(() => PyObject.values(s), /str' object has no attribute 'values'/);
     });
@@ -385,7 +386,7 @@ describe('types', () => {
       assert.isUndefined(bool.length);
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'True');
-      assert.equal(bool.toJS(), true);
+      assert.strictEqual(bool.toJS(), true);
       assert.throws(() => PyObject.keys(bool), /does not support mapping/);
       assert.throws(() => PyObject.values(bool), /does not support mapping/);
     });
@@ -396,7 +397,7 @@ describe('types', () => {
       assert.isUndefined(bool.length);
       assert.equal(bool.type, 'bool');
       assert.equal(bool.toString(), 'False');
-      assert.equal(bool.toJS(), false);
+      assert.strictEqual(bool.toJS(), false);
     });
 
     it('iterator', () => {
@@ -502,6 +503,21 @@ describe('types', () => {
       assert.throws(() => {
         py_catch.call(fn);
       }, /Python exception: JS exception/);
+    });
+
+    it('unsupported arguments', () => {
+      const fn = PyObject.fromJS((arg: any) => {
+        assert.instanceOf(arg, PyObject);
+        assert.equal(arg.type, 'slice');
+        return { signed: true };
+      });
+
+      const py_call_cheee = pymport('python_helpers').get('call_with_cheese');
+      const r = py_call_cheee.call(fn);
+
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'dict');
+      assert.deepEqual(r.toJS(), { signed: true });
     });
 
     it('__PyObject__', () => {
@@ -672,6 +688,7 @@ describe('types', () => {
     it('object arguments', () => {
       const slice = PyObject.slice({ start: 1, stop: 3 });
       const list = PyObject.list([0, 1, 2, 3, 4, 5, 6, 7]);
+      const string = PyObject.string('abcde');
 
       assert.instanceOf(slice, PyObject);
       assert.isFalse(slice.callable);
@@ -680,6 +697,8 @@ describe('types', () => {
 
       const cut = list.item(slice);
       assert.deepEqual(cut.toJS(), [1, 2]);
+
+      assert.strictEqual(string.item(slice).toJS(), 'bc');
     });
 
     it('iterator', () => {

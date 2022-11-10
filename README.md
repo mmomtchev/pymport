@@ -251,18 +251,18 @@ Here are a few examples of different ways of getting a Python function and calli
 const a = np.get('ones');
 
 // b is a proxified callable PyObject, can be called with b()
-// All objects return by b() will also be called
+// All objects returned by b() will also be proxified
 const b = proxify(np).ones;
 
 // c is a native code JS function, can be called with c()
 const c = np.get('ones').toJS();
 ```
 
-If passed to a Python function, all three of those will revert back to the original Python function.
+All three of those can also be used as a Python object to be passed as an argument to a Python function.
 
-When the Python function throws, JavaScript will receive a normal JavaScript `Error` object containing the Python error message prefixed with `Python exception`. This object will be extended with an additional attribute, `pythonTrace` which will be a `PyObject` containing the Python traceback.
+If the Python function throws, JavaScript will receive a normal JavaScript `Error` object containing the Python error message prefixed with `Python exception`. This object will be extended with an additional attribute, `pythonTrace` which will be a `PyObject` containing the Python traceback.
 
-When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If Python calls this function with an unsupported argument type, the JavaScript function will receive a `PyObject` for this argument. When the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
+When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If Python calls this function with an unsupported argument type, the JavaScript function will receive a `PyObject` for this argument. If the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
 
 # Performance
 
@@ -277,7 +277,11 @@ When passing a JavaScript function to Python, the resulting object has a special
 *   `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
     *   For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
 *   The memory usage of your program will be the sum of the memory usage of a Python interpreter (not that much) and a Node.js interpreter (more significant)
-  - All Python objects referenced in JavaScript have an additional 56-byte header that is a V8 object - in fact most of the performance loss when processing very small Python objects is related to the creation and the handling of this additional V8 object - that is the V8 tip of the Python iceberg.
+*  All Python objects referenced in JavaScript have an additional 56-byte header that is a V8 object - in fact most of the performance loss when processing very small Python objects is related to the creation and the handling of this additional V8 object - that is the V8 tip of the Python iceberg
+  - This means that when Python code creates a list, this list stays in the Python heap
+  - When this list is seen for the first time by V8, it receives its 56-byte header
+  - If the JavaScript code traverses the list accessing every element, then every element receives a 56-byte header - but these are available from immediate garbage collection
+  - If every element is separately pushed into a JavaScript array as a `PyObject`, then all 56-byte headers must be kept
 *   The two GCs should work very well in tandem
 
 # Architecture Overview
@@ -289,7 +293,7 @@ When passing a JavaScript function to Python, the resulting object has a special
 *   In 1.0 the V8 GC does not take into account the memory held by a `PyObject`s when deciding if they should be GCed or when the heap limit has been reached
 *   In 1.1 the V8 GC takes into account the memory held by a `PyObject` when it is initially referenced in JS but not its eventual growth after being referenced
 *   In 1.0 Python objects of type function never expire, so you will be leaking memory if you create Python lambdas in a loop (fixed in 1.1)
-*   [#3](https://github.com/mmomtchev/pymport/issues/3), `PyOBject`s are leaking memory in synchronous loops
+*   [#3](https://github.com/mmomtchev/pymport/issues/3), `PyObject`s are leaking memory in synchronous loops
 
 # Supported Versions
 
