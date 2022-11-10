@@ -103,6 +103,26 @@ describe('types', () => {
       assert.equal(f.toString(), '2');
     });
 
+    it('automatic int conversion', () => {
+      const zero = PyObject.fromJS(1e-7);
+      assert.equal(zero.type, 'int');
+      assert.strictEqual(zero.toJS(), 0);
+
+      const notzero = PyObject.fromJS(1e-6);
+      assert.equal(notzero.type, 'float');
+      assert.isAbove(notzero.toJS(), 0);
+
+      // Casting is not rounding, it is truncating!
+      const one = PyObject.fromJS(1 - 1e-7);
+      assert.equal(one.type, 'int');
+      assert.strictEqual(one.toJS(), 0);
+
+      const notone = PyObject.fromJS(1 - 1e-6);
+      assert.equal(notone.type, 'float');
+      assert.isBelow(notone.toJS(), 1);
+      assert.isAbove(notone.toJS(), 0);
+    });
+
     it('throws on invalid value', () => {
       assert.throws(() => PyObject.int({ b: 12 } as unknown as number), /Argument must be/);
     });
