@@ -25,7 +25,6 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - run: npm i -g npm@latest
       - name: Create package.json
         run: npm init --yes
       - name: Set up the unit tests
@@ -63,7 +62,6 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - run: npm i -g npm@latest
       - name: Create package.json
         run: npm init --yes
       - name: Set up the unit tests
@@ -103,7 +101,6 @@ jobs:
         run: echo LIBS=`pkg-config --libs python3-embed` >> $GITHUB_ENV
       - name: set CXXFLAGS
         run: echo CXXFLAGS=`pkg-config --cflags python3-embed` >> $GITHUB_ENV
-      - run: npm i -g npm@latest
       - name: Create package.json
         run: npm init --yes
       - name: Set up the unit tests
