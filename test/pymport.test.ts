@@ -1,14 +1,11 @@
 import { pymport, PyObject, PythonError, version } from 'pymport';
 import { assert } from 'chai';
-import * as fs from 'fs';
-import * as path from 'path';
 
 describe('pymport', () => {
   it('version', () => {
-    const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'package.json'), 'utf-8'));
-    assert.strictEqual(version.pymport.major, +pkg.version.split('.')[0]);
-    assert.strictEqual(version.pymport.minor, +pkg.version.split('.')[1]);
-    assert.strictEqual(version.pymport.patch, +pkg.version.split('-')[0].split('.')[2]);
+    assert.isNumber(version.pymport.major);
+    assert.isNumber(version.pymport.minor);
+    assert.isNumber(version.pymport.patch);
     assert.isBoolean(version.pythonLibrary.builtin);
     if (version.pythonLibrary.builtin) {
       assert.isString(version.pythonHome);

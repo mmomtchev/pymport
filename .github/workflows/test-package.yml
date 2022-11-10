@@ -35,7 +35,7 @@ jobs:
           mv pymport-${{ github.event.inputs.version }}/test .
       - name: Install dependencies
         run: |
-          npm i @types/chai @types/mocha @types/node chai mocha ts-node
+          npm i @types/chai @types/mocha @types/node chai mocha ts-node typescript
       - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }}
       - run: npx pympip3 install -r test/requirements.txt
@@ -73,7 +73,7 @@ jobs:
           mv pymport-${{ github.event.inputs.version }}/test .
       - name: Install dependencies
         run: |
-          npm i @types/chai @types/mocha @types/node chai mocha ts-node
+          npm i @types/chai @types/mocha @types/node chai mocha ts-node typescript
       - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }} --build-from-source
       - run: pip3 install -r test/requirements.txt
@@ -113,7 +113,7 @@ jobs:
           mv pymport-${{ github.event.inputs.version }}/test .
       - name: Install dependencies
         run: |
-          npm i @types/chai @types/mocha @types/node chai mocha ts-node
+          npm i @types/chai @types/mocha @types/node chai mocha ts-node typescript
       - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }} --build-from-source --external_python
       - run: pip3 install -r test/requirements.txt
