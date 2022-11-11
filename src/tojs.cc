@@ -103,7 +103,10 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
   Napi::Object r = Object::New(env);
   PyStrongRef list = PyObject_Dir(*py);
   // It seems that some system modules are hidden, we return an empty array
-  if (list == nullptr) return r;
+  if (list == nullptr) {
+    PyErr_Clear();
+    return r;
+  }
   size_t len = PyList_Size(*list);
   store.insert({*py, r});
 
@@ -114,7 +117,10 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
     // dir(module) can reference modules that are not installed
     // Typical examples are queue/tkinter or dbm/gdbm
     // (reading this value leads to an exception in Python too)
-    if (value == nullptr) continue;
+    if (value == nullptr) {
+      PyErr_Clear();
+      continue;
+    }
 
     VERBOSE_PYOBJ(*key, "key");
     Napi::Value jsKey = _ToJS(env, key, store);
