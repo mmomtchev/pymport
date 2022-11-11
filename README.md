@@ -246,6 +246,7 @@ All arguments will be automatically converted when possible.
 If JavaScript calls a Python function with an unsupported type (`Symbol` for example), the call will throw.
 
 Here are a few examples of different ways of getting a Python function and calling it:
+
 ```js
 // a is a callable PyObject, can be called with a.call()
 const a = np.get('ones');
@@ -268,7 +269,8 @@ When passing a JavaScript function to Python, the resulting object has a special
 
 When importing Python modules, by default `pymport` will search only the library paths.
 
-In order to import a user module from the current directory, or any other user directory, `PYTHONPATH` must be set accordingly _before_ initializing Python. In CommonJS this can be set before the `require`:
+In order to import a user module from the current directory, or any other user directory, `PYTHONPATH` must be set accordingly *before* initializing Python. In CommonJS this can be set before the `require`:
+
 ```js
 process.env['PYTHONPATH'] = _dirname;
 const { pymport } = require('pymport');
@@ -289,11 +291,17 @@ However if using `import` in ES6 or in TypeScript, there is no easy way to do it
 *   `toJS()` and `fromJS()` are the most expensive parts as they copy objects between the Python and the JavaScript heap
     *   For best performance try to keep objects in Python and in JavaScript as much as possible and avoid moving them
 *   The memory usage of your program will be the sum of the memory usage of a Python interpreter (not that much) and a Node.js interpreter (more significant)
-*  All Python objects referenced in JavaScript have an additional 56-byte header that is a V8 object - in fact most of the performance loss when processing very small Python objects is related to the creation and the handling of this additional V8 object - that is the V8 tip of the Python iceberg
-  - This means that when Python code creates a list, this list stays in the Python heap
-  - When this list is seen for the first time by V8, it receives its 56-byte header
-  - If the JavaScript code traverses the list accessing every element, then every element receives a 56-byte header - but these are available from immediate garbage collection
-  - If every element is separately pushed into a JavaScript array as a `PyObject`, then all 56-byte headers must be kept
+*   All Python objects referenced in JavaScript have an additional 56-byte header that is a V8 object - in fact most of the performance loss when processing very small Python objects is related to the creation and the handling of this additional V8 object - that is the V8 tip of the Python iceberg
+
+<!---->
+
+*   This means that when Python code creates a list, this list stays in the Python heap
+*   When this list is seen for the first time by V8, it receives its 56-byte header
+*   If the JavaScript code traverses the list accessing every element, then every element receives a 56-byte header - but these are available from immediate garbage collection
+*   If every element is separately pushed into a JavaScript array as a `PyObject`, then all 56-byte headers must be kept
+
+<!---->
+
 *   The two GCs should work very well in tandem
 
 # Architecture Overview
@@ -594,7 +602,9 @@ Returns **[PyObject](#pyobject)**&#x20;
 
 ### slice
 
-Construct a PyObject slice from three elements (start, stop, step)
+Construct a PyObject slice from three elements (start, stop, step).
+In Python, a slice and a range are two different object types:
+<https://til.hashrocket.com/posts/5zuzolqlcb-range-v-slice>
 
 Type: function (slice: (\[PyNumber, PyNumber, PyNumber] | {start: PyNumber?, stop: PyNumber?, step: PyNumber?})): [PyObject](#pyobject)
 
