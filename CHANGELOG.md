@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] WIP
+## [1.1.1] 2022-11-11
 - Fix [#14](https://github.com/mmomtchev/pymport/issues/14), `toJS()` converts Python `bool` to JS `number`
 - Restore the JS function when converting a `pymport.js_function` back to JS
 - Fix [#17](https://github.com/mmomtchev/pymport/issues/17), `PYTHONHOME` is ignored
