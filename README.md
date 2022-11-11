@@ -264,6 +264,18 @@ If the Python function throws, JavaScript will receive a normal JavaScript `Erro
 
 When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If Python calls this function with an unsupported argument type, the JavaScript function will receive a `PyObject` for this argument. If the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
 
+### Importing user modules from the current directory
+
+When importing Python modules, by default `pymport` will search only the library paths.
+
+In order to import a user module from the current directory, or any other user directory, `PYTHONPATH` must be set accordingly _before_ initializing Python. In CommonJS this can be set before the `require`:
+```js
+process.env['PYTHONPATH'] = _dirname;
+const { pymport } = require('pymport');
+```
+
+However if using `import` in ES6 or in TypeScript, there is no easy way to do it. In this case, `PYTHONPATH` is best set from the environment.
+
 # Performance
 
 *   Generally when using Python, you will get the usual Python performance, while when using Node.js, you will get the usual Node.js performance
