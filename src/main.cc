@@ -34,7 +34,7 @@ Value Version(const CallbackInfo &info) {
   pymportVersion.Set("major", Number::New(env, PYMPORT_VERSION_MAJOR));
   pymportVersion.Set("minor", Number::New(env, PYMPORT_VERSION_MINOR));
   pymportVersion.Set("patch", Number::New(env, PYMPORT_VERSION_PATCH));
-  pymportVersion.Set("suffix", String::New(env, STR(PYMPORT_VERSION_SUFFIX)));
+  pymportVersion.Set("suffix", String::New(env, STR("" PYMPORT_VERSION_SUFFIX)));
 
 #ifdef BUILTIN_PYTHON_PATH
   bool builtin = true;
