@@ -118,6 +118,36 @@ Value PyObjectWrap::Tuple(const CallbackInfo &info) {
   return New(env, std::move(tuple));
 }
 
+void PyObjectWrap::_FromJS_Set(Array array, const PyStrongRef &target, PyObjectStore &store) {
+  size_t len = array.Length();
+
+  for (size_t i = 0; i < len; i++) {
+    PyStrongRef el = _FromJS(array.Get(i), store);
+    int status = PySet_Add(*target, el.gift());
+    EXCEPTION_CHECK(array.Env(), status);
+  }
+}
+
+Value PyObjectWrap::Set(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  auto raw = NAPI_ARG_OBJECT(0);
+  PyObjectStore store;
+  PyStrongRef set = nullptr;
+  if (raw.IsArray()) {
+    set = PySet_New(nullptr);
+    EXCEPTION_CHECK(env, set);
+    _FromJS_Set(raw.As<Array>(), set, store);
+  } else {
+    Object py = NAPI_ARG_PYOBJECT(0);
+    PyObjectWrap *iterable = Unwrap(py);
+    set = PySet_New(*iterable->self);
+    EXCEPTION_CHECK(env, set);
+  }
+
+  return New(env, std::move(set));
+}
+
 Value PyObjectWrap::Slice(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 

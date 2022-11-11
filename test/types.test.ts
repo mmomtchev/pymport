@@ -213,6 +213,50 @@ describe('types', () => {
     });
   });
 
+  describe('set', () => {
+    const array = [2, 1.2, 'Добро утро'];
+
+    it('set() from array', () => {
+      const set = PyObject.set(array);
+      assert.equal(set.type, 'set');
+      assert.equal(set.length, 3);
+      assert.throws(() => set.item(1), /'set' object is not subscriptable/);
+      assert.throws(() => PyObject.keys(set), /Object does not support mapping protocol/);
+      assert.throws(() => PyObject.values(set), /Object does not support mapping protocol/);
+    });
+
+    it('set() from PyObject', () => {
+      const set = PyObject.set(PyObject.list(array));
+      assert.equal(set.type, 'set');
+      assert.equal(set.length, 3);
+    });
+
+    it('toString()', () => {
+      const set = PyObject.set(array);
+      const str = set.toString();
+      assert.include(str, 'Добро утро');
+      assert.include(str, '1.2');
+      assert.include(str, '1');
+    });
+
+    it('add() / clear()', () => {
+      const set = PyObject.set([1]);
+      assert.lengthOf(set, 1);
+      set.get('add').call(2);
+      assert.lengthOf(set, 2);
+      set.get('clear').call();
+      assert.lengthOf(set, 0);
+    });
+
+    it('throws on invalid value', () => {
+      assert.throws(() => PyObject.set({ b: 12 } as unknown as number[]), /Argument must be/);
+    });
+
+    it('iterator', () => {
+      assert.sameMembers(toArray(PyObject.set([8, 9, 3])).map(el => el.toJS()), [8, 9, 3]);
+    });
+  });
+
   describe('tuple', () => {
     const array = [1, 'a', { name: 'text' }];
 

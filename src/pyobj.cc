@@ -60,6 +60,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::StaticMethod("list", &PyObjectWrap::List),
      PyObjectWrap::StaticMethod("tuple", &PyObjectWrap::Tuple),
      PyObjectWrap::StaticMethod("slice", &PyObjectWrap::Slice),
+     PyObjectWrap::StaticMethod("set", &PyObjectWrap::Set),
      PyObjectWrap::StaticMethod("bytes", &PyObjectWrap::Bytes),
      PyObjectWrap::StaticMethod("bytearray", &PyObjectWrap::ByteArray),
      PyObjectWrap::StaticMethod("memoryview", &PyObjectWrap::MemoryView),
@@ -160,6 +161,7 @@ Value PyObjectWrap::Length(const CallbackInfo &info) {
 
   if (PySequence_Check(*self)) return Number::New(env, static_cast<long>(PySequence_Size(*self)));
   if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));
+  if (PySet_Check(*self)) return Number::New(env, static_cast<long>(PySet_Size(*self)));
   return env.Undefined();
 }
 

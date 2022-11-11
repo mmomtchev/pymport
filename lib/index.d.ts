@@ -30,21 +30,28 @@ export class PyObject implements Iterable<PyObject> {
    * @param {Record<string, any>} object
    * @returns {PyObject}
    */
-  static dict: (v: Record<string, any>) => PyObject;
+  static dict: (object: Record<string, any>) => PyObject;
 
   /**
    * Construct a PyObject list from a JS array
    * @param {any[]} array
    * @returns {PyObject}
    */
-  static list: (v: any[]) => PyObject;
+  static list: (array: any[]) => PyObject;
 
   /**
    * Construct a PyObject tuple from a JS array
    * @param {any[]} array
    * @returns {PyObject}
    */
-  static tuple: (v: any[]) => PyObject;
+  static tuple: (array: any[]) => PyObject;
+
+  /**
+   * Construct a PyObject set from a JS array or an iterable PyObject
+   * @param {any[]} array
+   * @returns {PyObject}
+   */
+  static set: (v: any[] | PyObject) => PyObject;
 
   /**
    * Construct a PyObject slice from three elements (start, stop, step).
