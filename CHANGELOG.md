@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.1] WIP
 - Fix [#14](https://github.com/mmomtchev/pymport/issues/14), `toJS()` converts Python `bool` to JS `number`
 - Restore the JS function when converting a `pymport.js_function` back to JS
+- Fix [#17](https://github.com/mmomtchev/pymport/issues/17), `PYTHONHOME` is ignored
+- In the version reporting, replace the `"undefined"` suffix with a `""` when there is no version suffix
 
 ## [1.1.0] 2022-11-08
 

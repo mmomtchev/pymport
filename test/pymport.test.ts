@@ -2,7 +2,9 @@ import { pymport, PyObject, PythonError, version } from 'pymport';
 import { assert } from 'chai';
 
 describe('pymport', () => {
-  it('version', () => {
+  it('version', function () {
+    if (process.env['MOCHA_SKIP_VERSION_CHECK']) this.skip();
+
     assert.isNumber(version.pymport.major);
     assert.isNumber(version.pymport.minor);
     assert.isNumber(version.pymport.patch);
