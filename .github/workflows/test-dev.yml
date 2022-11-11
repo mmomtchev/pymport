@@ -114,7 +114,8 @@ jobs:
           actual: ${{ env.READ_PYTHONHOME }}
           comparison: exact
       - run: npm test
-        env: MOCHA_SKIP_VERSION_CHECK: 1
+        env:
+          MOCHA_SKIP_VERSION_CHECK: 1
 
   external_python_wo_rebuild_win:
     runs-on: windows-2019
