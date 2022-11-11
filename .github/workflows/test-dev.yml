@@ -108,7 +108,7 @@ jobs:
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $GITHUB_ENV
       - name: Test PYTHONOME
         run: echo READ_PYTHONHOME=$(node -e "console.log(require('pymport').version.pythonHome)") >> $GITHUB_ENV
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v1.2.0
         with:
           expected: ${{ env.PYTHONHOME }}
           actual: ${{ env.READ_PYTHONHOME }}
@@ -138,7 +138,7 @@ jobs:
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $env:GITHUB_ENV
       - name: Test PYTHONHOME
         run: echo READ_PYTHONHOME=$(node -e "console.log(require('pymport').version.pythonHome)") >> $env:GITHUB_ENV
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v1.2.0
         with:
           expected: ${{ env.PYTHONHOME }}
           actual: ${{ env.READ_PYTHONHOME }}
