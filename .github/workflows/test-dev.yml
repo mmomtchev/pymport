@@ -83,6 +83,66 @@ jobs:
       - run: pip3 install -r test/requirements.txt
       - run: npm test
 
+  external_python_wo_rebuild_posix:
+    runs-on: ${{ matrix.platform }}
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-11]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --builtin_python
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: python3 -m pip install --upgrade pip
+      - run: pip3 install -r test/requirements.txt
+      - name: Find system Python
+        run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $GITHUB_ENV
+      - name: Test PYTHONOME
+        run: echo READ_PYTHONHOME=$(node -e "console.log(require('pymport').version.pythonHome)") >> $GITHUB_ENV
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: ${{ env.PYTHONHOME }}
+          actual: ${{ env.READ_PYTHONHOME }}
+          comparison: exact
+      - run: npm test
+
+  external_python_wo_rebuild_win:
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --builtin_python
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: python3 -m pip install --upgrade pip
+      - run: pip3 install -r test/requirements.txt
+      - name: Find system Python
+        run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $env:GITHUB_ENV
+      - name: Test PYTHONOME
+        run: echo READ_PYTHONHOME=$(node -e "console.log(require('pymport').version.pythonHome)") >> $env:GITHUB_ENV
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: ${{ env.PYTHONHOME }}
+          actual: ${{ env.READ_PYTHONHOME }}
+          comparison: exact
+      - run: npm test
+
   debug_build:
     runs-on: ${{ matrix.platform }}
 
