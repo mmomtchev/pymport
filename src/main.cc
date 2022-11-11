@@ -101,12 +101,15 @@ Napi::Object Init(Env env, Object exports) {
   if (active_environments == 0) {
 #ifdef BUILTIN_PYTHON_PATH
     auto pathPymport = std::getenv("PYMPORTPATH");
-    if (pathPymport == nullptr) {
-      Py_SetPythonHome(BUILTIN_PYTHON_PATH);
-    } else {
-      std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-      builtin_python_path = converter.from_bytes(pathPymport);
-      Py_SetPythonHome(builtin_python_path.c_str());
+    auto homePython = std::getenv("PYTHONHOME");
+    if (homePython == nullptr) {
+      if (pathPymport == nullptr) {
+        Py_SetPythonHome(BUILTIN_PYTHON_PATH);
+      } else {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        builtin_python_path = converter.from_bytes(pathPymport);
+        Py_SetPythonHome(builtin_python_path.c_str());
+      }
     }
 #endif
     Py_Initialize();
