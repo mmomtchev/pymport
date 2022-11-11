@@ -232,8 +232,10 @@ describe('types', () => {
       const set = PyObject.set(PyObject.list(array));
       assert.equal(set.type, 'set');
       assert.equal(set.length, 3);
-      assert.isTrue(set.get('__contains__').call(2).toJS());
-      assert.isFalse(set.get('__contains__').call(3).toJS());
+      assert.isTrue(set.has(PyObject.fromJS(2)));
+      assert.isTrue(set.has(PyObject.fromJS('Добро утро')));
+      assert.isFalse(set.has(PyObject.fromJS(3)));
+      assert.isFalse(set.has(PyObject.fromJS('Добрутро')));
       assert.sameMembers(set.toJS(), array);
     });
 

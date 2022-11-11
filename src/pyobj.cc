@@ -107,8 +107,15 @@ Value PyObjectWrap::Import(const CallbackInfo &info) {
 Value PyObjectWrap::Has(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  std::string name = NAPI_ARG_STRING(0).Utf8Value();
-  auto r = PyObject_HasAttrString(*self, name.c_str());
+  bool r;
+  if (PyAnySet_Check(*self)) {
+    if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
+    PyStrongRef key = FromJS(info[0]);
+    r = PySet_Contains(*self, *key);
+  } else {
+    std::string name = NAPI_ARG_STRING(0).Utf8Value();
+    r = PyObject_HasAttrString(*self, name.c_str());
+  }
   return Boolean::New(env, r);
 }
 
