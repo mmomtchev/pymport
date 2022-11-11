@@ -161,7 +161,7 @@ Value PyObjectWrap::Length(const CallbackInfo &info) {
 
   if (PySequence_Check(*self)) return Number::New(env, static_cast<long>(PySequence_Size(*self)));
   if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));
-  if (PySet_Check(*self)) return Number::New(env, static_cast<long>(PySet_Size(*self)));
+  if (PyAnySet_Check(*self)) return Number::New(env, static_cast<long>(PySet_Size(*self)));
   return env.Undefined();
 }
 

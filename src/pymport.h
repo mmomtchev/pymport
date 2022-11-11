@@ -132,6 +132,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value _ToJS_Dictionary(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_Tuple(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_List(Napi::Env, const PyWeakRef &, NapiObjectStore &);
+  static Napi::Value _ToJS_Set(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_Dir(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_Buffer(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_JSFunction(Napi::Env, const PyWeakRef &);

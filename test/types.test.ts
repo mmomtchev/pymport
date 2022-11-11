@@ -223,12 +223,18 @@ describe('types', () => {
       assert.throws(() => set.item(1), /'set' object is not subscriptable/);
       assert.throws(() => PyObject.keys(set), /Object does not support mapping protocol/);
       assert.throws(() => PyObject.values(set), /Object does not support mapping protocol/);
+      assert.isTrue(set.get('__contains__').call(2).toJS());
+      assert.isFalse(set.get('__contains__').call(3).toJS());
+      assert.sameMembers(set.toJS(), array);
     });
 
     it('set() from PyObject', () => {
       const set = PyObject.set(PyObject.list(array));
       assert.equal(set.type, 'set');
       assert.equal(set.length, 3);
+      assert.isTrue(set.get('__contains__').call(2).toJS());
+      assert.isFalse(set.get('__contains__').call(3).toJS());
+      assert.sameMembers(set.toJS(), array);
     });
 
     it('toString()', () => {
@@ -237,15 +243,19 @@ describe('types', () => {
       assert.include(str, 'Добро утро');
       assert.include(str, '1.2');
       assert.include(str, '1');
+      assert.sameMembers(set.toJS(), array);
     });
 
     it('add() / clear()', () => {
       const set = PyObject.set([1]);
       assert.lengthOf(set, 1);
+      assert.sameMembers(set.toJS(), [1]);
       set.get('add').call(2);
       assert.lengthOf(set, 2);
+      assert.sameMembers(set.toJS(), [1, 2]);
       set.get('clear').call();
       assert.lengthOf(set, 0);
+      assert.sameMembers(set.toJS(), []);
     });
 
     it('throws on invalid value', () => {
