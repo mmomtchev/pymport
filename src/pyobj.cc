@@ -61,6 +61,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::StaticMethod("tuple", &PyObjectWrap::Tuple),
      PyObjectWrap::StaticMethod("slice", &PyObjectWrap::Slice),
      PyObjectWrap::StaticMethod("set", &PyObjectWrap::Set),
+     PyObjectWrap::StaticMethod("frozenSet", &PyObjectWrap::FrozenSet),
      PyObjectWrap::StaticMethod("bytes", &PyObjectWrap::Bytes),
      PyObjectWrap::StaticMethod("bytearray", &PyObjectWrap::ByteArray),
      PyObjectWrap::StaticMethod("memoryview", &PyObjectWrap::MemoryView),

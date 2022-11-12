@@ -54,6 +54,13 @@ export class PyObject implements Iterable<PyObject> {
   static set: (v: any[] | PyObject) => PyObject;
 
   /**
+   * Construct a PyObject frozenset from a JS array or an iterable PyObject
+   * @param {any[]} array
+   * @returns {PyObject}
+   */
+  static frozenSet: (v: any[] | PyObject) => PyObject;
+
+  /**
    * Construct a PyObject slice from three elements (start, stop, step).
    * In Python, a slice and a range are two different object types:
    * https://til.hashrocket.com/posts/5zuzolqlcb-range-v-slice

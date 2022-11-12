@@ -91,6 +91,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value List(const Napi::CallbackInfo &);
   static Napi::Value Slice(const Napi::CallbackInfo &);
   static Napi::Value Set(const Napi::CallbackInfo &);
+  static Napi::Value FrozenSet(const Napi::CallbackInfo &);
   static Napi::Value Bytes(const Napi::CallbackInfo &);
   static Napi::Value ByteArray(const Napi::CallbackInfo &);
   static Napi::Value MemoryView(const Napi::CallbackInfo &);
