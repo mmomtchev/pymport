@@ -108,7 +108,7 @@ Napi::Value PyObjectWrap::_ToJS_Set(Napi::Env env, const PyWeakRef &py, NapiObje
   store.insert({*py, array});
 
   PyStrongRef item = nullptr;
-  ssize_t i = 0;
+  size_t i = 0;
   while ((item = PyIter_Next(*iter)) != nullptr) {
     array.Set(i, _ToJS(env, item, store));
     item = nullptr;
