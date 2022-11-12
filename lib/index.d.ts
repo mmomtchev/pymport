@@ -168,7 +168,7 @@ export class PyObject implements Iterable<PyObject> {
 
   /**
    * Check if a property exists
-   * @param {string | PyObject} key property name, only sets accept values that are not a string
+   * @param {string | any} key property name, only sets accept values that are not a string
    * @returns {boolean}
    */
   has: (name: string | any) => boolean;
