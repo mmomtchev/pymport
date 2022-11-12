@@ -30,21 +30,35 @@ export class PyObject implements Iterable<PyObject> {
    * @param {Record<string, any>} object
    * @returns {PyObject}
    */
-  static dict: (v: Record<string, any>) => PyObject;
+  static dict: (object: Record<string, any>) => PyObject;
 
   /**
    * Construct a PyObject list from a JS array
    * @param {any[]} array
    * @returns {PyObject}
    */
-  static list: (v: any[]) => PyObject;
+  static list: (array: any[]) => PyObject;
 
   /**
    * Construct a PyObject tuple from a JS array
    * @param {any[]} array
    * @returns {PyObject}
    */
-  static tuple: (v: any[]) => PyObject;
+  static tuple: (array: any[]) => PyObject;
+
+  /**
+   * Construct a PyObject set from a JS array or an iterable PyObject
+   * @param {any[]} array
+   * @returns {PyObject}
+   */
+  static set: (v: any[] | PyObject) => PyObject;
+
+  /**
+   * Construct a PyObject frozenset from a JS array or an iterable PyObject
+   * @param {any[]} array
+   * @returns {PyObject}
+   */
+  static frozenSet: (v: any[] | PyObject) => PyObject;
 
   /**
    * Construct a PyObject slice from three elements (start, stop, step).
@@ -154,10 +168,10 @@ export class PyObject implements Iterable<PyObject> {
 
   /**
    * Check if a property exists
-   * @param {string} name property name
+   * @param {string | any} key property name, only sets accept values that are not a string
    * @returns {boolean}
    */
-  has: (name: string) => boolean;
+  has: (name: string | any) => boolean;
 
   /**
    * Retrieve an element by index, equivalent to Python subscript operator[]

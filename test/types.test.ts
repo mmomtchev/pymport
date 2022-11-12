@@ -213,6 +213,88 @@ describe('types', () => {
     });
   });
 
+  describe('set', () => {
+    const array = [2, 1.2, 'Добро утро'];
+
+    it('set() from array', () => {
+      const set = PyObject.set(array);
+      assert.equal(set.type, 'set');
+      assert.equal(set.length, 3);
+      assert.throws(() => set.item(1), /'set' object is not subscriptable/);
+      assert.throws(() => PyObject.keys(set), /Object does not support mapping protocol/);
+      assert.throws(() => PyObject.values(set), /Object does not support mapping protocol/);
+      assert.isTrue(set.get('__contains__').call(2).toJS());
+      assert.isFalse(set.get('__contains__').call(3).toJS());
+      assert.sameMembers(set.toJS(), array);
+    });
+
+    it('set() from PyObject', () => {
+      const set = PyObject.set(PyObject.list(array));
+      assert.equal(set.type, 'set');
+      assert.equal(set.length, 3);
+      assert.sameMembers(set.toJS(), array);
+    });
+
+    it('toString()', () => {
+      const set = PyObject.set(array);
+      const str = set.toString();
+      assert.include(str, 'Добро утро');
+      assert.include(str, '1.2');
+      assert.include(str, '1');
+      assert.sameMembers(set.toJS(), array);
+    });
+
+    it('has()', () => {
+      const set = PyObject.set(PyObject.list(array));
+      assert.isTrue(set.has(PyObject.fromJS(2)));
+      assert.isTrue(set.has(PyObject.fromJS('Добро утро')));
+      assert.isFalse(set.has(PyObject.fromJS(3)));
+      assert.isFalse(set.has(PyObject.fromJS('Добрутро')));
+      assert.isTrue(set.has(2));
+      assert.isTrue(set.has('Добро утро'));
+      assert.isFalse(set.has(3));
+      assert.isFalse(set.has('Добрутро'));
+    });
+
+    it('add() / clear()', () => {
+      const set = PyObject.set([1]);
+      assert.lengthOf(set, 1);
+      assert.sameMembers(set.toJS(), [1]);
+      set.get('add').call(2);
+      assert.lengthOf(set, 2);
+      assert.sameMembers(set.toJS(), [1, 2]);
+      set.get('clear').call();
+      assert.lengthOf(set, 0);
+      assert.sameMembers(set.toJS(), []);
+    });
+
+    it('frozenset() from array', () => {
+      const set = PyObject.frozenSet(array);
+      assert.equal(set.type, 'frozenset');
+      assert.equal(set.length, 3);
+      assert.sameMembers(set.toJS(), array);
+      assert.isUndefined(set.get('add'));
+      assert.isUndefined(set.get('clear'));
+    });
+
+    it('frozenset() from PyObject', () => {
+      const set = PyObject.frozenSet(PyObject.list(array));
+      assert.equal(set.type, 'frozenset');
+      assert.equal(set.length, 3);
+      assert.sameMembers(set.toJS(), array);
+      assert.isUndefined(set.get('add'));
+      assert.isUndefined(set.get('clear'));
+    });
+
+    it('throws on invalid value', () => {
+      assert.throws(() => PyObject.set({ b: 12 } as unknown as number[]), /Argument must be/);
+    });
+
+    it('iterator', () => {
+      assert.sameMembers(toArray(PyObject.set([8, 9, 3])).map(el => el.toJS()), [8, 9, 3]);
+    });
+  });
+
   describe('tuple', () => {
     const array = [1, 'a', { name: 'text' }];
 

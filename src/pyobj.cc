@@ -60,6 +60,8 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::StaticMethod("list", &PyObjectWrap::List),
      PyObjectWrap::StaticMethod("tuple", &PyObjectWrap::Tuple),
      PyObjectWrap::StaticMethod("slice", &PyObjectWrap::Slice),
+     PyObjectWrap::StaticMethod("set", &PyObjectWrap::Set),
+     PyObjectWrap::StaticMethod("frozenSet", &PyObjectWrap::FrozenSet),
      PyObjectWrap::StaticMethod("bytes", &PyObjectWrap::Bytes),
      PyObjectWrap::StaticMethod("bytearray", &PyObjectWrap::ByteArray),
      PyObjectWrap::StaticMethod("memoryview", &PyObjectWrap::MemoryView),
@@ -106,8 +108,15 @@ Value PyObjectWrap::Import(const CallbackInfo &info) {
 Value PyObjectWrap::Has(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  std::string name = NAPI_ARG_STRING(0).Utf8Value();
-  auto r = PyObject_HasAttrString(*self, name.c_str());
+  bool r;
+  if (PyAnySet_Check(*self)) {
+    if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
+    PyStrongRef key = FromJS(info[0]);
+    r = PySet_Contains(*self, *key);
+  } else {
+    std::string name = NAPI_ARG_STRING(0).Utf8Value();
+    r = PyObject_HasAttrString(*self, name.c_str());
+  }
   return Boolean::New(env, r);
 }
 
@@ -160,6 +169,7 @@ Value PyObjectWrap::Length(const CallbackInfo &info) {
 
   if (PySequence_Check(*self)) return Number::New(env, static_cast<long>(PySequence_Size(*self)));
   if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));
+  if (PyAnySet_Check(*self)) return Number::New(env, static_cast<long>(PySet_Size(*self)));
   return env.Undefined();
 }
 

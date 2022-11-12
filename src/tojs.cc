@@ -44,6 +44,8 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   if (PyTuple_Check(*py)) { return _ToJS_Tuple(env, py, store); }
 
+  if (PyAnySet_Check(*py)) { return _ToJS_Set(env, py, store); }
+
   if (PyModule_Check(*py)) { return _ToJS_Dir(env, py, store); }
 
   if (PyObject_CheckBuffer(*py)) { return _ToJS_Buffer(env, py, store); }
@@ -97,6 +99,22 @@ Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, const PyWeakRef &py, NapiObj
     r.Set(i, js);
   }
   return r;
+}
+
+Napi::Value PyObjectWrap::_ToJS_Set(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+  auto array = Array::New(env);
+
+  PyStrongRef iter = PyObject_GetIter(*py);
+  store.insert({*py, array});
+
+  PyStrongRef item = nullptr;
+  size_t i = 0;
+  while ((item = PyIter_Next(*iter)) != nullptr) {
+    array.Set(i, _ToJS(env, item, store));
+    item = nullptr;
+    i++;
+  }
+  return array;
 }
 
 Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
