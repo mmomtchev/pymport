@@ -161,10 +161,10 @@ export class PyObject implements Iterable<PyObject> {
 
   /**
    * Check if a property exists
-   * @param {string | PyObject} key property name, a PyObject is accepted only for sets
+   * @param {string | PyObject} key property name, only sets accept values that are not a string
    * @returns {boolean}
    */
-  has: (name: string | PyObject) => boolean;
+  has: (name: string | any) => boolean;
 
   /**
    * Retrieve an element by index, equivalent to Python subscript operator[]

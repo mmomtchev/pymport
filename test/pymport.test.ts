@@ -41,6 +41,16 @@ describe('pymport', () => {
       assert.deepEqual(a.get('tolist').call().toJS(), [0, 1, 2]);
     });
 
+    it('has()', () => {
+      const np = pymport('numpy');
+      const a = np.get('arange').call(5);
+      assert.isTrue(a.has('shape'));
+      assert.isFalse(a.has('notshape'));
+      assert.throws(() => {
+        a.has([1]);
+      }, /must be a string/);
+    });
+
     it('iterators/generators', () => {
       const np = pymport('numpy');
       const a = np.get('arange').call(6);

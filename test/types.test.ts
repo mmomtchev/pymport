@@ -232,10 +232,6 @@ describe('types', () => {
       const set = PyObject.set(PyObject.list(array));
       assert.equal(set.type, 'set');
       assert.equal(set.length, 3);
-      assert.isTrue(set.has(PyObject.fromJS(2)));
-      assert.isTrue(set.has(PyObject.fromJS('Добро утро')));
-      assert.isFalse(set.has(PyObject.fromJS(3)));
-      assert.isFalse(set.has(PyObject.fromJS('Добрутро')));
       assert.sameMembers(set.toJS(), array);
     });
 
@@ -246,6 +242,18 @@ describe('types', () => {
       assert.include(str, '1.2');
       assert.include(str, '1');
       assert.sameMembers(set.toJS(), array);
+    });
+
+    it('has()', () => {
+      const set = PyObject.set(PyObject.list(array));
+      assert.isTrue(set.has(PyObject.fromJS(2)));
+      assert.isTrue(set.has(PyObject.fromJS('Добро утро')));
+      assert.isFalse(set.has(PyObject.fromJS(3)));
+      assert.isFalse(set.has(PyObject.fromJS('Добрутро')));
+      assert.isTrue(set.has(2));
+      assert.isTrue(set.has('Добро утро'));
+      assert.isFalse(set.has(3));
+      assert.isFalse(set.has('Добрутро'));
     });
 
     it('add() / clear()', () => {
