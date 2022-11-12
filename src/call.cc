@@ -45,13 +45,18 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyTuple_GetItem(args, i);
     PyObjectWrap::EXCEPTION_CHECK(env, v);
-    Napi::Value js = PyObjectWrap::ToJS(env, v);
-    js_args.push_back(js);
+    js_args.push_back(PyObjectWrap::New(env, PyStrongRef(v)));
   }
 
   // Named arguments -> placed in a object as a last argument
   if (kw != nullptr) {
-    Napi::Value js_kwargs = PyObjectWrap::ToJS(env, kw);
+    auto js_kwargs = Object::New(env);
+    PyWeakRef key = nullptr, value = nullptr;
+    Py_ssize_t pos = 0;
+    while (PyDict_Next(kw, &pos, &key, &value)) {
+      auto jsKey = PyObjectWrap::ToJS(env, key);
+      js_kwargs.Set(jsKey, PyObjectWrap::New(env, PyStrongRef(value)));
+    }
     js_args.push_back(js_kwargs);
   }
 

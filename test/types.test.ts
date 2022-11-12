@@ -471,7 +471,10 @@ describe('types', () => {
     });
 
     it('constructor', () => {
-      const fn = PyObject.func((a: any) => a + 2);
+      const fn = PyObject.func((a: any) => {
+        assert.instanceOf(a, PyObject);
+        return a + 2;
+      });
 
       assert.instanceOf(fn, PyObject);
       assert.isTrue(fn.callable);
