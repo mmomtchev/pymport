@@ -277,6 +277,15 @@ describe('types', () => {
       assert.isUndefined(set.get('clear'));
     });
 
+    it('frozenset() from PyObject', () => {
+      const set = PyObject.frozenSet(PyObject.list(array));
+      assert.equal(set.type, 'frozenset');
+      assert.equal(set.length, 3);
+      assert.sameMembers(set.toJS(), array);
+      assert.isUndefined(set.get('add'));
+      assert.isUndefined(set.get('clear'));
+    });
+
     it('throws on invalid value', () => {
       assert.throws(() => PyObject.set({ b: 12 } as unknown as number[]), /Argument must be/);
     });
