@@ -56,6 +56,15 @@ describe('pymport', () => {
       }
       assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
     });
+
+    it('fromfunction()', () => {
+      const np = pymport('numpy');
+      const fn = (x: PyObject, y: PyObject) => {
+        return x.get('__add__').call(y);
+      };
+      const a = np.get('fromfunction').call(fn, [2, 3]);
+      assert.deepEqual(a.get('tolist').call().toJS(), [[0, 1, 2], [1, 2, 3]]);
+    });
   });
 
   describe('pandas', () => {

@@ -241,7 +241,7 @@ As a last step, you should probably check the [`graph-tool` example](https://git
 
 Since 1.1 functions can be freely passed between Python and JavaScript.
 
-All arguments will be automatically converted when possible.
+As when calling Python functions, argument conversion from JavaScript to Python is always automatic. Conversion from Python to JavaScript is automatic only when it can be deduced from the context (in `a + 1`, `a` will be converted to `number`) according to the rules governing `Symbol.toPrimitive`. In all other cases, `toJS()` must be called.
 
 If JavaScript calls a Python function with an unsupported type (`Symbol` for example), the call will throw.
 
@@ -263,7 +263,7 @@ All three of those can also be used as a Python object to be passed as an argume
 
 If the Python function throws, JavaScript will receive a normal JavaScript `Error` object containing the Python error message prefixed with `Python exception`. This object will be extended with an additional attribute, `pythonTrace` which will be a `PyObject` containing the Python traceback.
 
-When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If Python calls this function with an unsupported argument type, the JavaScript function will receive a `PyObject` for this argument. If the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
+When passing a JavaScript function to Python, the resulting object has a special Python type `pymport.js_function`, that cannot be constructed in any other way. It is a Python callable that is otherwise indistinguishable from a Python function. If the JavaScript function throws, Python will receive a generic `Exception` object containing the JavaScript error message. If Python does not handle this error, the error will eventually propagate back to the calling JavaScript code where it will be a JavaScript `Error` object containing a `pythonTrace` with the Python part of the stack.
 
 ### Importing user modules from the current directory
 
