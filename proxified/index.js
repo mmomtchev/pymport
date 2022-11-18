@@ -11,25 +11,7 @@ const proxifiedPyObject = class PyObject {
   }
 };
 
-let desc = Object.getOwnPropertyDescriptors(PyObject.prototype);
-for (const m of Object.keys(desc)) {
-  if (typeof desc[m].value === 'function') {
-    // Proxify a method
-    proxifiedPyObject.prototype[m] = function (...args) {
-      return proxify(PyObject.prototype[m].apply(this, args));
-    };
-    proxifiedPyObject.prototype[m].name = m;
-  } else if (typeof desc[m].get === 'function') {
-    // Proxify a getter
-    Object.defineProperty(proxifiedPyObject.prototype, m, {
-      get: function () {
-        return proxify(PyObject.prototype[m]);
-      }
-    });
-  }
-}
-
-desc = Object.getOwnPropertyDescriptors(PyObject);
+const desc = Object.getOwnPropertyDescriptors(PyObject);
 for (const m of Object.keys(desc)) {
   if (typeof desc[m].value === 'function') {
     proxifiedPyObject[m] = function (...args) {
