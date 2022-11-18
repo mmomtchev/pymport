@@ -31,6 +31,13 @@ describe('proxy', () => {
     assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
   });
 
+  it('proxified PyObject constructs proxified objects', () => {
+    const py = PyObject.fromJS({ name: 'value' });
+
+    assert.instanceOf(py, PyObject);
+    assert.instanceOf(py.__PyObject__, PyObject);
+  });
+
   it('proxified objects return unique references', () => {
     const a = np.arange;
     const b = np.arange;
