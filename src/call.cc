@@ -180,9 +180,9 @@ Value PyObjectWrap::Callable(const CallbackInfo &info) {
 Value PyObjectWrap::Eval(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   auto text = NAPI_ARG_STRING(0).Utf8Value();
-  PyStrongRef globals = info.Length() > 1 ? FromJS(info[1]) : PyStrongRef(PyDict_New());
+  PyStrongRef globals = (info.Length() > 1 && !info[1].IsUndefined()) ? FromJS(info[1]) : PyStrongRef(PyDict_New());
   EXCEPTION_CHECK(env, globals);
-  PyStrongRef locals = info.Length() > 2 ? FromJS(info[2]) : PyStrongRef(PyDict_New());
+  PyStrongRef locals = (info.Length() > 2 && !info[2].IsUndefined()) ? FromJS(info[2]) : PyStrongRef(PyDict_New());
   EXCEPTION_CHECK(env, locals);
 
   PyStrongRef result = PyRun_String(text.c_str(), Py_eval_input, *globals, *locals);

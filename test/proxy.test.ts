@@ -1,9 +1,10 @@
-import { pymport, proxify, PyObject, pyval } from 'pymport';
+import { pymport, PyObject, pyval } from 'pymport/proxified';
+import { PyObject as rawPyObject, proxify as rawProxify } from 'pymport';
 import { assert } from 'chai';
 
 describe('proxy', () => {
-  const np = proxify(pymport('numpy'));
-  const pd = proxify(pymport('pandas'));
+  const np = pymport('numpy');
+  const pd = pymport('pandas');
 
   it('numpy', () => {
     const a = np.arange(15).reshape(3, 5);
@@ -39,9 +40,9 @@ describe('proxy', () => {
   });
 
   it('proxified objects have unique references', () => {
-    const py = PyObject.fromJS({ name: 'value' });
-    const a = proxify(py);
-    const b = proxify(py);
+    const py = rawPyObject.fromJS({ name: 'value' });
+    const a = rawProxify(py);
+    const b = rawProxify(py);
 
     assert.equal(a, b);
   });
@@ -59,7 +60,7 @@ describe('proxy', () => {
   });
 
   it('PyObject constructors', () => {
-    const d = proxify(PyObject.int(12));
+    const d = PyObject.int(12);
 
     assert.equal(d.type, 'int');
     assert.strictEqual(d.toJS(), 12);
@@ -76,7 +77,7 @@ describe('proxy', () => {
   });
 
   it('functions', () => {
-    const fn = proxify(pyval('lambda x: (x + 42)'));
+    const fn = pyval('lambda x: (x + 42)');
 
     assert.typeOf(fn, 'function');
     assert.equal(fn(-42).toJS(), 0);
@@ -89,15 +90,23 @@ describe('proxy', () => {
   });
 
   it('automatic conversion to JS objects through Symbol.toPrimitive', () => {
-    const num = proxify(PyObject.int(10));
+    const num = PyObject.int(10);
     assert.instanceOf(num, PyObject);
-    assert.equal(num, 10);
+    assert.equal(+num, 10);
     assert.throws(() => assert.strictEqual(num, 10));
   });
 
   it('returns undefined for non-existing attributes', () => {
-    const obj = proxify(PyObject.fromJS({ test: 'test' }));
+    const obj = PyObject.fromJS({ test: 'test' });
     assert.isUndefined(obj.notAtest);
+  });
+
+  it.skip('profixied JS callbacks', () => {
+    const fn = (x: any, y: any) => {
+      return x.__add__(y);
+    };
+    const a = np.fromfunction(fn, [2, 3]);
+    assert.deepEqual(a.tolist().toJS(), [[0, 1, 2], [1, 2, 3]]);
   });
 
   it('does not intercept calls to functions whose names conflict with PyObject', () => {
@@ -115,18 +124,18 @@ describe('proxy', () => {
   });
 
   it('PyObject.keys()', () => {
-    const dict = proxify(PyObject.dict({ a: 0, b: 1 }));
+    const dict = PyObject.dict({ a: 0, b: 1 });
     assert.deepEqual(PyObject.keys(dict).toJS(), ['a', 'b']);
   });
 
   it('PyObject.values()', () => {
-    const dict = proxify(PyObject.dict({ a: 0, b: 1 }));
+    const dict = PyObject.dict({ a: 0, b: 1 });
     assert.deepEqual(PyObject.values(dict).toJS(), [0, 1]);
   });
 
   it('does not mismatch objects with identical string representation', () => {
-    const obj1 = proxify(PyObject.fromJS({ a: 1 }));
-    const obj2 = proxify(PyObject.fromJS({ a: 1 }));
+    const obj1 = PyObject.fromJS({ a: 1 });
+    const obj2 = PyObject.fromJS({ a: 1 });
 
     assert.deepEqual(obj1.toJS(), obj2.toJS());
     assert.notEqual(obj1, obj2);
@@ -134,7 +143,7 @@ describe('proxy', () => {
 
   describe('list', () => {
     it('append()', () => {
-      const list = proxify(PyObject.list([1]));
+      const list = PyObject.list([1]);
       assert.lengthOf(list, 1);
       list.append(2);
       assert.deepEqual(list.toJS(), [1, 2]);
@@ -142,7 +151,7 @@ describe('proxy', () => {
     });
 
     it('iterator', () => {
-      const list = proxify(PyObject.list([8, 9, 3]));
+      const list = PyObject.list([8, 9, 3]);
 
       const result = [];
       for (const el of list) {
