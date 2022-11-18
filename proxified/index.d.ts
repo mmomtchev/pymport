@@ -3,7 +3,7 @@ import { PyObject as rawPyObject } from '..';
 /**
  * A proxified version of PyObject, constructs proxified objects
  * @param {string} name module name
- * @return {PyObject}
+ * @return {any}
  */
 export const PyObject: typeof rawPyObject & any;
 
