@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.2.0] WIP
+ - Automatically proxified methods in `pymport/proxified`
+ - Proxified objects also proxify the input arguments of passed JS callbacks
  - (***BREAKING***) Conversion of arguments in JS callbacks of Python code is now automatic only if it can be correctly deduced from the context, `toJS()` must be called in all other cases
  - Support Python sets
-
+ 
 ### [1.1.1] 2022-11-11
 - Fix [#14](https://github.com/mmomtchev/pymport/issues/14), `toJS()` converts Python `bool` to JS `number`
 - Restore the JS function when converting a `pymport.js_function` back to JS

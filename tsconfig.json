@@ -12,6 +12,9 @@
       ],
       "pymport/array": [
         "./array"
+      ],
+      "pymport/proxified": [
+        "./proxified"
       ]
     }
   }
