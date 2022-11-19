@@ -108,7 +108,7 @@ describe('proxy', () => {
     assert.isUndefined(obj.notAtest);
   });
 
-  it.skip('profixied JS callbacks', () => {
+  it('profixied JS callbacks', () => {
     const fn = (x: any, y: any) => {
       return x.__add__(y);
     };
