@@ -1,8 +1,8 @@
 // Example from
 // https://matplotlib.org/stable/gallery/lines_bars_and_markers/bar_colors.html#sphx-glr-gallery-lines-bars-and-markers-bar-colors-py
-const { pymport, proxify } = require('..');
+const { pymport } = require('../proxified');
 
-const plt = proxify(pymport('matplotlib.pyplot'));
+const plt = pymport('matplotlib.pyplot');
 
 const plots = plt.subplots();
 const ax = plots.item(1);

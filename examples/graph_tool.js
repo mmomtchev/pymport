@@ -1,9 +1,9 @@
 // JS version of the official example from https://graph-tool.skewed.de/static/doc/quickstart.html
 
-const { pymport, proxify, PyObject, pyval } = require('..');
-const gt = proxify(pymport('graph_tool.all'));
-const np = proxify(pymport('numpy'));
-const pl = proxify(pymport('pylab'));
+const { pymport, PyObject, pyval } = require('../proxified');
+const gt = pymport('graph_tool.all');
+const np = pymport('numpy');
+const pl = pymport('pylab');
 
 const g = gt.Graph();
 
@@ -18,8 +18,7 @@ let v = g.add_vertex();
 // equivalent to an assignment by using the [] operator
 v_age.__setitem__(v, 0);
 
-// PyObject returns raw objects, they must be proxified
-const vlist = proxify(PyObject.list([v]));
+const vlist = PyObject.list([v]);
 
 for (let i = 1; i < N; i++) {
   const v = g.add_vertex();
@@ -46,7 +45,7 @@ for (; ;) {
     break;
   }
 
-  const n_list = proxify(PyObject.list([]));
+  const n_list = PyObject.list([]);
 
   // v.out_neighbors() returns a Python generator object
   const it = v.out_neighbors();
