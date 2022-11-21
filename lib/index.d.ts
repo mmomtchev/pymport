@@ -212,7 +212,7 @@ export class PyObject implements Iterable<PyObject> {
    *
    * An unicode string becomes a string.
    * 
-   * A list or a tuple become an array.
+   * A list, a tuple, a set or a frozenset becomes an array
    * 
    * A dictionary becomes an object.
    * 
