@@ -536,7 +536,7 @@ describe('types', () => {
     });
 
     it('fromJS()', () => {
-      const js_fn = (a: number) => a + 1;
+      const js_fn = (a: PyObject) => +a + 1;
       const fn = PyObject.fromJS(js_fn);
 
       assert.instanceOf(fn, PyObject);
@@ -576,6 +576,19 @@ describe('types', () => {
 
       assert.equal(fn.call(2).toJS(), 6);
       assert.equal(fn.call(2, { value: 3 }).toJS(), 5);
+    });
+
+    it('return PyObject', () => {
+      const js_fn = (a: PyObject) => {
+        assert.equal(a.type, 'int');
+        return PyObject.float(+a + 1);
+      };
+      const fn = PyObject.fromJS(js_fn);
+
+      const r = fn.call(3);
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'float');
+      assert.equal(r.toJS(), 4);
     });
 
     it('catching JS exceptions from Python', () => {
