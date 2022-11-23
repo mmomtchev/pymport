@@ -18,7 +18,9 @@
     "node.js",
     "import",
     "require",
-    "compatibility"
+    "compatibility",
+    "numpy",
+    "pandas"
   ],
   "author": "Momtchil Momtchev <momtchil@momtchev.com>",
   "license": "ISC",
