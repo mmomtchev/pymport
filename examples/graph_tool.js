@@ -1,6 +1,6 @@
 // JS version of the official example from https://graph-tool.skewed.de/static/doc/quickstart.html
 
-const { pymport, PyObject, pyval } = require('../proxified');
+const { pymport, PyObject } = require('../proxified');
 const gt = pymport('graph_tool.all');
 const np = pymport('numpy');
 const pl = pymport('pylab');
@@ -37,7 +37,7 @@ for (let i = 1; i < N; i++) {
 v = g.vertex(np.random.randint(0, g.num_vertices()));
 
 for (; ;) {
-  console.log(`vertex: ${pyval('int(v)', { v })}, in-degree: ${v.in_degree()}, ` +
+  console.log(`vertex: ${PyObject.int(v).toJS()}, in-degree: ${v.in_degree()}, ` +
     `out-degree: ${v.out_degree()}, age: ${v_age.item(v)}`);
 
   if (v.out_degree().toJS() == 0) {

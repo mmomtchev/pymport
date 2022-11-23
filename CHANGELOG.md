@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Automatically proxified methods in `pymport/proxified`
  - Proxified objects also proxify the input arguments of passed JS callbacks
  - (***BREAKING***) Conversion of arguments in JS callbacks of Python code is now automatic only if it can be correctly deduced from the context, `toJS()` must be called in all other cases
+ - Implement Python type coercion
  - Support Python sets
  
 ### [1.1.1] 2022-11-11

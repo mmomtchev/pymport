@@ -19,8 +19,11 @@
     "import",
     "require",
     "compatibility",
+    "scipy",
     "numpy",
-    "pandas"
+    "pandas",
+    "graph_tool",
+    "matplotlib"
   ],
   "author": "Momtchil Momtchev <momtchil@momtchev.com>",
   "license": "ISC",
