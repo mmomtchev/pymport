@@ -40,7 +40,7 @@ export class PyObject implements Iterable<PyObject> {
   static list: (array: any[] | PyObject) => PyObject;
 
   /**
-   * Construct a PyObject tuple from a JS array or an iterable PyObject
+   * Construct a PyObject tuple from a JS array or a PyObject list
    * @param {any[] | PyObject} array
    * @returns {PyObject}
    */
