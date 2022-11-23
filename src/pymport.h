@@ -14,7 +14,9 @@ namespace pymport {
 // of a Python reference which is a PyObject* pointer.
 //
 // A PyObjectWrap exists both in C++ and in JS through the ObjectWrap interface.
-// A PyObjectWrap is an object, while a PyObject* is a reference.
+// A PyObjectWrap contains a a reference to the underlying Python object.
+// There can be only one PyObjectWrap referring to one Python object - the
+// object store ensures this.
 //
 // A Python reference that is not represented in JS is entirely managed by
 // the Python GC.
