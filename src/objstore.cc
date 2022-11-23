@@ -34,7 +34,17 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
       o->self = nullptr;
     }
     VERBOSE_PYOBJ(*obj, "Objstore insert");
-    js = context->pyObj->New({External<PyObject>::New(env, obj.gift())});
+
+    // This is a very ugly workaround for https://github.com/nodejs/node-addon-api/issues/1239
+    napi_value ext = External<PyObject>::New(env, obj.gift());
+    napi_value jsval;
+    napi_status r = napi_new_instance(env, context->pyObj->Value(), 1, &ext, &jsval);
+    if (r != napi_ok) {
+      napi_throw(env, Napi::Value());
+      return Napi::Value();
+    }
+    js = Napi::Value(env, jsval).ToObject();
+
     auto result = ObjectWrap::Unwrap(js);
     context->object_store.insert({*result->self, result});
   } else {
@@ -57,7 +67,7 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
   if (it == context->function_store.end() || it->second->Value().IsEmpty()) {
     if (it != context->function_store.end()) {
       // The function has been GCed but it hasn't been destroyed, same situation as objects above
-      VERBOSE_PYOBJ(fini_py, "Funcstore evict dying");
+      VERBOSE_PYOBJ(*py, "Funcstore evict dying");
       context->function_store.erase(*py);
     }
     VERBOSE_PYOBJ(*py, "Funcstore insert");
