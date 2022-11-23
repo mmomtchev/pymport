@@ -2,6 +2,8 @@ node_modules
 build
 lib/binding
 dist
+wiki
+pymport.wiki
 coverage
 /Python*
 __pycache__
