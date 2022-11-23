@@ -268,8 +268,8 @@ export class PyObject implements Iterable<PyObject> {
 export function pymport(name: string): PyObject;
 
 /**
- * Create a profixied version of a PyObject that works like a native Python object.
- * All values returned by its methods will also be profixied.
+ * Create a proxified version of a PyObject that works like a native Python object.
+ * All values returned by its methods will also be proxified.
  * 
  * @param {PyObject} object object to proxify
  * @param {string} [name] optional name to be assigned to a proxified function
