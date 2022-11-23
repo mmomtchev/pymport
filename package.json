@@ -18,7 +18,12 @@
     "node.js",
     "import",
     "require",
-    "compatibility"
+    "compatibility",
+    "scipy",
+    "numpy",
+    "pandas",
+    "graph_tool",
+    "matplotlib"
   ],
   "author": "Momtchil Momtchev <momtchil@momtchev.com>",
   "license": "ISC",

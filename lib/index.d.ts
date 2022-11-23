@@ -5,18 +5,18 @@ export type PyNumber = number | PyObject | null;
  */
 export class PyObject implements Iterable<PyObject> {
   /**
-   * Construct a PyObject integer from a JS number
+   * Construct a PyObject integer from a JS number or a PyObject
    * @param {number} number
    * @returns {PyObject}
    */
-  static int: (v: number | bigint) => PyObject;
+  static int: (v: number | bigint | PyObject) => PyObject;
 
   /**
-   * Construct a PyObject float from a JS number
+   * Construct a PyObject float from a JS number or a PyObject
    * @param {number} number
    * @returns {PyObject}
    */
-  static float: (v: number) => PyObject;
+  static float: (v: number | PyObject) => PyObject;
 
   /**
    * Construct a PyObject string from a JS string
@@ -33,18 +33,18 @@ export class PyObject implements Iterable<PyObject> {
   static dict: (object: Record<string, any>) => PyObject;
 
   /**
-   * Construct a PyObject list from a JS array
-   * @param {any[]} array
+   * Construct a PyObject list from a JS array or an iterable PyObject
+   * @param {any[] | PyObject} array
    * @returns {PyObject}
    */
-  static list: (array: any[]) => PyObject;
+  static list: (array: any[] | PyObject) => PyObject;
 
   /**
-   * Construct a PyObject tuple from a JS array
-   * @param {any[]} array
+   * Construct a PyObject tuple from a JS array or a PyObject list
+   * @param {any[] | PyObject} array
    * @returns {PyObject}
    */
-  static tuple: (array: any[]) => PyObject;
+  static tuple: (array: any[] | PyObject) => PyObject;
 
   /**
    * Construct a PyObject set from a JS array or an iterable PyObject

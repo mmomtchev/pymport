@@ -40,6 +40,12 @@ describe('types', () => {
       assert.equal(f.toJS(), 2.3);
     });
 
+    it('float() type coercion', () => {
+      const d = PyObject.float(PyObject.string('3.14'));
+      assert.equal(d.type, 'float');
+      assert.equal(d.valueOf(), 3.14);
+    });
+
     it('toString()', () => {
       const f = PyObject.fromJS(2.3);
       assert.equal(f.toString(), '2.3');
@@ -87,6 +93,12 @@ describe('types', () => {
       assert.equal(+f, 2);
       assert.equal(f.valueOf(), 2);
       assert.instanceOf(f.constr.call(1), PyObject);
+    });
+
+    it('int() type coercion', () => {
+      const d = PyObject.int(PyObject.float(3.14));
+      assert.equal(d.type, 'int');
+      assert.equal(d.valueOf(), 3);
     });
 
     it('fromJS()', () => {
@@ -182,6 +194,13 @@ describe('types', () => {
       const a = PyObject.list(array);
       assert.equal(a.type, 'list');
       assert.deepEqual(a.toJS(), array);
+    });
+
+    it('list() from PyObject iterable', () => {
+      const list = PyObject.list(PyObject.string('abcd'));
+      assert.equal(list.type, 'list');
+      assert.strictEqual(list.item(2).toJS(), 'c');
+      assert.deepEqual(list.toJS(), ['a', 'b', 'c', 'd']);
     });
 
     it('append()', () => {
@@ -308,6 +327,16 @@ describe('types', () => {
       assert.throws(() => t.item(10));
       assert.throws(() => PyObject.keys(t), /'tuple' object has no attribute 'keys'/);
       assert.throws(() => PyObject.values(t), /'tuple' object has no attribute 'values'/);
+    });
+
+    it('tuple() from PyObject iterable', () => {
+      assert.throws(() => {
+        PyObject.tuple(PyObject.string('abcd'));
+      }, /is not a list/);
+      const tuple = PyObject.tuple(PyObject.list(PyObject.string('abcd')));
+      assert.equal(tuple.type, 'tuple');
+      assert.strictEqual(tuple.item(2).toJS(), 'c');
+      assert.deepEqual(tuple.toJS(), ['a', 'b', 'c', 'd']);
     });
 
     it('toJS()', () => {

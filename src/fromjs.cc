@@ -19,10 +19,21 @@ Value PyObjectWrap::String(const CallbackInfo &info) {
 Value PyObjectWrap::Float(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  auto raw = NAPI_ARG_NUMBER(0).DoubleValue();
-  PyStrongRef obj = PyFloat_FromDouble(raw);
-  EXCEPTION_CHECK(env, obj);
-  return New(env, std::move(obj));
+  if (info.Length() < 1) throw Error::New(env, "No argument given");
+  if (info[0].IsNumber()) {
+    auto raw = NAPI_ARG_NUMBER(0).DoubleValue();
+    PyStrongRef obj = PyFloat_FromDouble(raw);
+    EXCEPTION_CHECK(env, obj);
+    return New(env, std::move(obj));
+  } else if (info[0].IsObject()) {
+    Object raw = NAPI_ARG_PYOBJECT(0);
+    PyObjectWrap *py = PyObjectWrap::Unwrap(raw);
+    PyStrongRef r = PyNumber_Float(*py->self);
+    EXCEPTION_CHECK(env, r);
+    return New(env, std::move(r));
+  } else {
+    throw Error::New(env, "Argument must be a number");
+  }
 }
 
 Value PyObjectWrap::Integer(const CallbackInfo &info) {
@@ -37,6 +48,12 @@ Value PyObjectWrap::Integer(const CallbackInfo &info) {
     bool lossless;
     raw = info[0].As<BigInt>().Int64Value(&lossless);
     if (!lossless) throw RangeError::New(env, "BigInt overflow");
+  } else if (info[0].IsObject()) {
+    Object raw = NAPI_ARG_PYOBJECT(0);
+    PyObjectWrap *py = PyObjectWrap::Unwrap(raw);
+    PyStrongRef r = PyNumber_Long(*py->self);
+    EXCEPTION_CHECK(env, r);
+    return New(env, std::move(r));
   } else {
     throw Error::New(env, "Argument must be a number");
   }
@@ -86,12 +103,29 @@ void PyObjectWrap::_FromJS_List(Napi::Array array, const PyStrongRef &target, Py
 Value PyObjectWrap::List(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  auto raw = NAPI_ARG_ARRAY(0);
-  PyStrongRef list = PyList_New(raw.Length());
-  EXCEPTION_CHECK(env, list);
+  auto raw = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
-  _FromJS_List(raw, list, store);
+  PyStrongRef list = nullptr;
+  if (raw.IsArray()) {
+    Array array = raw.As<Array>();
+    list = PyList_New(array.Length());
+    EXCEPTION_CHECK(env, list);
+    _FromJS_List(array, list, store);
+  } else {
+    auto py = NAPI_ARG_PYOBJECT(0);
+    PyObjectWrap *iterable = Unwrap(py);
+    PyStrongRef iter = PyObject_GetIter(*iterable->self);
+    EXCEPTION_CHECK(env, iter);
+    list = PyList_New(0);
+    EXCEPTION_CHECK(env, list);
 
+    PyStrongRef item = nullptr;
+    while ((item = PyIter_Next(*iter)) != nullptr) {
+      int status = PyList_Append(*list, *item);
+      EXCEPTION_CHECK(env, status);
+      item = nullptr;
+    }
+  }
   return New(env, std::move(list));
 }
 
@@ -109,11 +143,22 @@ void PyObjectWrap::_FromJS_Tuple(Napi::Array array, const PyStrongRef &target, P
 Value PyObjectWrap::Tuple(const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  auto raw = NAPI_ARG_ARRAY(0);
-  PyStrongRef tuple = PyTuple_New(raw.Length());
-  EXCEPTION_CHECK(env, tuple);
+  auto raw = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
-  _FromJS_Tuple(raw, tuple, store);
+  PyStrongRef tuple = nullptr;
+  if (raw.IsArray()) {
+    Array array = raw.As<Array>();
+    tuple = PyTuple_New(array.Length());
+    EXCEPTION_CHECK(env, tuple);
+    PyObjectStore store;
+    _FromJS_Tuple(array, tuple, store);
+  } else {
+    auto py = NAPI_ARG_PYOBJECT(0);
+    PyObjectWrap *list = Unwrap(py);
+    if (!PyList_Check(*list->self)) { throw TypeError::New(env, "PyObject is not a list"); }
+    tuple = PyList_AsTuple(*list->self);
+    EXCEPTION_CHECK(env, tuple);
+  }
 
   return New(env, std::move(tuple));
 }
