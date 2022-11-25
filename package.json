@@ -49,13 +49,13 @@
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build",
     "test": "mocha",
-    "doc": "npx documentation readme --readme-file pymport.wiki/API.md  --section API --config=documentation.yml lib/*.d.ts",
+    "doc": "npx documentation readme --readme-file wiki/API.md  --section API --config=documentation.yml lib/*.d.ts",
     "build": "npx node-pre-gyp configure && npx node-pre-gyp build",
     "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
     "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*",
     "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
     "codecov": "cd coverage && curl -s https://codecov.io/bash | bash",
-    "preversion": "npm run lint && npm run test && npm run doc && git add README.md",
+    "preversion": "npm run lint && npm run test && npm run doc && git add wki/API.md",
     "postversion": "git push && git push --tags && node ./scripts/publish-packages.js",
     "postpublish": "gh workflow run test-package.yml -F version=$npm_package_version",
     "bench": "node bench/bench.js"
