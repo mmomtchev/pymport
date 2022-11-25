@@ -51,6 +51,7 @@ void memview::Init() {
 
 Value PyObjectWrap::MemoryView(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
   Buffer<char> buffer = NAPI_ARG_BUFFER(0);
   PyStrongRef memoryView = PyMemoryView_FromMemory(buffer.Data(), buffer.ByteLength(), PyBUF_WRITE);
   EXCEPTION_CHECK(env, memoryView);

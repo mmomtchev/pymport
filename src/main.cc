@@ -27,6 +27,7 @@ std::string to_hex(long number) {
 
 Value Version(const CallbackInfo &info) {
   Env env = info.Env();
+  PyGILGuard pyGilGuard;
   Object versionInfo = Object::New(env);
 
   Object pymportVersion = Object::New(env);
@@ -82,6 +83,7 @@ Napi::Object Init(Env env, Object exports) {
   auto context = new EnvContext();
   context->pyObj = new FunctionReference();
   *context->pyObj = Persistent(pyObjCons);
+  context->v8_main = std::this_thread::get_id();
 
   env.SetInstanceData<EnvContext>(context);
   env.AddCleanupHook(

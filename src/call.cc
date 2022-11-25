@@ -30,6 +30,7 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
 static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject *kw) {
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
   Napi::Env env = me->js_fn.Env();
+  ASSERT(std::this_thread::get_id() == env.GetInstanceData<EnvContext>()->v8_main);
   if (me->js_fn.IsEmpty()) {
     fprintf(stderr, "Called an empty JS function, don't manually construct objects of pymport.js_function type\n");
     Py_RETURN_NOTIMPLEMENTED;
@@ -164,21 +165,25 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
 }
 
 Value PyObjectWrap::Call(const CallbackInfo &info) {
+  PyGILGuard pyGilGuard;
   return _Call(self, info);
 }
 
 Value PyObjectWrap::_CallableTrampoline(const CallbackInfo &info) {
+  PyGILGuard pyGilGuard;
   PyObject *py = reinterpret_cast<PyObject *>(info.Data());
   return _Call(py, info);
 }
 
 Value PyObjectWrap::Callable(const CallbackInfo &info) {
+  PyGILGuard pyGilGuard;
   Napi::Env env = info.Env();
 
   return Boolean::New(env, PyCallable_Check(*self));
 }
 
 Value PyObjectWrap::Eval(const CallbackInfo &info) {
+  PyGILGuard pyGilGuard;
   Napi::Env env = info.Env();
   auto text = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef globals = (info.Length() > 1 && !info[1].IsUndefined()) ? FromJS(info[1]) : PyStrongRef(PyDict_New());
@@ -249,6 +254,7 @@ PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
 }
 
 Value PyObjectWrap::Functor(const CallbackInfo &info) {
+  PyGILGuard pyGilGuard;
   Napi::Env env = info.Env();
 
   auto fn = NAPI_ARG_FUNC(0);

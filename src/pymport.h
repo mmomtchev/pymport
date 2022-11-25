@@ -2,6 +2,7 @@
 
 #include <map>
 #include <list>
+#include <thread>
 #include <napi.h>
 
 #include "pystackobject.h"
@@ -170,6 +171,19 @@ struct EnvContext {
   Napi::FunctionReference *pyObj;
   std::map<PyObject *, PyObjectWrap *> object_store;
   std::map<PyObject *, Napi::FunctionReference *> function_store;
+  std::thread::id v8_main;
+};
+
+class PyGILGuard {
+  PyGILState_STATE state;
+
+    public:
+  inline PyGILGuard() : state(PyGILState_Ensure()) {
+  }
+
+  inline ~PyGILGuard() {
+    PyGILState_Release(state);
+  }
 };
 
 }; // namespace pymport

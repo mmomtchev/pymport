@@ -8,6 +8,7 @@ using namespace pymport;
 
 Value PyObjectWrap::String(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   auto raw = NAPI_ARG_STRING(0).Utf16Value();
   PyStrongRef obj =
@@ -18,6 +19,7 @@ Value PyObjectWrap::String(const CallbackInfo &info) {
 
 Value PyObjectWrap::Float(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (info.Length() < 1) throw Error::New(env, "No argument given");
   if (info[0].IsNumber()) {
@@ -38,6 +40,7 @@ Value PyObjectWrap::Float(const CallbackInfo &info) {
 
 Value PyObjectWrap::Integer(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (info.Length() < 1) throw Error::New(env, "No argument given");
 
@@ -79,6 +82,7 @@ void PyObjectWrap::_FromJS_Dictionary(Napi::Object object, const PyStrongRef &ta
 
 Value PyObjectWrap::Dictionary(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   auto raw = NAPI_ARG_OBJECT(0);
   PyStrongRef dict = PyDict_New();
@@ -102,6 +106,7 @@ void PyObjectWrap::_FromJS_List(Napi::Array array, const PyStrongRef &target, Py
 
 Value PyObjectWrap::List(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   auto raw = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
@@ -142,6 +147,7 @@ void PyObjectWrap::_FromJS_Tuple(Napi::Array array, const PyStrongRef &target, P
 
 Value PyObjectWrap::Tuple(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   auto raw = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
@@ -175,6 +181,7 @@ void PyObjectWrap::_FromJS_Set(Array array, const PyStrongRef &target, PyObjectS
 
 Value PyObjectWrap::Set(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   auto raw = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
@@ -195,6 +202,7 @@ Value PyObjectWrap::Set(const CallbackInfo &info) {
 
 Value PyObjectWrap::FrozenSet(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   auto raw = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
@@ -215,6 +223,7 @@ Value PyObjectWrap::FrozenSet(const CallbackInfo &info) {
 
 Value PyObjectWrap::Slice(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   Object indices = NAPI_ARG_OBJECT(0);
   PyObjectStore store;
@@ -244,6 +253,7 @@ PyStrongRef PyObjectWrap::_FromJS_BytesArray(Buffer<char> buffer) {
 
 Value PyObjectWrap::Bytes(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
   Buffer<char> buffer = NAPI_ARG_BUFFER(0);
   PyStrongRef bytes = PyBytes_FromStringAndSize(buffer.Data(), buffer.ByteLength());
   EXCEPTION_CHECK(env, bytes);
@@ -252,6 +262,7 @@ Value PyObjectWrap::Bytes(const CallbackInfo &info) {
 
 Value PyObjectWrap::ByteArray(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
   Buffer<char> buffer = NAPI_ARG_BUFFER(0);
   PyStrongRef bytearray = PyByteArray_FromStringAndSize(buffer.Data(), buffer.ByteLength());
   EXCEPTION_CHECK(env, bytearray);
@@ -260,6 +271,7 @@ Value PyObjectWrap::ByteArray(const CallbackInfo &info) {
 
 Value PyObjectWrap::FromJS(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (info.Length() < 1) throw Error::New(env, "Missing argument");
   return New(info.Env(), FromJS(info[0]));

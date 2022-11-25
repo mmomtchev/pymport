@@ -7,6 +7,7 @@ using namespace pymport;
 
 PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nullptr), memory_hint(0) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (info.Length() < 1) throw TypeError::New(env, "Cannot create an empty object");
 
@@ -70,6 +71,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
 
 Value PyObjectWrap::ToString(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   PyStrongRef r = PyObject_Str(*self);
   EXCEPTION_CHECK(env, r);
@@ -78,12 +80,14 @@ Value PyObjectWrap::ToString(const CallbackInfo &info) {
 
 Value PyObjectWrap::Id(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   return Number::New(env, reinterpret_cast<uint64_t>(*self));
 }
 
 Value PyObjectWrap::Get(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef r = PyObject_GetAttrString(*self, name.c_str());
@@ -96,6 +100,7 @@ Value PyObjectWrap::Get(const CallbackInfo &info) {
 
 Value PyObjectWrap::Import(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef pyname = PyUnicode_DecodeFSDefault(name.c_str());
@@ -107,6 +112,7 @@ Value PyObjectWrap::Import(const CallbackInfo &info) {
 
 Value PyObjectWrap::Has(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   bool r;
   if (PyAnySet_Check(*self)) {
@@ -122,18 +128,21 @@ Value PyObjectWrap::Has(const CallbackInfo &info) {
 
 Value PyObjectWrap::Type(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   return String::New(env, Py_TYPE(*self)->tp_name);
 }
 
 Value PyObjectWrap::Constructor(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   return New(env, PyStrongRef(reinterpret_cast<PyObject *>(Py_TYPE(*self))));
 }
 
 Value PyObjectWrap::Item(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
   PyStrongRef item = FromJS(info[0]);
@@ -144,6 +153,7 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
 
 Value PyObjectWrap::Keys(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   Object target = NAPI_ARG_PYOBJECT(0);
   auto py = ObjectWrap::Unwrap(target);
@@ -155,6 +165,7 @@ Value PyObjectWrap::Keys(const CallbackInfo &info) {
 
 Value PyObjectWrap::Values(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   Object target = NAPI_ARG_PYOBJECT(0);
   auto py = ObjectWrap::Unwrap(target);
@@ -166,6 +177,7 @@ Value PyObjectWrap::Values(const CallbackInfo &info) {
 
 Value PyObjectWrap::Length(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (PySequence_Check(*self)) return Number::New(env, static_cast<long>(PySequence_Size(*self)));
   if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));
