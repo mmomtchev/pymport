@@ -50,7 +50,7 @@
     "install": "node-pre-gyp install --fallback-to-build",
     "test": "mocha",
     "doc": "npx documentation readme --readme-file wiki/API.md  --section API --config=documentation.yml lib/*.d.ts",
-    "wiki": "cd wiki && git add API.md && git commit -m 'update API'",
+    "wiki": "cd wiki && git add API.md && git diff-index --quiet HEAD || git commit -m 'update API'",
     "build": "npx node-pre-gyp configure && npx node-pre-gyp build",
     "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
     "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*",
