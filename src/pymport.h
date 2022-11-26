@@ -148,8 +148,9 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static void _FromJS_Set(Napi::Array, const PyStrongRef &, PyObjectStore &);
   static PyStrongRef _FromJS_BytesArray(Napi::Buffer<char>);
 
-  static Napi::Value _Call(const PyWeakRef &, const Napi::CallbackInfo &info);
+  static std::function<PyStrongRef()> CreateCallExecutor(const PyWeakRef &, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
+  static Napi::Value _CallAsync(const PyWeakRef &, const Napi::CallbackInfo &info);
 
   static PyStrongRef NewJSFunction(Napi::Function js_fn);
 

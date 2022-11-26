@@ -94,7 +94,7 @@ void PyObjectWrap::InitJSTrampoline() {
   JSCall_Trampoline_Type = PyType_FromSpec(&jscall_trampoline_spec);
 
   if (JSCall_Trampoline_Type == nullptr) {
-    fprintf(stderr, "Error initalizing js_function type\n");
+    fprintf(stderr, "Error initializing js_function type\n");
     abort();
   }
 }
@@ -107,7 +107,7 @@ Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env, const PyWeakRef &py) {
 #define IS_INFO_ARG_KWARGS(n)                                                                                          \
   (info[n].IsObject() && !info[n].IsArray() && !info[n].IsFunction() && !_InstanceOf(info[n]))
 
-Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
+std::function<PyStrongRef()> PyObjectWrap::CreateCallExecutor(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   if (!PyCallable_Check(*py)) { throw Napi::TypeError::New(env, "Value not callable"); }
@@ -115,17 +115,11 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   size_t argc = info.Length();
 #if PY_MAJOR_VERSION > 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 9)
   if (argc == 0) {
-    PyStrongRef r = PyObject_CallNoArgs(*py);
-    EXCEPTION_CHECK(env, r);
-
-    return New(env, std::move(r));
+    return [py]() { return PyObject_CallNoArgs(*py); };
   } else if (argc == 1 && !IS_INFO_ARG_KWARGS(0)) {
     PyStrongRef arg = FromJS(info[0]);
     EXCEPTION_CHECK(env, arg);
-    PyStrongRef r = PyObject_CallOneArg(*py, *arg);
-    EXCEPTION_CHECK(env, r);
-
-    return New(env, std::move(r));
+    return [py, arg = std::move(arg)] { return PyObject_CallOneArg(*py, *arg); };
   }
 #endif
 
@@ -153,26 +147,31 @@ Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
     }
   }
 
-  PyStrongRef r = nullptr;
   if (kwargs == nullptr) {
-    r = PyObject_CallObject(*py, *args);
+    if (args == nullptr) {
+      return [py]() { return PyObject_CallObject(*py, nullptr); };
+    }
+    return [py, args = std::move(args)]() { return PyObject_CallObject(*py, *args); };
   } else {
-    r = PyObject_Call(*py, *args, *kwargs);
+    return [py, args = std::move(args), kwargs = std::move(kwargs)]() { return PyObject_Call(*py, *args, *kwargs); };
   }
-  EXCEPTION_CHECK(env, r);
-
-  return New(env, std::move(r));
 }
 
 Value PyObjectWrap::Call(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
-  return _Call(self, info);
+  PyStrongRef r = CreateCallExecutor(self, info)();
+  EXCEPTION_CHECK(env, r);
+  return New(env, std::move(r));
 }
 
 Value PyObjectWrap::_CallableTrampoline(const CallbackInfo &info) {
+  Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
   PyObject *py = reinterpret_cast<PyObject *>(info.Data());
-  return _Call(py, info);
+  PyStrongRef r = CreateCallExecutor(py, info)();
+  EXCEPTION_CHECK(env, r);
+  return New(env, std::move(r));
 }
 
 Value PyObjectWrap::Callable(const CallbackInfo &info) {
@@ -227,7 +226,7 @@ void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
   }
   throw Napi::TypeError::New(
     env,
-    std::string("Unknown Python error")
+    std::string("Unknown Python error: ")
 #ifdef DEBUG
       + msg
 #endif
