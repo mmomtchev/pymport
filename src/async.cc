@@ -35,6 +35,9 @@ inline PympWorker::~PympWorker() {
 inline void PympWorker::Destroy() {
   // This one is called without by node-addon-api without the GIL
   PyGILGuard pyGILGuard;
+  // Deleting the executor requires the GIL - it contains Python references
+  // (the tuple used for the call)
+  // TODO: Try doing this in the worker thread
   delete this;
 }
 
