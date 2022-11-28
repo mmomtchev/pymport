@@ -599,12 +599,20 @@ describe('types', () => {
     });
 
     it('named args', () => {
-      const js_fn = (a: number, opts?: { value?: number; }) => a + ((opts ?? {}).value ?? 4);
+      const js_fn = (a: PyObject, opts?: { value?: number; }) => +a + ((opts ?? {}).value ?? 4);
 
       const fn = PyObject.func(js_fn);
 
       assert.equal(fn.call(2).toJS(), 6);
       assert.equal(fn.call(2, { value: 3 }).toJS(), 5);
+    });
+
+    it('automatic conversion w/ named args', () => {
+      const py_fn = pymport('python_helpers').get('dont_catch_exception');
+      const r = py_fn.call(() => 12);
+
+      assert.equal(r.type, 'int');
+      assert.equal(+r, 12);
     });
 
     it('return PyObject', () => {
