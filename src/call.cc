@@ -103,7 +103,8 @@ Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env, const PyWeakRef &py) {
   return raw->js_fn.Value();
 }
 
-#define IS_INFO_ARG_KWARGS(n) (info[n].IsObject() && !info[n].IsArray() && !_InstanceOf(info[n]))
+#define IS_INFO_ARG_KWARGS(n)                                                                                          \
+  (info[n].IsObject() && !info[n].IsArray() && !info[n].IsFunction() && !_InstanceOf(info[n]))
 
 Value PyObjectWrap::_Call(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
