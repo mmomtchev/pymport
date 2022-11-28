@@ -33,8 +33,6 @@
      : (info[arg].ToObject().Has("__PyObject__") ? info[arg].ToObject().Get("__PyObject__").ToObject()                 \
                                                  : info[arg].ToObject()))
 
-#define IS_INFO_ARG_KWARGS(n) (info[n].IsObject() && !info[n].IsArray() && !_InstanceOf(info[n]))
-
 #ifdef DEBUG
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
 #define INLINE inline
