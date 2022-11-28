@@ -17,6 +17,8 @@ using namespace pymport;
 #define __STR(x) #x
 
 size_t pymport::active_environments = 0;
+// There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
+PyThreadState *py_main;
 std::wstring builtin_python_path;
 
 std::string to_hex(long number) {
@@ -84,10 +86,16 @@ Napi::Object Init(Env env, Object exports) {
   context->pyObj = new FunctionReference();
   *context->pyObj = Persistent(pyObjCons);
   context->v8_main = std::this_thread::get_id();
+  VERBOSE(
+    "PyGIL: Initialized new environment, V8 main thread is %lu\n",
+    static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 
   env.SetInstanceData<EnvContext>(context);
   env.AddCleanupHook(
     [](EnvContext *context) {
+      VERBOSE(
+        "PyGIL: Cleaning up environment, V8 main thread is %lu\n",
+        static_cast<unsigned long>(std::hash<std::thread::id>{}(context->v8_main)));
       active_environments--;
       context->pyObj->Reset();
       delete context->pyObj;
@@ -95,12 +103,17 @@ Napi::Object Init(Env env, Object exports) {
       // This is complicated because of
       // https://github.com/nodejs/node/issues/45088
       // Anyway, it is really needed only for the asan build
-      if (active_environments == 0) { Py_Finalize(); }
+      if (active_environments == 0) {
+        VERBOSE("Shutting down Python\n");
+        PyEval_RestoreThread(py_main);
+        Py_Finalize();
+      }
 #endif
       // context will be deleted by the NAPI Finalizer
     },
     context);
   if (active_environments == 0) {
+    VERBOSE("Bootstrapping Python\n");
 #ifdef BUILTIN_PYTHON_PATH
     auto pathPymport = std::getenv("PYMPORTPATH");
     auto homePython = std::getenv("PYTHONHOME");
@@ -117,6 +130,7 @@ Napi::Object Init(Env env, Object exports) {
     Py_Initialize();
     memview::Init();
     PyObjectWrap::InitJSTrampoline();
+    py_main = PyEval_SaveThread();
   }
   active_environments++;
   return exports;

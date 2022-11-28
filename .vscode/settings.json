@@ -3,5 +3,8 @@
   "editor.detectIndentation": false,
   "[markdown]": {
     "editor.formatOnSave": false
+  },
+  "files.associations": {
+    "string": "cpp"
   }
 }

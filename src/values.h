@@ -39,9 +39,10 @@
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
 #define INLINE inline
 #define ASSERT(x) assert(x)
-#define EXCEPTION_CHECK(env, val)                                                                                      \
-  ExceptionCheck(env, val, std::string(" @ " + std::string(__FILE__) + ":" + std::to_string(__LINE__)))
+#define LINEINFO (std::string(" @ " + std::string(__FILE__) + ":" + std::to_string(__LINE__)))
+#define EXCEPTION_CHECK(env, val) ExceptionCheck(env, val, LINEINFO)
 #else
+#define LINEINFO
 #define EXCEPTION_CHECK(env, val) ExceptionCheck(env, val)
 #define LOG(...)
 #define INLINE

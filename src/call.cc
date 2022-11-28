@@ -26,11 +26,15 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
   return reinterpret_cast<PyObject *>(me);
 }
 
-// Synchronous call into JS from Python
+// Synchronous call from Python to JavaScript
 static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject *kw) {
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
   Napi::Env env = me->js_fn.Env();
-  ASSERT(std::this_thread::get_id() == env.GetInstanceData<EnvContext>()->v8_main);
+
+  if (std::this_thread::get_id() != env.GetInstanceData<EnvContext>()->v8_main) {
+    PyErr_SetString(PyExc_Exception, "Trying to call back to JavaScript from an asynchronous Python invocation");
+    return nullptr;
+  }
   if (me->js_fn.IsEmpty()) {
     fprintf(stderr, "Called an empty JS function, don't manually construct objects of pymport.js_function type\n");
     Py_RETURN_NOTIMPLEMENTED;
@@ -39,29 +43,29 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
   ASSERT(PyTuple_Check(args));
   ASSERT(kw == nullptr || PyDict_Check(kw));
 
-  std::vector<napi_value> js_args;
-
-  // Positional arguments
-  size_t len = PyTuple_Size(args);
-  for (size_t i = 0; i < len; i++) {
-    PyWeakRef v = PyTuple_GetItem(args, i);
-    PyObjectWrap::EXCEPTION_CHECK(env, v);
-    js_args.push_back(PyObjectWrap::New(env, PyStrongRef(v)));
-  }
-
-  // Named arguments -> placed in a object as a last argument
-  if (kw != nullptr) {
-    auto js_kwargs = Object::New(env);
-    PyWeakRef key = nullptr, value = nullptr;
-    Py_ssize_t pos = 0;
-    while (PyDict_Next(kw, &pos, &key, &value)) {
-      auto jsKey = PyObjectWrap::ToJS(env, key);
-      js_kwargs.Set(jsKey, PyObjectWrap::New(env, PyStrongRef(value)));
-    }
-    js_args.push_back(js_kwargs);
-  }
-
   try {
+    std::vector<napi_value> js_args;
+
+    // Positional arguments
+    size_t len = PyTuple_Size(args);
+    for (size_t i = 0; i < len; i++) {
+      PyWeakRef v = PyTuple_GetItem(args, i);
+      PyObjectWrap::EXCEPTION_CHECK(env, v);
+      js_args.push_back(PyObjectWrap::New(env, PyStrongRef(v)));
+    }
+
+    // Named arguments -> placed in a object as a last argument
+    if (kw != nullptr) {
+      auto js_kwargs = Object::New(env);
+      PyWeakRef key = nullptr, value = nullptr;
+      Py_ssize_t pos = 0;
+      while (PyDict_Next(kw, &pos, &key, &value)) {
+        auto jsKey = PyObjectWrap::ToJS(env, key);
+        js_kwargs.Set(jsKey, PyObjectWrap::New(env, PyStrongRef(value)));
+      }
+      js_args.push_back(js_kwargs);
+    }
+
     Value js_ret = me->js_fn.Call(js_args);
     PyStrongRef ret = PyObjectWrap::FromJS(js_ret);
     PyObjectWrap::EXCEPTION_CHECK(env, ret);
@@ -157,6 +161,7 @@ std::function<PyStrongRef()> PyObjectWrap::CreateCallExecutor(const PyWeakRef &p
   }
 }
 
+// Synchronous call from JavaScript to Python (the callable is this)
 Value PyObjectWrap::Call(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
@@ -165,6 +170,7 @@ Value PyObjectWrap::Call(const CallbackInfo &info) {
   return New(env, std::move(r));
 }
 
+// Synchronous call from JavaScript to Python (the callable is in the context)
 Value PyObjectWrap::_CallableTrampoline(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
@@ -196,14 +202,19 @@ Value PyObjectWrap::Eval(const CallbackInfo &info) {
   return New(env, std::move(result));
 }
 
+// Must be constructed with the GIL held
+// ToJS can be called only from a V8 thread
 #ifdef DEBUG
-void PyObjectWrap::_ExceptionThrow(Napi::Env env, std::string msg) {
+PythonException::PythonException(std::string msg)
 #else
-void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
+PythonException::PythonException()
 #endif
+  : trace(nullptr) {
+  using namespace std::string_literals;
+
   PyWeakRef err = PyErr_Occurred();
   if (err != nullptr) {
-    PyStrongRef type = nullptr, v = nullptr, trace = nullptr;
+    PyStrongRef type = nullptr, v = nullptr;
 
     PyErr_Fetch(&type, &v, &trace);
     PyErr_Clear();
@@ -211,27 +222,23 @@ void PyObjectWrap::_ExceptionThrow(Napi::Env env) {
     PyStrongRef pstr = PyObject_Str(*v);
     const char *py_err_msg = PyUnicode_AsUTF8(*pstr);
 
-    std::string err_msg = std::string("Python exception: ") + py_err_msg
+    err_msg = "Python exception: "s + py_err_msg
 #ifdef DEBUG
       + msg
 #endif
       ;
-
-    auto error_object = Napi::Error::New(env, err_msg);
-    if (trace != nullptr) {
-      auto trace_object = New(env, std::move(trace));
-      error_object.Set("pythonTrace", trace_object);
-    }
-    throw error_object;
+  } else {
+    err_msg = "Unknown Python error: "s;
   }
-  throw Napi::TypeError::New(
-    env,
-    std::string("Unknown Python error: ")
-#ifdef DEBUG
-      + msg
-#endif
+}
 
-  );
+Napi::Error PythonException::ToJS(Napi::Env env) {
+  auto error_object = Napi::Error::New(env, err_msg);
+  if (*trace != nullptr) {
+    auto trace_object = PyObjectWrap::New(env, std::move(trace));
+    error_object.Set("pythonTrace", trace_object);
+  }
+  return error_object;
 }
 
 PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {

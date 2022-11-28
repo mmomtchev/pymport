@@ -7,7 +7,11 @@ using namespace pymport;
 
 PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nullptr), memory_hint(0) {
   Napi::Env env = info.Env();
-  PyGILGuard pyGilGuard;
+  // There are two ways to get here:
+  // * when called directly from JavaScript we throw
+  // * when called from the Object Store the GIL is already held
+  // So, we do not need to obtain the GIL here
+  // (Python does support recursive locking, but recursive locking is a bad practice)
 
   if (info.Length() < 1) throw TypeError::New(env, "Cannot create an empty object");
 
@@ -24,8 +28,13 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 PyObjectWrap::~PyObjectWrap() {
   Napi::Env env = Env();
 #ifdef DEBUG
+  // This is because the Python shutdown chain will be run in DEBUG mode
+  // Refer to the comment about https://github.com/nodejs/node/issues/45088
   if (active_environments == 0) return;
 #endif
+  // This is, in fact, a function that is called from a JavaScript context
+  PyGILGuard pyGILGuard;
+
   VERBOSE_PYOBJ(*self, "ObjWrap delete");
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
@@ -33,6 +42,10 @@ PyObjectWrap::~PyObjectWrap() {
 
   // Whether the object has been evicted or not, the adjusting happens here
   if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
+
+  // We need to manually unreference, otherwise we won't be covered by the
+  // GIL guard - pyGILGuard will be destroyed before the member variables
+  self = nullptr;
 }
 
 Function PyObjectWrap::GetClass(Napi::Env env) {
@@ -44,6 +57,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::InstanceMethod("has", &PyObjectWrap::Has),
      PyObjectWrap::InstanceMethod("item", &PyObjectWrap::Item),
      PyObjectWrap::InstanceMethod("call", &PyObjectWrap::Call),
+     PyObjectWrap::InstanceMethod("callAsync", &PyObjectWrap::CallAsync),
      PyObjectWrap::InstanceMethod("toJS", &PyObjectWrap::ToJS),
      PyObjectWrap::InstanceMethod("valueOf", &PyObjectWrap::ToJS),
      PyObjectWrap::InstanceAccessor("id", &PyObjectWrap::Id, nullptr),
