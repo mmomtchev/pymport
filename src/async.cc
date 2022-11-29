@@ -9,22 +9,21 @@ namespace pymport {
 
 class PympWorker : public AsyncWorker {
     public:
-  PympWorker(Napi::Env, PyCallExecutor &, Promise::Deferred &);
+  PympWorker(Napi::Env, PyCallExecutor *, Promise::Deferred &);
   virtual ~PympWorker();
 
   virtual void Execute() override;
   virtual void OnOK() override;
   virtual void OnError(const Napi::Error &) override;
-  virtual void Destroy() override;
 
     private:
-  PyCallExecutor executor;
+  PyCallExecutor *executor;
   PyStrongRef rval;
   Promise::Deferred promise;
   PythonException *err;
 };
 
-inline PympWorker::PympWorker(Napi::Env env, PyCallExecutor &executor, Promise::Deferred &promise)
+inline PympWorker::PympWorker(Napi::Env env, PyCallExecutor *executor, Promise::Deferred &promise)
   : AsyncWorker(env, "pymport"), executor(executor), rval(nullptr), promise(promise), err(nullptr) {
 }
 
@@ -32,19 +31,12 @@ inline PympWorker::~PympWorker() {
   ASSERT(*rval == nullptr);
 }
 
-inline void PympWorker::Destroy() {
-  // This one is called without by node-addon-api without the GIL
-  PyGILGuard pyGILGuard;
-  // Deleting the executor requires the GIL - it contains Python references
-  // (the tuple used for the call)
-  // TODO: Try doing this in the worker thread
-  delete this;
-}
-
 void PympWorker::Execute() {
   // This runs in one of the worker threads in the libuv pool
   PyGILGuard pyGilGuard;
-  rval = executor();
+  rval = (*executor)();
+  // The executor contains PyStrongRefs and must be deleted with the GIL held
+  delete executor;
   // Async exception throwing:
   // * collect the information (construct the PythonException) in the worker thread
   // * create the JS exception object when back to V8
@@ -71,7 +63,7 @@ void PympWorker::OnError(const Napi::Error &error) {
 Value PyObjectWrap::CallAsync(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
-  PyCallExecutor fn = CreateCallExecutor(self, info);
+  PyCallExecutor *fn = new PyCallExecutor(CreateCallExecutor(self, info));
   auto deferred = Promise::Deferred::New(env);
   PympWorker *worker = new PympWorker(env, fn, deferred);
   worker->Queue();
