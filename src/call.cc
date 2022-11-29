@@ -16,6 +16,7 @@ typedef struct {
   Napi::FunctionReference js_fn;
 } JSCall_Trampoline;
 
+// This function is called from a Python context and can run in every thread
 static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *args, PyObject *kw) {
   auto me = reinterpret_cast<JSCall_Trampoline *>(type->tp_alloc(type, 0));
   if (me == nullptr) return PyErr_NoMemory();
@@ -27,6 +28,7 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
 }
 
 // Synchronous call from Python to JavaScript
+// Called from Python context, throws (for now) when not called on the main V8 thread
 static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject *kw) {
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
   Napi::Env env = me->js_fn.Env();
@@ -77,6 +79,9 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
   return nullptr;
 }
 
+// Finalizer for pymport.js_function
+// Called from Python context
+// TODO fix V8 calling
 static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
   VERBOSE_PYOBJ(self, "jscall_trampoline finalizer");
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
@@ -105,6 +110,7 @@ void PyObjectWrap::InitJSTrampoline() {
   }
 }
 
+// Transform a PyObject containing a JS function back to a JS function
 Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env, const PyWeakRef &py) {
   JSCall_Trampoline *raw = reinterpret_cast<JSCall_Trampoline *>(*py);
   return raw->js_fn.Value();
@@ -113,6 +119,7 @@ Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env, const PyWeakRef &py) {
 #define IS_INFO_ARG_KWARGS(n)                                                                                          \
   (info[n].IsObject() && !info[n].IsArray() && !info[n].IsFunction() && !_InstanceOf(info[n]))
 
+// Transform the JS arguments to Python references and return a lambda making the actual Python call
 std::function<PyStrongRef()> PyObjectWrap::CreateCallExecutor(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
