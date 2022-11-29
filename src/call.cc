@@ -36,8 +36,10 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
     return nullptr;
   }
   if (me->js_fn.IsEmpty()) {
-    fprintf(stderr, "Called an empty JS function, don't manually construct objects of pymport.js_function type\n");
-    Py_RETURN_NOTIMPLEMENTED;
+    PyErr_SetString(
+      PyExc_NotImplementedError,
+      "Called an empty JS function, don't manually construct objects of pymport.js_function type\n");
+    return nullptr;
   }
 
   ASSERT(PyTuple_Check(args));
