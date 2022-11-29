@@ -23,12 +23,13 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
 
   // Make sure we don't segfault if someone manages to call us from Python
   memset(reinterpret_cast<void *>(&me->js_fn), 0, sizeof(Napi::FunctionReference));
+  // This is thread-safe (even if officially it is not)
   me->js_fn = FunctionReference();
   return reinterpret_cast<PyObject *>(me);
 }
 
 // Synchronous call from Python to JavaScript
-// Called from Python context, throws (for now) when not called on the main V8 thread
+// Called from Python context, throws to Python (for now) when not called on the main V8 thread
 static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject *kw) {
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
   Napi::Env env = me->js_fn.Env();
@@ -85,7 +86,7 @@ static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyO
   VERBOSE_PYOBJ(self, "jscall_trampoline finalizer");
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
   // TODO fix this as it can happen
-  ASSERT(std::this_thread::get_id() == me->js_fn.Env().GetInstanceData<EnvContext>()->v8_main);
+  assert(std::this_thread::get_id() == me->js_fn.Env().GetInstanceData<EnvContext>()->v8_main);
   me->js_fn.Reset();
   Py_RETURN_NONE;
 }
@@ -121,7 +122,7 @@ Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env, const PyWeakRef &py) {
   (info[n].IsObject() && !info[n].IsArray() && !info[n].IsFunction() && !_InstanceOf(info[n]))
 
 // Transform the JS arguments to Python references and return a lambda making the actual Python call
-std::function<PyStrongRef()> PyObjectWrap::CreateCallExecutor(const PyWeakRef &py, const CallbackInfo &info) {
+PyCallExecutor PyObjectWrap::CreateCallExecutor(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   if (!PyCallable_Check(*py)) { throw Napi::TypeError::New(env, "Value not callable"); }

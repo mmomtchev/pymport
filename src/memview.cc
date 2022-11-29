@@ -25,10 +25,10 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
   auto it = memview_store.find(*weak);
   ASSERT(it != memview_store.end());
 
+  // TODO fix this as it can happen
+  assert(std::this_thread::get_id() == it->second->Env().GetInstanceData<EnvContext>()->v8_main);
   // Destroy the V8 Persistent Reference
   it->second->Reset();
-  // TODO fix this as it can happen
-  ASSERT(std::this_thread::get_id() == it->second->Env().GetInstanceData<EnvContext>()->v8_main);
   delete it->second;
   memview_store.erase(*weak);
 
