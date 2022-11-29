@@ -14,10 +14,8 @@ static std::map<PyObject *, Reference<Buffer<char>> *> memview_store;
 // This also destroys the V8 Persistent Reference
 // This is the only case in which the V8 GC can be blocked by the Python GC
 // Called from Python context
-// TODO fix V8 calling
 static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
   VERBOSE_PYOBJ(self, "memview finalizer");
-  ASSERT(std::this_thread::get_id() == env.GetInstanceData<EnvContext>()->v8_main);
 
   // This is in fact a borrowed reference, but this is the counterpart to the inversion below
   PyStrongRef weak = PyTuple_GetItem(args, 0);
@@ -29,6 +27,8 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
 
   // Destroy the V8 Persistent Reference
   it->second->Reset();
+  // TODO fix this as it can happen
+  ASSERT(std::this_thread::get_id() == it->second->Env().GetInstanceData<EnvContext>()->v8_main);
   delete it->second;
   memview_store.erase(*weak);
 

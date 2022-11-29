@@ -81,10 +81,11 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
 
 // Finalizer for pymport.js_function
 // Called from Python context
-// TODO fix V8 calling
 static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
   VERBOSE_PYOBJ(self, "jscall_trampoline finalizer");
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
+  // TODO fix this as it can happen
+  ASSERT(std::this_thread::get_id() == me->js_fn.Env().GetInstanceData<EnvContext>()->v8_main);
   me->js_fn.Reset();
   Py_RETURN_NONE;
 }
