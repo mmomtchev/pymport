@@ -104,6 +104,7 @@ static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyO
     std::lock_guard<std::mutex> lock(context->v8_queue.lock);
     context->v8_queue.jobs.emplace(std::move(finalizer));
     assert(uv_async_send(context->v8_queue.handle) == 0);
+    uv_ref(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle));
   }
 
   Py_RETURN_NONE;
