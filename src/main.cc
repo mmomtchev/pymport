@@ -72,6 +72,18 @@ Value Version(const CallbackInfo &info) {
   return versionInfo;
 }
 
+// Runs the queue of V8 tasks scheduled from Python contexts
+static void RunInV8Context(uv_async_t *async) {
+  auto context = reinterpret_cast<EnvContext *>(async->data);
+  VERBOSE("RunInV8Context, queue length %d\n", static_cast<int>(context->v8_queue.jobs.size()));
+  // As the lambdas are very light, it is better to not release the lock at all
+  std::lock_guard<std::mutex> lock(context->v8_queue.lock);
+  while (!context->v8_queue.jobs.empty()) {
+    context->v8_queue.jobs.front()();
+    context->v8_queue.jobs.pop();
+  }
+}
+
 extern void MemInit();
 
 Napi::Object Init(Env env, Object exports) {
@@ -86,6 +98,11 @@ Napi::Object Init(Env env, Object exports) {
   context->pyObj = new FunctionReference();
   *context->pyObj = Persistent(pyObjCons);
   context->v8_main = std::this_thread::get_id();
+  context->v8_queue.handle = new uv_async_t;
+  if (uv_async_init(uv_default_loop(), context->v8_queue.handle, RunInV8Context) != 0)
+    throw Error::New(env, "Failed initializing libuv queue");
+  uv_unref(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle));
+  context->v8_queue.handle->data = context;
   VERBOSE(
     "PyGIL: Initialized new environment, V8 main thread is %lu\n",
     static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
@@ -99,6 +116,10 @@ Napi::Object Init(Env env, Object exports) {
       active_environments--;
       context->pyObj->Reset();
       delete context->pyObj;
+      uv_close(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle), [](uv_handle_t *handle) {
+        VERBOSE("Finalizing the finalizer...\n");
+        delete reinterpret_cast<uv_async_t *>(handle);
+      });
 #ifdef DEBUG
       // This is complicated because of
       // https://github.com/nodejs/node/issues/45088

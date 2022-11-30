@@ -39,7 +39,6 @@ describe('callAsync', () => {
 
     assert.instanceOf(q, Promise);
     q.then(() => {
-      console.log('1');
       done('Not expected to succeed');
     }).catch((err) => {
       try {

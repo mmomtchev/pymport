@@ -4,7 +4,10 @@
 #include <list>
 #include <thread>
 #include <functional>
+#include <queue>
+#include <mutex>
 #include <napi.h>
+#include <uv.h>
 
 #include "pystackobject.h"
 
@@ -210,6 +213,12 @@ struct EnvContext {
   std::map<PyObject *, Napi::FunctionReference *> function_store;
   // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
   std::thread::id v8_main;
+  // libuv queue for running lambdas on the V8 main thread
+  struct {
+    uv_async_t *handle;
+    std::queue<std::function<void()>> jobs;
+    std::mutex lock;
+  } v8_queue;
 };
 
 // GIL locking rule:

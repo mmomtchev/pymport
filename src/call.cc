@@ -13,7 +13,7 @@ using namespace pymport;
 // except when inspecting a function object passed from JS
 typedef struct {
   PyObject_HEAD;
-  Napi::FunctionReference js_fn;
+  FunctionReference *js_fn;
 } JSCall_Trampoline;
 
 // This function is called from a Python context and can run in every thread
@@ -22,9 +22,7 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
   if (me == nullptr) return PyErr_NoMemory();
 
   // Make sure we don't segfault if someone manages to call us from Python
-  memset(reinterpret_cast<void *>(&me->js_fn), 0, sizeof(Napi::FunctionReference));
-  // This is thread-safe (even if officially it is not)
-  me->js_fn = FunctionReference();
+  me->js_fn = nullptr;
   return reinterpret_cast<PyObject *>(me);
 }
 
@@ -32,16 +30,17 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
 // Called from Python context, throws to Python (for now) when not called on the main V8 thread
 static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject *kw) {
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
-  Napi::Env env = me->js_fn.Env();
 
-  if (std::this_thread::get_id() != env.GetInstanceData<EnvContext>()->v8_main) {
-    PyErr_SetString(PyExc_Exception, "Trying to call back to JavaScript from an asynchronous Python invocation");
-    return nullptr;
-  }
-  if (me->js_fn.IsEmpty()) {
+  if (me->js_fn == nullptr) {
     PyErr_SetString(
       PyExc_NotImplementedError,
       "Called an empty JS function, don't manually construct objects of pymport.js_function type\n");
+    return nullptr;
+  }
+  Napi::Env env = me->js_fn->Env();
+
+  if (std::this_thread::get_id() != env.GetInstanceData<EnvContext>()->v8_main) {
+    PyErr_SetString(PyExc_Exception, "Trying to call back to JavaScript from an asynchronous Python invocation");
     return nullptr;
   }
 
@@ -71,7 +70,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
       js_args.push_back(js_kwargs);
     }
 
-    Value js_ret = me->js_fn.Call(js_args);
+    Value js_ret = me->js_fn->Call(js_args);
     PyStrongRef ret = PyObjectWrap::FromJS(js_ret);
     PyObjectWrap::EXCEPTION_CHECK(env, ret);
     return ret.gift();
@@ -85,9 +84,28 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
 static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
   VERBOSE_PYOBJ(self, "jscall_trampoline finalizer");
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
-  // TODO fix this as it can happen
-  assert(std::this_thread::get_id() == me->js_fn.Env().GetInstanceData<EnvContext>()->v8_main);
-  me->js_fn.Reset();
+
+  auto fn = me->js_fn;
+  if (fn == nullptr) Py_RETURN_NONE;
+
+  auto finalizer = [fn]() {
+    fn->Reset();
+    delete fn;
+  };
+
+  auto context = fn->Env().GetInstanceData<EnvContext>();
+#ifndef DEBUG
+  if (std::this_thread::get_id() == context->v8_main)
+    finalizer();
+  else
+#endif
+  {
+    VERBOSE("jscall_trampoline asynchronous finalization\n");
+    std::lock_guard<std::mutex> lock(context->v8_queue.lock);
+    context->v8_queue.jobs.push(finalizer);
+    assert(uv_async_send(context->v8_queue.handle) == 0);
+  }
+
   Py_RETURN_NONE;
 }
 
@@ -113,9 +131,10 @@ void PyObjectWrap::InitJSTrampoline() {
 }
 
 // Transform a PyObject containing a JS function back to a JS function
-Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env, const PyWeakRef &py) {
+Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env env, const PyWeakRef &py) {
   JSCall_Trampoline *raw = reinterpret_cast<JSCall_Trampoline *>(*py);
-  return raw->js_fn.Value();
+  if (raw->js_fn == nullptr) return env.Undefined();
+  return raw->js_fn->Value();
 }
 
 #define IS_INFO_ARG_KWARGS(n)                                                                                          \
@@ -265,7 +284,7 @@ PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
 
   // Pass the JS reference to the callback
   auto *raw = reinterpret_cast<JSCall_Trampoline *>(*trampoline);
-  raw->js_fn = Persistent(js_fn);
+  raw->js_fn = new FunctionReference(Persistent(js_fn));
 
   return trampoline;
 }

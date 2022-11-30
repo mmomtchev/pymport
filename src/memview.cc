@@ -24,13 +24,29 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
 
   auto it = memview_store.find(*weak);
   ASSERT(it != memview_store.end());
-
-  // TODO fix this as it can happen
-  assert(std::this_thread::get_id() == it->second->Env().GetInstanceData<EnvContext>()->v8_main);
-  // Destroy the V8 Persistent Reference
-  it->second->Reset();
-  delete it->second;
+  auto v8_buffer = it->second;
   memview_store.erase(*weak);
+
+  // Destroy the V8 Persistent Reference
+  // This has to run in the V8 thread
+  auto finalizer = [v8_buffer]() {
+    v8_buffer->Reset();
+    delete v8_buffer;
+  };
+
+  auto env = v8_buffer->Env();
+  auto context = env.GetInstanceData<EnvContext>();
+#ifndef DEBUG
+  if (std::this_thread::get_id() == context->v8_main)
+    finalizer();
+  else
+#endif
+  {
+    VERBOSE("memview asynchronous finalization\n");
+    std::lock_guard<std::mutex> lock(context->v8_queue.lock);
+    context->v8_queue.jobs.push(finalizer);
+    assert(uv_async_send(context->v8_queue.handle) == 0);
+  }
 
   Py_RETURN_NONE;
 }
