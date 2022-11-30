@@ -7,6 +7,11 @@ using namespace pymport;
 
 PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nullptr), memory_hint(0) {
   Napi::Env env = info.Env();
+  // There are two ways to get here:
+  // * when called directly from JavaScript we throw
+  // * when called from the Object Store the GIL is already held
+  // So, we do not need to obtain the GIL here
+  // (Python does support recursive locking, but recursive locking is a bad practice)
 
   if (info.Length() < 1) throw TypeError::New(env, "Cannot create an empty object");
 
@@ -23,8 +28,14 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 PyObjectWrap::~PyObjectWrap() {
   Napi::Env env = Env();
 #ifdef DEBUG
+  // This is because the Python shutdown chain will be run in DEBUG mode
+  // Refer to the comment about https://github.com/nodejs/node/issues/45088
   if (active_environments == 0) return;
 #endif
+  // This is, in fact, a function that is called from a JavaScript context
+  // TODO: this can block the event loop with long-running Python operations
+  PyGILGuard pyGILGuard;
+
   VERBOSE_PYOBJ(*self, "ObjWrap delete");
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
@@ -32,6 +43,10 @@ PyObjectWrap::~PyObjectWrap() {
 
   // Whether the object has been evicted or not, the adjusting happens here
   if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
+
+  // We need to manually unreference, otherwise we won't be covered by the
+  // GIL guard - pyGILGuard will be destroyed before the member variables
+  self = nullptr;
 }
 
 Function PyObjectWrap::GetClass(Napi::Env env) {
@@ -43,6 +58,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
      PyObjectWrap::InstanceMethod("has", &PyObjectWrap::Has),
      PyObjectWrap::InstanceMethod("item", &PyObjectWrap::Item),
      PyObjectWrap::InstanceMethod("call", &PyObjectWrap::Call),
+     PyObjectWrap::InstanceMethod("callAsync", &PyObjectWrap::CallAsync),
      PyObjectWrap::InstanceMethod("toJS", &PyObjectWrap::ToJS),
      PyObjectWrap::InstanceMethod("valueOf", &PyObjectWrap::ToJS),
      PyObjectWrap::InstanceAccessor("id", &PyObjectWrap::Id, nullptr),
@@ -70,6 +86,7 @@ Function PyObjectWrap::GetClass(Napi::Env env) {
 
 Value PyObjectWrap::ToString(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   PyStrongRef r = PyObject_Str(*self);
   EXCEPTION_CHECK(env, r);
@@ -78,12 +95,14 @@ Value PyObjectWrap::ToString(const CallbackInfo &info) {
 
 Value PyObjectWrap::Id(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   return Number::New(env, reinterpret_cast<uint64_t>(*self));
 }
 
 Value PyObjectWrap::Get(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef r = PyObject_GetAttrString(*self, name.c_str());
@@ -96,6 +115,7 @@ Value PyObjectWrap::Get(const CallbackInfo &info) {
 
 Value PyObjectWrap::Import(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef pyname = PyUnicode_DecodeFSDefault(name.c_str());
@@ -107,6 +127,7 @@ Value PyObjectWrap::Import(const CallbackInfo &info) {
 
 Value PyObjectWrap::Has(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   bool r;
   if (PyAnySet_Check(*self)) {
@@ -122,18 +143,21 @@ Value PyObjectWrap::Has(const CallbackInfo &info) {
 
 Value PyObjectWrap::Type(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   return String::New(env, Py_TYPE(*self)->tp_name);
 }
 
 Value PyObjectWrap::Constructor(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   return New(env, PyStrongRef(reinterpret_cast<PyObject *>(Py_TYPE(*self))));
 }
 
 Value PyObjectWrap::Item(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
   PyStrongRef item = FromJS(info[0]);
@@ -144,6 +168,7 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
 
 Value PyObjectWrap::Keys(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   Object target = NAPI_ARG_PYOBJECT(0);
   auto py = ObjectWrap::Unwrap(target);
@@ -155,6 +180,7 @@ Value PyObjectWrap::Keys(const CallbackInfo &info) {
 
 Value PyObjectWrap::Values(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   Object target = NAPI_ARG_PYOBJECT(0);
   auto py = ObjectWrap::Unwrap(target);
@@ -166,6 +192,7 @@ Value PyObjectWrap::Values(const CallbackInfo &info) {
 
 Value PyObjectWrap::Length(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   if (PySequence_Check(*self)) return Number::New(env, static_cast<long>(PySequence_Size(*self)));
   if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));

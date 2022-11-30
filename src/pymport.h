@@ -2,11 +2,33 @@
 
 #include <map>
 #include <list>
+#include <thread>
+#include <functional>
+#include <queue>
+#include <mutex>
 #include <napi.h>
+#include <uv.h>
 
 #include "pystackobject.h"
 
 namespace pymport {
+
+typedef std::function<PyStrongRef()> PyCallExecutor;
+
+// Must be constructed with the GIL held
+// ToJS can be called only from a V8 thread
+class PythonException {
+  PyStrongRef trace;
+  std::string err_msg;
+
+    public:
+#ifdef DEBUG
+  PythonException(std::string msg);
+#else
+  PythonException();
+#endif
+  Napi::Error ToJS(Napi::Env);
+};
 
 // Object lifecycle overview
 
@@ -67,6 +89,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   Napi::Value Id(const Napi::CallbackInfo &);
   Napi::Value Get(const Napi::CallbackInfo &);
   Napi::Value Call(const Napi::CallbackInfo &);
+  Napi::Value CallAsync(const Napi::CallbackInfo &);
   Napi::Value Item(const Napi::CallbackInfo &);
 
   Napi::Value Has(const Napi::CallbackInfo &);
@@ -107,23 +130,41 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Function GetClass(Napi::Env);
   static void InitJSTrampoline();
 
+  static inline void ExceptionCheck(
+    Napi::Env env,
+    const PyWeakRef &py
 #ifdef DEBUG
-  static inline void ExceptionCheck(Napi::Env env, const PyWeakRef &py, const std::string msg) {
-    if (py == nullptr) _ExceptionThrow(env, msg);
-  }
-
-  static inline void ExceptionCheck(Napi::Env env, int status, const std::string msg) {
-    if (status != 0) _ExceptionThrow(env, msg);
-  }
-#else
-  static inline void ExceptionCheck(Napi::Env env, const PyWeakRef &py) {
-    if (py == nullptr) _ExceptionThrow(env);
-  }
-
-  static inline void ExceptionCheck(Napi::Env env, int status) {
-    if (status != 0) _ExceptionThrow(env);
-  }
+    ,
+    const std::string msg
 #endif
+  ) {
+    if (py == nullptr) {
+      PythonException py_err
+#ifdef DEBUG
+        (msg)
+#endif
+          ;
+      throw py_err.ToJS(env);
+    }
+  }
+
+  static inline void ExceptionCheck(
+    Napi::Env env,
+    int status
+#ifdef DEBUG
+    ,
+    const std::string msg
+#endif
+  ) {
+    if (status != 0) {
+      PythonException py_err
+#ifdef DEBUG
+        (msg)
+#endif
+          ;
+      throw py_err.ToJS(env);
+    }
+  }
 
     private:
   typedef std::map<PyObject *, Napi::Value> NapiObjectStore;
@@ -147,7 +188,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static void _FromJS_Set(Napi::Array, const PyStrongRef &, PyObjectStore &);
   static PyStrongRef _FromJS_BytesArray(Napi::Buffer<char>);
 
-  static Napi::Value _Call(const PyWeakRef &, const Napi::CallbackInfo &info);
+  static PyCallExecutor CreateCallExecutor(const PyWeakRef &, const Napi::CallbackInfo &info);
   static Napi::Value _CallableTrampoline(const Napi::CallbackInfo &info);
 
   static PyStrongRef NewJSFunction(Napi::Function js_fn);
@@ -164,14 +205,51 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static PyStrongRef JSCall_Trampoline_Type;
   PyStrongRef self;
   Py_ssize_t memory_hint;
-};
+}; // namespace pymport
 
 struct EnvContext {
   Napi::FunctionReference *pyObj;
   std::map<PyObject *, PyObjectWrap *> object_store;
   std::map<PyObject *, Napi::FunctionReference *> function_store;
+  // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
+  std::thread::id v8_main;
+  // libuv queue for running lambdas on the V8 main thread
+  struct {
+    uv_async_t *handle;
+    std::queue<std::function<void()>> jobs;
+    std::mutex lock;
+  } v8_queue;
 };
 
+// GIL locking rule:
+// Every time we enter C++ called from JS context, we obtain the GIL
+//
+// This means all the JS calling convention functions and a few special cases
+// that are documented through-out the code
+//
+// Unless mentioned, all functions are called from JS context
+//
+// Thankfully, Python cannot access Python objects without the GIL
+// This means that when compiled in DEBUG/DEBUG_VERBOSE the VERBOSE_PYOBJ macro
+// has the added benefit of provoking a segfault if the GIL is not held
+class PyGILGuard {
+  PyGILState_STATE state;
+
+    public:
+  inline PyGILGuard() {
+    VERBOSE(
+      "PyGIL: Will obtain from %lu\n",
+      static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+    state = PyGILState_Ensure();
+  }
+
+  inline ~PyGILGuard() {
+    VERBOSE(
+      "PyGIL: Will release from %lu\n",
+      static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+    PyGILState_Release(state);
+  }
+};
 }; // namespace pymport
 
 #if PY_MAJOR_VERSION < 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 8)

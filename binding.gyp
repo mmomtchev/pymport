@@ -17,7 +17,8 @@
         'src/fromjs.cc',
         'src/tojs.cc',
         'src/objstore.cc',
-        'src/memview.cc'
+        'src/memview.cc',
+        'src/async.cc'
       ],
       'include_dirs': [
         "<!@(node -p \"require('node-addon-api').include\")"

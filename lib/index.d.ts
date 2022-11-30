@@ -193,11 +193,19 @@ export class PyObject implements Iterable<PyObject> {
   static values: (obj: PyObject) => PyObject;
 
   /**
-   * Call a callable property from the object
+   * Call a callable PyObject, throws if the underlying object is not callable
    * @param {...any[]} args function arguments
    * @returns {PyObject}
    */
   call: (...args: any[]) => PyObject;
+
+  /**
+   * Asynchronously call a callable PyObject, rejects if the underlying object is not callable
+   * @param {...any[]} args function arguments
+   * @returns {Promise<PyObject>}
+   */
+  callAsync: (...args: any[]) => Promise<PyObject>;
+
 
   /**
    * Transform the PyObject to a plain JS object. Equivalent to valueOf().

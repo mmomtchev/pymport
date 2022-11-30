@@ -13,7 +13,7 @@ static std::map<PyObject *, Reference<Buffer<char>> *> memview_store;
 // It is used to register a WeakRef finalizer that is called when a memview is destroyed by Python
 // This also destroys the V8 Persistent Reference
 // This is the only case in which the V8 GC can be blocked by the Python GC
-
+// Called from Python context
 static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
   VERBOSE_PYOBJ(self, "memview finalizer");
 
@@ -24,11 +24,30 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
 
   auto it = memview_store.find(*weak);
   ASSERT(it != memview_store.end());
+  auto v8_buffer = it->second;
+  memview_store.erase(*weak);
 
   // Destroy the V8 Persistent Reference
-  it->second->Reset();
-  delete it->second;
-  memview_store.erase(*weak);
+  // This has to run in the V8 thread
+  auto finalizer = [v8_buffer]() {
+    v8_buffer->Reset();
+    delete v8_buffer;
+  };
+
+  auto env = v8_buffer->Env();
+  auto context = env.GetInstanceData<EnvContext>();
+#ifndef DEBUG
+  if (std::this_thread::get_id() == context->v8_main)
+    finalizer();
+  else
+#endif
+  {
+    VERBOSE("memview asynchronous finalization\n");
+    std::lock_guard<std::mutex> lock(context->v8_queue.lock);
+    context->v8_queue.jobs.emplace(std::move(finalizer));
+    assert(uv_async_send(context->v8_queue.handle) == 0);
+    uv_ref(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle));
+  }
 
   Py_RETURN_NONE;
 }
@@ -51,6 +70,7 @@ void memview::Init() {
 
 Value PyObjectWrap::MemoryView(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
   Buffer<char> buffer = NAPI_ARG_BUFFER(0);
   PyStrongRef memoryView = PyMemoryView_FromMemory(buffer.Data(), buffer.ByteLength(), PyBUF_WRITE);
   EXCEPTION_CHECK(env, memoryView);

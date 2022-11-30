@@ -86,6 +86,8 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
     context->function_store.insert({*py, jsRef});
     js.AddFinalizer(
       [](Napi::Env env, FunctionReference *fini_fn, PyObject *fini_py) {
+        // This is called from a JS context
+        PyGILGuard pyGilGuard;
         VERBOSE_PYOBJ(fini_py, "Funcstore erase");
         auto context = env.GetInstanceData<EnvContext>();
         auto stored = context->function_store.find(fini_py);

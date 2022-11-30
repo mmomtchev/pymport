@@ -168,6 +168,7 @@ Napi::Value PyObjectWrap::ToJS(Napi::Env env, const PyWeakRef &py) {
 
 Napi::Value PyObjectWrap::ToJS(const CallbackInfo &info) {
   Napi::Env env = info.Env();
+  PyGILGuard pyGilGuard;
 
   return PyObjectWrap::ToJS(env, self);
 }
