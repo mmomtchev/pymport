@@ -222,10 +222,12 @@ struct EnvContext {
 };
 
 // GIL locking rule:
-// Every time we are called from JS context, we obtain the GIL
+// Every time we enter C++ called from JS context, we obtain the GIL
 //
 // This means all the JS calling convention functions and a few special cases
 // that are documented through-out the code
+//
+// Unless mentioned, all functions are called from JS context
 //
 // Thankfully, Python cannot access Python objects without the GIL
 // This means that when compiled in DEBUG/DEBUG_VERBOSE the VERBOSE_PYOBJ macro
