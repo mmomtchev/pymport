@@ -44,7 +44,7 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
   {
     VERBOSE("memview asynchronous finalization\n");
     std::lock_guard<std::mutex> lock(context->v8_queue.lock);
-    context->v8_queue.jobs.push(finalizer);
+    context->v8_queue.jobs.emplace(std::move(finalizer));
     assert(uv_async_send(context->v8_queue.handle) == 0);
   }
 
