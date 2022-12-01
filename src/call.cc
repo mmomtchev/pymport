@@ -18,12 +18,6 @@ typedef struct {
   ThreadSafeFunction *js_tsfn;
 } JSCall_Trampoline;
 
-struct PythonConvention {
-  PyObject *args;
-  PyObject *kw;
-  PyObject *ret;
-};
-
 // This function is called from a Python context and can run in every thread
 static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *args, PyObject *kw) {
   auto me = reinterpret_cast<JSCall_Trampoline *>(type->tp_alloc(type, 0));
@@ -36,6 +30,7 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
 }
 
 // A Python wrapper around a JS function
+// It returns an owned reference as per the Python calling convention
 static PyObject *CallJSWithPythonArgs(JSCall_Trampoline *fn, PyObject *args, PyObject *kw) {
   Napi::Env env = fn->js_fn->Env();
   std::vector<napi_value> js_args;
@@ -71,7 +66,7 @@ static PyObject *CallJSWithPythonArgs(JSCall_Trampoline *fn, PyObject *args, PyO
   }
   PyEval_RestoreThread(python_state);
 
-  PyStrongRef ret = PyObjectWrap::FromJS(js_ret).gift();
+  PyStrongRef ret = PyObjectWrap::FromJS(js_ret);
   PyObjectWrap::EXCEPTION_CHECK(env, ret);
   return ret.gift();
 }
@@ -345,6 +340,8 @@ PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
   auto *raw = reinterpret_cast<JSCall_Trampoline *>(*trampoline);
   raw->js_fn = new FunctionReference(Persistent(js_fn));
   raw->js_tsfn = new ThreadSafeFunction(ThreadSafeFunction::New(env, js_fn, "pymport.js_function", 0, 1));
+  // Sometimes V8 won't destroy some objects - so these TSFN should not block the event loop's exit
+  raw->js_tsfn->Unref(env);
 
   return trampoline;
 }
