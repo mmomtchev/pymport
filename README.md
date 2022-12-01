@@ -17,7 +17,7 @@ npm i pymport
 
 Install `numpy`, `pandas` or whatever your favorite Python package is:
 ```shell
-pympip3 install numpy
+npx pympip3 install numpy
 ```
 
 Start using from Node.js:
