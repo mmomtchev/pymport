@@ -101,6 +101,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
 
     // Release the GIL - so that we can acquire it in the V8 main thread
     PyThreadState *python_state = PyEval_SaveThread();
+    me->js_tsfn->Ref(env);
     me->js_tsfn->BlockingCall(
       [me, args, kw, &lock, &ready, &error, &cv, &ret, &python_state](Napi::Env env, Function js_fn) {
         // This runs in the V8 main thread
@@ -117,6 +118,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
       });
     std::unique_lock<std::mutex> guard(lock);
     cv.wait(guard, [&ready] { return ready; });
+    me->js_tsfn->Unref(env);
     // Restore the GIL and thread state before returning back to Python
     PyEval_RestoreThread(python_state);
     if (ret == nullptr) { PyErr_SetString(PyExc_Exception, error.c_str()); }
