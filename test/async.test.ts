@@ -32,9 +32,25 @@ describe('callAsync', () => {
     });
   });
 
-  it('async callback', (done) => {
+  it('async callback nominal', (done) => {
     const py_call = pymport('python_helpers').get('dont_catch_exception');
-    const fn = PyObject.fromJS((x: PyObject) => +x + 1);
+    const fn = PyObject.fromJS(() => 14);
+    const q = py_call.callAsync(fn);
+
+    assert.instanceOf(q, Promise);
+    q.then((r) => {
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'int');
+      assert.equal(+r, 14);
+      done();
+    }).catch((err) => {
+      done(err);
+    });
+  });
+
+  it('async callback w/exception', (done) => {
+    const py_call = pymport('python_helpers').get('dont_catch_exception');
+    const fn = PyObject.fromJS(() => { throw new Error('Bad news from JS'); });
     const q = py_call.callAsync(fn);
 
     assert.instanceOf(q, Promise);
@@ -42,7 +58,7 @@ describe('callAsync', () => {
       done('Not expected to succeed');
     }).catch((err) => {
       try {
-        assert.match(err.toString(), /back to JavaScript from an asynchronous Python invocation/);
+        assert.match(err.toString(), /Bad news from JS/);
         done();
       } catch (err) {
         done(err);
