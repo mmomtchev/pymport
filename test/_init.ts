@@ -2,7 +2,8 @@ process.env['PYTHONPATH'] = __dirname;
 
 import { version, pymport } from 'pymport';
 
-console.log(`pymport: ${version.pymport.major}.${version.pymport.minor}.${version.pymport.patch}`);
+console.log(`pymport: ` +
+  `${version.pymport.major}.${version.pymport.minor}.${version.pymport.patch}-${version.pymport.suffix}`);
 console.log(
   `Python library: (${version.pythonLibrary.builtin ? 'builtin' : 'system'}) ` +
   `${version.pythonLibrary.major}.${version.pythonLibrary.minor}.${version.pythonLibrary.micro}.` +
