@@ -1,4 +1,6 @@
 import { pymport, PyObject } from 'pymport';
+import * as path from 'path';
+import { Worker } from 'worker_threads';
 import { assert } from 'chai';
 
 describe('callAsync', () => {
@@ -66,4 +68,27 @@ describe('callAsync', () => {
     });
   });
 
+  describe('worker_threads', () => {
+    function spawnWorker(script: string) {
+      return new Promise((resolve, reject) => {
+        const worker = new Worker(path.resolve(__dirname, './worker_thread.js'), {
+          workerData: script,
+        });
+        worker.on('message', resolve);
+        worker.on('error', reject);
+        worker.on('exit', (code) => {
+          if (code !== 0)
+            reject(new Error(`Worker stopped with exit code ${code}`));
+        });
+      });
+    }
+
+    it('basic test', (done) => {
+      const q = spawnWorker('str(4.2)');
+      q.then((r) => {
+        assert.strictEqual(r, '4.2');
+        done();
+      }).catch((err) => done(err));
+    });
+  });
 });
