@@ -181,6 +181,12 @@ export class PyObject implements Iterable<PyObject> {
   item: (index: any) => PyObject;
 
   /**
+   * Runs the provided function in the context of this object, equivalent to Python with
+   * @returns {PyObject}
+   */
+  with: <T>(fn: (v: PyObject) => T) => T;
+
+  /**
    * Retrieve a list with the keys of the dictionary, equivalent to JS Object.keys()
    * @returns {PyObject}
    */

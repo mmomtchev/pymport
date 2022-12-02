@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] WIP
  - Multithreading safety
  - `callAsync` method allowing asynchronous calling of Python functions
+ - Add `PyObject.with` implementing Python `with`
 
 ### [1.2.1] WIP
  - Fix [[#27](https://github.com/mmomtchev/pymport/issues/27), a function as a single argument is considered a kwargs object

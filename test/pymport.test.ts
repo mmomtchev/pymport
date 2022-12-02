@@ -215,4 +215,18 @@ describe('pymport', () => {
       }
     });
   });
+
+  it('with', () => {
+    const np = pymport('numpy');
+
+    const a = np.get('arange').call(6).get('reshape').call(2, 3);
+    const r = [] as number[];
+    // equivalent to
+    // with np.nditer(a) as it
+    np.get('nditer').call(a).with((it: PyObject) => {
+      for (const a of it)
+        r.push(+a);
+    });
+    assert.deepEqual(r, [0, 1, 2, 3, 4, 5]);
+  });
 });
