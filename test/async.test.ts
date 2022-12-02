@@ -1,4 +1,6 @@
 import { pymport, PyObject } from 'pymport';
+import * as path from 'path';
+import { Worker } from 'worker_threads';
 import { assert } from 'chai';
 
 describe('callAsync', () => {
@@ -32,9 +34,25 @@ describe('callAsync', () => {
     });
   });
 
-  it('async callback', (done) => {
+  it('async callback nominal', (done) => {
     const py_call = pymport('python_helpers').get('dont_catch_exception');
-    const fn = PyObject.fromJS((x: PyObject) => +x + 1);
+    const fn = PyObject.fromJS(() => 14);
+    const q = py_call.callAsync(fn);
+
+    assert.instanceOf(q, Promise);
+    q.then((r) => {
+      assert.instanceOf(r, PyObject);
+      assert.equal(r.type, 'int');
+      assert.equal(+r, 14);
+      done();
+    }).catch((err) => {
+      done(err);
+    });
+  });
+
+  it('async callback w/exception', (done) => {
+    const py_call = pymport('python_helpers').get('dont_catch_exception');
+    const fn = PyObject.fromJS(() => { throw new Error('Bad news from JS'); });
     const q = py_call.callAsync(fn);
 
     assert.instanceOf(q, Promise);
@@ -42,7 +60,7 @@ describe('callAsync', () => {
       done('Not expected to succeed');
     }).catch((err) => {
       try {
-        assert.match(err.toString(), /back to JavaScript from an asynchronous Python invocation/);
+        assert.match(err.toString(), /Bad news from JS/);
         done();
       } catch (err) {
         done(err);
@@ -50,4 +68,27 @@ describe('callAsync', () => {
     });
   });
 
+  describe('worker_threads', () => {
+    function spawnWorker(script: string) {
+      return new Promise((resolve, reject) => {
+        const worker = new Worker(path.resolve(__dirname, './worker_thread.js'), {
+          workerData: script,
+        });
+        worker.on('message', resolve);
+        worker.on('error', reject);
+        worker.on('exit', (code) => {
+          if (code !== 0)
+            reject(new Error(`Worker stopped with exit code ${code}`));
+        });
+      });
+    }
+
+    it('basic test', (done) => {
+      const q = spawnWorker('str(4.2)');
+      q.then((r) => {
+        assert.strictEqual(r, '4.2');
+        done();
+      }).catch((err) => done(err));
+    });
+  });
 });
