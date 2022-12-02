@@ -46,16 +46,20 @@ jobs:
           TS_NODE_PROJECT: tsconfig.test.json
 
   test_npm_rebuild:
-    runs-on: ${{ matrix.platforms }}
+    runs-on: ${{ matrix.platform }}
 
     strategy:
       matrix:
-        platforms: [ubuntu-latest, windows-2019, macos-11]
+        platform: [ubuntu-20.04, ubuntu-22.04, windows-2019, macos-11]
         node-version: [14.x, 16.x, 18.x]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         exclude:
           - node-version: 14.x
             python-version: "3.11"
+          - node-version: 14.x
+            platform: ubuntu-22.04
+          - node-version: 16.x
+            platform: ubuntu-22.04
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
@@ -86,11 +90,11 @@ jobs:
           TS_NODE_PROJECT: tsconfig.test.json
 
   test_npm_rebuild_external:
-    runs-on: ${{ matrix.platforms }}
+    runs-on: ${{ matrix.platform }}
 
     strategy:
       matrix:
-        platforms: [ubuntu-latest, macos-11]
+        platform: [ubuntu-latest, macos-11]
 
     steps:
       - name: Use Node.js 18.x
