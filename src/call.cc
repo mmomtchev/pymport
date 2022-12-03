@@ -295,17 +295,15 @@ PythonException::PythonException(std::string msg)
 #else
 PythonException::PythonException()
 #endif
-  : trace(nullptr) {
+  : type(nullptr), value(nullptr), trace(nullptr) {
   using namespace std::string_literals;
 
   PyWeakRef err = PyErr_Occurred();
   if (err != nullptr) {
-    PyStrongRef type = nullptr, v = nullptr;
-
-    PyErr_Fetch(&type, &v, &trace);
+    PyErr_Fetch(&type, &value, &trace);
     PyErr_Clear();
 
-    PyStrongRef pstr = PyObject_Str(*v);
+    PyStrongRef pstr = PyObject_Str(*value);
     const char *py_err_msg = PyUnicode_AsUTF8(*pstr);
 
     err_msg = "Python exception: "s + py_err_msg
@@ -318,10 +316,15 @@ PythonException::PythonException()
   }
 }
 
+// This is a destructive operation
 Napi::Error PythonException::ToJS(Napi::Env env) {
   auto error_object = Napi::Error::New(env, err_msg);
   if (*trace != nullptr) {
+    auto type_object = PyObjectWrap::New(env, std::move(type));
+    auto value_object = PyObjectWrap::New(env, std::move(value));
     auto trace_object = PyObjectWrap::New(env, std::move(trace));
+    error_object.Set("pythonType", type_object);
+    error_object.Set("pythonValue", value_object);
     error_object.Set("pythonTrace", trace_object);
   }
   return error_object;

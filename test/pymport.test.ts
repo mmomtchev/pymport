@@ -1,5 +1,9 @@
 import { pymport, PyObject, PythonError, version } from 'pymport';
-import { assert } from 'chai';
+import chai from 'chai';
+import spies from 'chai-spies';
+chai.use(spies);
+const assert = chai.assert;
+const expect = chai.expect;
 
 describe('pymport', () => {
   it('version', function () {
@@ -198,6 +202,22 @@ describe('pymport', () => {
   });
 
   describe('handling of Python exceptions', () => {
+    it('include Python values', () => {
+      const raise = pymport('python_helpers');
+
+      try {
+        raise.get('raise_exception').call();
+        assert.isTrue(false); // make sure there is an exception
+      } catch (e: any) {
+        const err = e as PythonError;
+        assert.instanceOf(err.pythonType, PyObject);
+        assert.instanceOf(err.pythonValue, PyObject);
+        assert.instanceOf(err.pythonTrace, PyObject);
+        assert.strictEqual(err.pythonValue.constr, err.pythonType);
+        assert.strictEqual(err.pythonValue.type, 'Exception');
+      }
+    });
+
     it('retrieve the Python traceback', () => {
       const raise = pymport('python_helpers');
 
@@ -205,8 +225,9 @@ describe('pymport', () => {
         raise.get('raise_exception').call();
         assert.isTrue(false); // make sure there is an exception
       } catch (e: any) {
+        const err = e as PythonError;
         const traceback = pymport('traceback');
-        const stack = traceback.get('extract_tb').call((e as PythonError).pythonTrace);
+        const stack = traceback.get('extract_tb').call(err.pythonTrace);
         const text = stack.get('format').call().toJS();
         assert.match(text, /python_helpers.py/);
         assert.match(text, /line 2/);
@@ -216,17 +237,87 @@ describe('pymport', () => {
     });
   });
 
-  it('with', () => {
-    const np = pymport('numpy');
+  describe('with', () => {
+    it('real', () => {
+      const np = pymport('numpy');
 
-    const a = np.get('arange').call(6).get('reshape').call(2, 3);
-    const r = [] as number[];
-    // equivalent to
-    // with np.nditer(a) as it
-    np.get('nditer').call(a).with((it: PyObject) => {
-      for (const a of it)
-        r.push(+a);
+      const a = np.get('arange').call(6).get('reshape').call(2, 3);
+      const r = [] as number[];
+      // equivalent to
+      // with np.nditer(a) as it
+      np.get('nditer').call(a).with((it: PyObject) => {
+        for (const a of it)
+          r.push(+a);
+      });
+      assert.deepEqual(r, [0, 1, 2, 3, 4, 5]);
     });
-    assert.deepEqual(r, [0, 1, 2, 3, 4, 5]);
+
+    function createMock(handle: boolean) {
+      const enter = chai.spy(() => PyObject.fromJS('object'));
+      const exit = chai.spy(() => PyObject.fromJS(handle));
+      const mock = chai.spy.interface({
+        get(fn: string) {
+          switch (fn) {
+            case '__enter__': return { call: enter };
+            case '__exit__': return { call: exit };
+          }
+          return undefined;
+        },
+        with: PyObject.prototype.with
+      });
+      return { mock, enter, exit };
+    }
+
+    it('mocked /nominal', () => {
+      const { mock, enter, exit } = createMock(true);
+      mock.with((it: PyObject) => {
+        assert.strictEqual(it.toString(), 'object');
+      });
+      expect(enter).called.once;
+      expect(exit).called.once;
+      expect(exit).called.with.exactly(null, null, null);
+    });
+
+    it('mocked w/ handled Python exception', () => {
+      const { mock, enter, exit } = createMock(true);
+      const pythonType = PyObject.fromJS('type');
+      const pythonValue = PyObject.fromJS('value');
+      const pythonTrace = PyObject.fromJS('trace');
+      mock.with(() => {
+        const err = new Error('Python breakage') as PythonError;
+        err.pythonType = pythonType;
+        err.pythonValue = pythonValue;
+        err.pythonTrace = pythonTrace;
+        throw err;
+      });
+      expect(enter).called.once;
+      expect(exit).called.once;
+      expect(exit).called.with.exactly(pythonType, pythonValue, pythonTrace);
+    });
+
+    it('mocked w/ handled JS exception', () => {
+      const { mock, enter, exit } = createMock(true);
+      const err = new Error('JS breakage');
+      mock.with(() => {
+        throw err;
+      });
+      expect(enter).called.once;
+      expect(exit).called.once;
+      expect(exit).called.with.exactly(err.constructor, err, err.stack);
+    });
+
+    it('mocked w/ unhandled exception', () => {
+      const { mock, enter, exit } = createMock(false);
+      const err = new Error('some kind of breakage');
+      assert.throws(() => {
+        mock.with(() => {
+          throw err;
+        });
+      }, /some kind of breakage/);
+      expect(enter).called.once;
+      expect(exit).called.once;
+      expect(exit).called.with.exactly(err.constructor, err, err.stack);
+    });
+
   });
 });

@@ -157,7 +157,7 @@ export class PyObject implements Iterable<PyObject> {
   /**
    * The underlying Python type, equivalent to Python type() or JavaScript constructor
    */
-  readonly constr: (...args: any[]) => any;
+  readonly constr: PyObject;
 
   /**
    * Get a property from the object, equivalent to Python member operator .
@@ -339,4 +339,8 @@ declare const version: {
 /**
  * Errors thrown from Python have a `pythonTrace` property that contains the Python traceback
  */
-export type PythonError = (Error | TypeError | RangeError) & { pythonTrace: PyObject; };
+export type PythonError = (Error | TypeError | RangeError) & {
+  pythonType: PyObject;
+  pythonValue: PyObject;
+  pythonTrace: PyObject;
+};
