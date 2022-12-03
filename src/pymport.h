@@ -18,6 +18,8 @@ typedef std::function<PyStrongRef()> PyCallExecutor;
 // Must be constructed with the GIL held
 // ToJS can be called only from a V8 thread
 class PythonException {
+  PyStrongRef type;
+  PyStrongRef value;
   PyStrongRef trace;
   std::string err_msg;
 

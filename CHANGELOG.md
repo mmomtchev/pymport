@@ -6,11 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.3.0] WIP
+
+#### New Features
  - Multithreading safety
  - `callAsync` method allowing asynchronous calling of Python functions
+ - Add `PyObject.with` implementing Python `with`
+ - Return the Python exception object and its constructor in `PythonError.pythonValue` and `PythonError.pythonType`
+
+### Bug Fixes
+ - Fix [#33](https://github.com/mmomtchev/pymport/issues/33), `PyObject.prototype.constr` has wrong TypeScript type
+
 
 ### [1.2.1] WIP
- - Fix [[#27](https://github.com/mmomtchev/pymport/issues/27), a function as a single argument is considered a kwargs object
+ - Fix [#27](https://github.com/mmomtchev/pymport/issues/27), a function as a single argument is considered a kwargs object
 
 ## [1.2.0] 2022-11-25
 
