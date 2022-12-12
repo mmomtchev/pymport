@@ -167,7 +167,7 @@ export class PyObject implements Iterable<PyObject> {
   get: (name: string) => PyObject;
 
   /**
-   * Check if a property exists
+   * Check if a property exists. Equivalent to Python hasattr(o, name)
    * @param {string | any} key property name, only sets accept values that are not a string
    * @returns {boolean}
    */
