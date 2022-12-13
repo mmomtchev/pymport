@@ -16,6 +16,6 @@ if not exist "%1\python311.lib" (
   build\Python-%VERSION%\PCBuild\build.bat
   (robocopy build\Python-%VERSION%\PCBuild\amd64 %1 /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
   (robocopy build\Python-%VERSION%\Lib %1\lib /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
-  set PYTHONHOME=%1
+  set PYTHONHOME=%1:"=%
   %1\python -m ensurepip
 )
