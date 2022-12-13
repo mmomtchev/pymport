@@ -22,7 +22,7 @@ case `uname` in
     LIBNAME="$1/lib/libpython3.11.dylib"
     ;;
   *)
-    echo 'Unsupported platform'
+    echo 'Unsupported platform for the builtin Python interpreter'
     exit 1
     ;;
 esac
