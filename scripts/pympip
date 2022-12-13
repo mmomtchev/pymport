@@ -9,7 +9,7 @@ const bin_dir = path.resolve(path.dirname(
 const exe = os.platform() === 'win32' ? 'python.exe' : 'python';
 const python = path.join(bin_dir, exe);
 if (fs.existsSync(python)) {
-  cp.spawnSync(python, ['-m', 'pip', ...process.argv.slice(2)], { stdio: 'inherit' });
+  cp.spawnSync(python, ['-m', 'pip', ...process.argv.slice(2)], { stdio: 'inherit', env: { PYTHONHOME: bin_dir } });
 } else {
   console.error('You don\'t appear to have the pymport built-in Python environment installed: ',
     python);

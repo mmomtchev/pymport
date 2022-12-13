@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] WIP
 
 #### New Features
+ - Builtin Python 3.11.1
  - Multithreading safety
  - `callAsync` method allowing asynchronous calling of Python functions
  - Named ES6 exports
