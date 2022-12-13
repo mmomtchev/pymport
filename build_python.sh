@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=3.10.8
+VERSION=3.11.1
 
 set -x
 unset MAKEFLAGS
@@ -13,12 +13,12 @@ fi
 case `uname` in
   'Linux')
     export LDFLAGS="-Wl,-z,origin -Wl,-rpath,'\$\$ORIGIN/../lib'"
-    LIBNAME="$1/lib/libpython3.10.so"
+    LIBNAME="$1/lib/libpython3.11.so"
     ;;
   'Darwin')
     export LDFLAGS="-Wl,-rpath,@loader_path/../lib"
     export SSL="--with-openssl=$(brew --prefix openssl@1.1)"
-    LIBNAME="$1/lib/libpython3.10.dylib"
+    LIBNAME="$1/lib/libpython3.11.dylib"
     ;;
   *)
     echo 'Unsupported platform'

@@ -29,7 +29,7 @@
       "name": "Windows",
       "includePath": [
         "${workspaceFolder}/node_modules/node-addon-api",
-        "C:/Program Files/Python310/include",
+        "C:/Program Files/Python311/include",
         "~/AppData/Local/node-gyp/Cache/16.10.0/include/node"
       ],
       "defines": [
