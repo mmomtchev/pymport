@@ -10,8 +10,8 @@
   "types": "lib/index.d.ts",
   "exports": {
     ".": "./lib/index.mjs",
-    "./array": "./array/index.mjs",
-    "./proxified": "./proxified/index.mjs"
+    "./array": "./array/index.js",
+    "./proxified": "./proxified/index.js"
   },
   "keywords": [
     "python",
