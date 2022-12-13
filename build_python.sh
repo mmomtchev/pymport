@@ -16,6 +16,7 @@ case `uname` in
     export CFLAGS=""
     LIBNAME="$1/lib/libpython3.11.so"
     export ZLIB_LIBS="-lz -ldl"
+    export PY_UNSUPPORTED_OPENSSL_BUILD=static
     ;;
   'Darwin')
     export LDFLAGS="-Wl,-rpath,@loader_path/../lib"
@@ -27,8 +28,6 @@ case `uname` in
     exit 1
     ;;
 esac
-
-export PY_UNSUPPORTED_OPENSSL_BUILD=static
 
 if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
   echo building in $1
