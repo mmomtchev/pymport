@@ -135,21 +135,26 @@ Napi::Object Init(Env env, Object exports) {
     },
     context);
   if (active_environments == 0) {
+    PyConfig config;
+
     VERBOSE("Bootstrapping Python\n");
+    PyConfig_InitPythonConfig(&config);
 #ifdef BUILTIN_PYTHON_PATH
     auto pathPymport = std::getenv("PYMPORTPATH");
     auto homePython = std::getenv("PYTHONHOME");
     if (homePython == nullptr) {
       if (pathPymport == nullptr) {
-        Py_SetPythonHome(BUILTIN_PYTHON_PATH);
+        config.home = BUILTIN_PYTHON_PATH;
       } else {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         builtin_python_path = converter.from_bytes(pathPymport);
-        Py_SetPythonHome(builtin_python_path.c_str());
+        config.home = builtin_python_path.c_str();
       }
     }
 #endif
-    Py_Initialize();
+    auto status = Py_InitializeFromConfig(&config);
+    if (PyStatus_Exception(status)) { throw Error::New(env, "Failed initializing Python"); }
+    PyConfig_Clear(&config);
     memview::Init();
     PyObjectWrap::InitJSTrampoline();
     py_main = PyEval_SaveThread();
