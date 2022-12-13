@@ -9,9 +9,9 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "exports": {
-    ".": "./lib/index.js",
-    "./array": "./array/index.js",
-    "./proxified": "./proxified/index.js"
+    ".": "./lib/index.mjs",
+    "./array": "./array/index.mjs",
+    "./proxified": "./proxified/index.mjs"
   },
   "keywords": [
     "python",
