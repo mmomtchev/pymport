@@ -15,6 +15,7 @@ case `uname` in
     export LDFLAGS="-Wl,-z,origin -Wl,-rpath,'\$\$ORIGIN/../lib'"
     export CFLAGS=""
     LIBNAME="$1/lib/libpython3.11.so"
+    export ZLIB_LIBS="-lz -ldl"
     ;;
   'Darwin')
     export LDFLAGS="-Wl,-rpath,@loader_path/../lib"
