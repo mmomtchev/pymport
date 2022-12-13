@@ -144,11 +144,11 @@ Napi::Object Init(Env env, Object exports) {
     auto homePython = std::getenv("PYTHONHOME");
     if (homePython == nullptr) {
       if (pathPymport == nullptr) {
-        config.home = BUILTIN_PYTHON_PATH;
+        config.home = const_cast<wchar_t *>(BUILTIN_PYTHON_PATH);
       } else {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         builtin_python_path = converter.from_bytes(pathPymport);
-        config.home = builtin_python_path.c_str();
+        config.home = const_cast<wchar_t *>(builtin_python_path.c_str());
       }
     }
 #endif
