@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### New Features
  - Multithreading safety
  - `callAsync` method allowing asynchronous calling of Python functions
+ - Named ES6 exports
  - Add `PyObject.with` implementing Python `with`
  - Return the Python exception object and its constructor in `PythonError.pythonValue` and `PythonError.pythonType`
 
