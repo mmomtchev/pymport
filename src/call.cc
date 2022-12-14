@@ -31,6 +31,7 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
 
 // A Python wrapper around a JS function
 // It returns an owned reference as per the Python calling convention
+// Called from Python context but always on the V8 main thread
 static PyObject *CallJSWithPythonArgs(JSCall_Trampoline *fn, PyObject *args, PyObject *kw) {
   Napi::Env env = fn->js_fn->Env();
   std::vector<napi_value> js_args;
@@ -102,20 +103,19 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
     // Release the GIL - so that we can acquire it in the V8 main thread
     PyThreadState *python_state = PyEval_SaveThread();
     me->js_tsfn->Ref(env);
-    me->js_tsfn->BlockingCall(
-      [me, args, kw, &lock, &ready, &error, &cv, &ret, &python_state](Napi::Env env, Function js_fn) {
-        // This runs in the V8 main thread
-        std::unique_lock<std::mutex> guard(lock);
-        {
-          // Reacquire the GIL in the V8 main thread with an empty Python context
-          PyGILGuard pyGilGuard;
-          try {
-            ret = CallJSWithPythonArgs(me, args, kw);
-          } catch (const Error &err) { error = err.Message(); }
-        }
-        ready = true;
-        cv.notify_one();
-      });
+    me->js_tsfn->BlockingCall([me, args, kw, &lock, &ready, &error, &cv, &ret](Napi::Env env, Function js_fn) {
+      // This runs in the V8 main thread
+      std::unique_lock<std::mutex> guard(lock);
+      {
+        // Reacquire the GIL in the V8 main thread with an empty Python context
+        PyGILGuard pyGilGuard;
+        try {
+          ret = CallJSWithPythonArgs(me, args, kw);
+        } catch (const Error &err) { error = err.Message(); }
+      }
+      ready = true;
+      cv.notify_one();
+    });
     std::unique_lock<std::mutex> guard(lock);
     cv.wait(guard, [&ready] { return ready; });
     me->js_tsfn->Unref(env);

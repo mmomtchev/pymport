@@ -17,9 +17,9 @@ using namespace pymport;
 #define __STR(x) #x
 
 size_t pymport::active_environments = 0;
+wchar_t *python_home = nullptr;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
 PyThreadState *py_main;
-std::wstring builtin_python_path;
 
 std::string to_hex(long number) {
   std::stringstream r;
@@ -129,27 +129,40 @@ Napi::Object Init(Env env, Object exports) {
         VERBOSE("Shutting down Python\n");
         PyEval_RestoreThread(py_main);
         Py_Finalize();
+        if (python_home != nullptr) {
+          delete python_home;
+          python_home = nullptr;
+        }
       }
 #endif
       // context will be deleted by the NAPI Finalizer
     },
     context);
-  if (active_environments == 0) {
+  if (active_environments == 0 && !Py_IsInitialized()) {
+    PyConfig config;
+
     VERBOSE("Bootstrapping Python\n");
+    PyConfig_InitPythonConfig(&config);
 #ifdef BUILTIN_PYTHON_PATH
     auto pathPymport = std::getenv("PYMPORTPATH");
     auto homePython = std::getenv("PYTHONHOME");
     if (homePython == nullptr) {
+      std::wstring wstr;
       if (pathPymport == nullptr) {
-        Py_SetPythonHome(BUILTIN_PYTHON_PATH);
+        wstr = BUILTIN_PYTHON_PATH;
       } else {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        builtin_python_path = converter.from_bytes(pathPymport);
-        Py_SetPythonHome(builtin_python_path.c_str());
+        wstr = converter.from_bytes(pathPymport);
       }
+      python_home = new wchar_t[wstr.size() + 1];
+      memcpy(python_home, wstr.c_str(), wstr.size() * sizeof(wchar_t));
+      python_home[wstr.size()] = 0;
+      config.home = python_home;
     }
 #endif
-    Py_Initialize();
+    auto status = Py_InitializeFromConfig(&config);
+    PyConfig_Clear(&config);
+    if (PyStatus_Exception(status)) { throw Error::New(env, "Failed initializing Python"); }
     memview::Init();
     PyObjectWrap::InitJSTrampoline();
     py_main = PyEval_SaveThread();
