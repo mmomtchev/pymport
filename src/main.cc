@@ -19,7 +19,6 @@ using namespace pymport;
 size_t pymport::active_environments = 0;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
 PyThreadState *py_main;
-std::wstring builtin_python_path;
 
 std::string to_hex(long number) {
   std::stringstream r;
@@ -147,14 +146,17 @@ Napi::Object Init(Env env, Object exports) {
         config.home = const_cast<wchar_t *>(BUILTIN_PYTHON_PATH);
       } else {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        builtin_python_path = converter.from_bytes(pathPymport);
-        config.home = const_cast<wchar_t *>(builtin_python_path.c_str());
+        auto wstr = converter.from_bytes(pathPymport);
+        // A one-time permanent allocation
+        config.home = new wchar_t[wstr.size() + 1];
+        memcpy(config.home, wstr.c_str(), wstr.size() * sizeof(wchar_t));
+        config.home[wstr.size()] = 0;
       }
     }
 #endif
     auto status = Py_InitializeFromConfig(&config);
-    if (PyStatus_Exception(status)) { throw Error::New(env, "Failed initializing Python"); }
     PyConfig_Clear(&config);
+    if (PyStatus_Exception(status)) { throw Error::New(env, "Failed initializing Python"); }
     memview::Init();
     PyObjectWrap::InitJSTrampoline();
     py_main = PyEval_SaveThread();

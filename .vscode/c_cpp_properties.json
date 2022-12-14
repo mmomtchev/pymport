@@ -26,6 +26,21 @@
       "cppStandard": "c++14"
     },
     {
+      "name": "Linux w/ Python",
+      "includePath": [
+        "/usr/include/node",
+        "${workspaceFolder}/node_modules/node-addon-api",
+        "/usr/include/python3.8"
+      ],
+      "defines": [
+        "${projectDefines}",
+        "BUILTIN_PYTHON_PATH=LR\"(lib/binding/linux-x64)\""
+      ],
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "c17",
+      "cppStandard": "c++14"
+    },
+    {
       "name": "macOS",
       "includePath": [
         "/usr/local/include/node",
