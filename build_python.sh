@@ -38,7 +38,7 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
     cd build/Python-${VERSION}
     sed -i 's/ffi_lib = None/ffi_lib=":libffi_pic.a"/g' setup.py
 
-    ./configure --prefix $1 --enable-shared --enable-optimizations --disable-test-modules ${SSL}
+    ./configure --prefix $1 --enable-shared --enable-optimizations ${SSL}
     make -j4 build_all
     make install
   )
