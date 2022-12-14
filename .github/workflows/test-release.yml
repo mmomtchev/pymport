@@ -8,7 +8,7 @@ on:
 
 jobs:
   test_published:
-    runs-on: ${{ matrix.platforms }}
+    runs-on: ${{ matrix.platform }}
 
     strategy:
       matrix:
