@@ -142,16 +142,17 @@ Napi::Object Init(Env env, Object exports) {
     auto pathPymport = std::getenv("PYMPORTPATH");
     auto homePython = std::getenv("PYTHONHOME");
     if (homePython == nullptr) {
+      std::wstring wstr;
       if (pathPymport == nullptr) {
-        config.home = const_cast<wchar_t *>(BUILTIN_PYTHON_PATH);
+        wstr = BUILTIN_PYTHON_PATH;
       } else {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        auto wstr = converter.from_bytes(pathPymport);
-        // A one-time permanent allocation
-        config.home = new wchar_t[wstr.size() + 1];
-        memcpy(config.home, wstr.c_str(), wstr.size() * sizeof(wchar_t));
-        config.home[wstr.size()] = 0;
+        wstr = converter.from_bytes(pathPymport);
       }
+      // A one-time permanent allocation
+      config.home = new wchar_t[wstr.size() + 1];
+      memcpy(config.home, wstr.c_str(), wstr.size() * sizeof(wchar_t));
+      config.home[wstr.size()] = 0;
     }
 #endif
     auto status = Py_InitializeFromConfig(&config);
