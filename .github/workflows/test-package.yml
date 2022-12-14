@@ -9,7 +9,7 @@ on:
 
 jobs:
   test_npm_binaries:
-    runs-on: ${{ matrix.platforms }}
+    runs-on: ${{ matrix.platform }}
 
     strategy:
       matrix:
