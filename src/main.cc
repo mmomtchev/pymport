@@ -17,7 +17,6 @@ using namespace pymport;
 #define __STR(x) #x
 
 size_t pymport::active_environments = 0;
-wchar_t *python_home = nullptr;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
 PyThreadState *py_main;
 
@@ -129,10 +128,6 @@ Napi::Object Init(Env env, Object exports) {
         VERBOSE("Shutting down Python\n");
         PyEval_RestoreThread(py_main);
         Py_Finalize();
-        if (python_home != nullptr) {
-          delete python_home;
-          python_home = nullptr;
-        }
       }
 #endif
       // context will be deleted by the NAPI Finalizer
@@ -154,7 +149,7 @@ Napi::Object Init(Env env, Object exports) {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         wstr = converter.from_bytes(pathPymport);
       }
-      python_home = new wchar_t[wstr.size() + 1];
+      auto python_home = reinterpret_cast<wchar_t *>(malloc(sizeof(wchar_t) * (wstr.size() + 1)));
       memcpy(python_home, wstr.c_str(), wstr.size() * sizeof(wchar_t));
       python_home[wstr.size()] = 0;
       config.home = python_home;
