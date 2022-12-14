@@ -5,8 +5,8 @@ const cp = require('child_process');
 const os = require('os');
 
 const bin_dir = path.resolve(path.dirname(
-  require('@mapbox/node-pre-gyp').find(path.join(__dirname, '..', 'package.json'))));
-const exe = os.platform() === 'win32' ? 'python.exe' : 'python';
+  require('@mapbox/node-pre-gyp').find(path.join(__dirname, '..', 'package.json'))), 'bin');
+const exe = os.platform() === 'win32' ? 'python.exe' : 'python3';
 const python = path.join(bin_dir, exe);
 if (fs.existsSync(python)) {
   cp.spawnSync(python, ['-m', 'pip', ...process.argv.slice(2)], { stdio: 'inherit', env: { PYTHONHOME: bin_dir } });
