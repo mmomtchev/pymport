@@ -26,6 +26,20 @@
       "cppStandard": "c++14"
     },
     {
+      "name": "macOS",
+      "includePath": [
+        "/usr/local/include/node",
+        "${workspaceFolder}/node_modules/node-addon-api",
+        "/usr/local/Cellar/python@3.10/3.10.8/Frameworks/Python.framework/Headers"
+      ],
+      "defines": [
+        "${projectDefines}"
+      ],
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "c17",
+      "cppStandard": "c++14"
+    },
+    {
       "name": "Windows",
       "includePath": [
         "${workspaceFolder}/node_modules/node-addon-api",
