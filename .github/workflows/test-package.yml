@@ -123,7 +123,7 @@ jobs:
           mv pymport-${{ github.event.inputs.version }}/test .
       - name: Install dependencies
         run: |
-          npm i @types/chai @types/mocha @types/node chai mocha ts-node typescript
+          npm i @types/chai @types/mocha @types/node chai chai-spies mocha ts-node typescript
       - name: Install pymport from npm
         run: npm install --force pymport@${{ github.event.inputs.version }} --build-from-source --external_python
       - run: pip3 install -r test/requirements.txt
