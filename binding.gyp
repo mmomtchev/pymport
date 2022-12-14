@@ -167,7 +167,7 @@
               'action': [
                 'install_name_tool', '-change',
                 '<(module_path)/lib/libpython3.11.dylib',
-                '@loader_path/lib/libpython3.11.dylib',
+                '@loader_path/../lib/libpython3.11.dylib',
                 '<(module_path)/bin/python3.11'
               ]
             }
