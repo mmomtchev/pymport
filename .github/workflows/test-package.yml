@@ -13,7 +13,13 @@ jobs:
 
     strategy:
       matrix:
-        platform: [ubuntu-20.04, ubuntu-22.04, windows-2019, macos-11]
+        platform:
+          - ubuntu-20.04
+          - ubuntu-22.04
+          - windows-2019
+          - windows-2022
+          - macos-11
+          - macos-12
         node-version: [14.x, 16.x, 18.x, 19.x]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
 
