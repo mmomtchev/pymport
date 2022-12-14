@@ -31,6 +31,7 @@ static PyObject *JSCall_Trampoline_Constructor(PyTypeObject *type, PyObject *arg
 
 // A Python wrapper around a JS function
 // It returns an owned reference as per the Python calling convention
+// Called from Python context but always on the V8 main thread
 static PyObject *CallJSWithPythonArgs(JSCall_Trampoline *fn, PyObject *args, PyObject *kw) {
   Napi::Env env = fn->js_fn->Env();
   std::vector<napi_value> js_args;
