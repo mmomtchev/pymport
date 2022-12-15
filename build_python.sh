@@ -13,6 +13,7 @@ fi
 if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
   echo building in $1
   rm -rf build/Python-${VERSION}
+  rm -rf build/openssl
 
   tar -C build -zxf dist/Python-${VERSION}.tgz
   (
@@ -29,11 +30,11 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
         ;;
       'Darwin')
         export LDFLAGS="-Wl,-rpath,@loader_path/../lib"
-        mkdir -p openssl/lib
-        mkdir -p openssl/include
-        cp $(brew --prefix openssl@1.1)/lib/*.a openssl/lib
-        cp -r $(brew --prefix openssl@1.1)/include/openssl openssl/include
-        export SSL="--with-openssl=$(pwd)/openssl"
+        mkdir -p ../openssl/lib
+        mkdir -p ../openssl/include
+        cp $(brew --prefix openssl@1.1)/lib/*.a ../openssl/lib
+        cp -r $(brew --prefix openssl@1.1)/include/openssl ../openssl/include
+        export SSL="--with-openssl=$(pwd)/../openssl"
         LIBNAME="$1/lib/libpython3.11.dylib"
         patch < ../../patches/python-3.11-configure.patch
         ;;
