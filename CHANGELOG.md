@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Builtin Python 3.11.1
  - Multithreading safety
  - `callAsync` method allowing asynchronous calling of Python functions
- - On Linux and macOS, the builtin Python interpreter includes static versions of OpenSSL and libffi, this ensures better compatiblity at the price of disabling the OpenSSL extensions supporting dedicated crypto hardware
+ - On Linux and macOS, the builtin Python interpreter includes static versions of OpenSSL and libffi, this ensures better compatiblity at the price of disabling the OpenSSL extensions supporting dedicated crypto hardware - this restriction does not apply if `pymport` is rebuilt from source
  - Named ES6 exports
  - Add `PyObject.with` implementing Python `with`
  - Return the Python exception object and its constructor in `PythonError.pythonValue` and `PythonError.pythonType`
