@@ -45,7 +45,7 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
 
     ./configure --prefix $1 --enable-shared --enable-optimizations --without-system-ffi ${SSL}
     make -j4 build_all
-    make install
+    make -j4 install
   )
   rm -f $1/python
   ln -s bin/python3 $1/python
