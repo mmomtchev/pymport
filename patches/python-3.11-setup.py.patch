@@ -1,0 +1,12 @@
+--- setup.py.orig	2022-12-06 20:05:27.000000000 +0100
++++ setup.py	2022-12-15 14:45:05.000000000 +0100
+@@ -1418,7 +1418,8 @@
+         self.addext(Extension('_ctypes_test', ['_ctypes/_ctypes_test.c']))
+ 
+         ffi_inc = sysconfig.get_config_var("LIBFFI_INCLUDEDIR")
+-        ffi_lib = None
++        ffi_lib = ":libffi_pic.a"
++        extra_link_args.append('--exclude-libs,libffi_pic.a')
+ 
+         ffi_inc_dirs = self.inc_dirs.copy()
+         if MACOS:
