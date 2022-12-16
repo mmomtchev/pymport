@@ -1,0 +1,54 @@
+--- configure.orig	2022-12-16 13:18:32.859905065 +0100
++++ configure	2022-12-16 13:23:03.467754104 +0100
+@@ -17845,6 +17845,51 @@
+ $as_echo "$OPENSSL_RPATH" >&6; }
+ 
+ 
++# This static linking is NOT OFFICIALLY SUPPORTED and not advertised.
++# Requires static OpenSSL build with position-independent code. Some features
++# like DSO engines or external OSSL providers don't work. Only tested with GCC
++# and clang on X86_64.
++if test "x$PY_UNSUPPORTED_OPENSSL_BUILD" = xstatic; then :
++
++  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsupported static openssl build" >&5
++$as_echo_n "checking for unsupported static openssl build... " >&6; }
++  new_OPENSSL_LIBS=
++  for arg in $OPENSSL_LIBS; do
++    case $arg in #(
++  -l*) :
++
++        libname=$(echo $arg | cut -c3-)
++        case `uname` in
++          Linux)
++        new_OPENSSL_LIBS="$new_OPENSSL_LIBS -l:lib${libname}.a -Wl,--exclude-libs,lib${libname}.a"
++            ;;
++          Darwin)
++            new_OPENSSL_LIBS="$new_OPENSSL_LIBS -Wl,-hidden-l${libname}"
++            ;;
++        esac
++       ;; #(
++  *) :
++    new_OPENSSL_LIBS="$new_OPENSSL_LIBS $arg"
++     ;;
++esac
++  done
++    OPENSSL_LIBS="$new_OPENSSL_LIBS $ZLIB_LIBS"
++  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $OPENSSL_LIBS" >&5
++$as_echo "$OPENSSL_LIBS" >&6; }
++
++fi
++
++LIBCRYPTO_LIBS=
++for arg in $OPENSSL_LIBS; do
++  case $arg in #(
++  -l*ssl*|-Wl*ssl*) :
++     ;; #(
++  *) :
++    LIBCRYPTO_LIBS="$LIBCRYPTO_LIBS $arg"
++   ;;
++esac
++done
++
+ # check if OpenSSL libraries work as expected
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether OpenSSL provides required APIs" >&5
+ $as_echo_n "checking whether OpenSSL provides required APIs... " >&6; }
