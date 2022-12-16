@@ -1,0 +1,28 @@
+--- setup.py.orig	2022-12-06 19:31:21.000000000 +0100
++++ setup.py	2022-12-16 16:13:35.000000000 +0100
+@@ -2272,7 +2272,8 @@
+                                libraries=['m']))
+ 
+         ffi_inc = sysconfig.get_config_var("LIBFFI_INCLUDEDIR")
+-        ffi_lib = None
++        ffi_lib = ":libffi_pic.a"
++        extra_link_args.append('--exclude-libs,libffi_pic.a')
+ 
+         ffi_inc_dirs = self.inc_dirs.copy()
+         if MACOS:
+@@ -2487,12 +2488,10 @@
+         # features like DSO engines or external OSSL providers don't work.
+         # Only tested on GCC and clang on X86_64.
+         if os.environ.get("PY_UNSUPPORTED_OPENSSL_BUILD") == "static":
++            openssl_libs = split_var('OPENSSL_LIBS', '')
+             extra_linker_args = []
+-            for lib in openssl_extension_kwargs["libraries"]:
+-                # link statically
+-                extra_linker_args.append(f"-l:lib{lib}.a")
+-                # don't export symbols
+-                extra_linker_args.append(f"-Wl,--exclude-libs,lib{lib}.a")
++            for lib in openssl_libs:
++                extra_linker_args.append(lib)
+             openssl_extension_kwargs["extra_link_args"] = extra_linker_args
+             # don't link OpenSSL shared libraries.
+             # include libz for OpenSSL build flavors with compression support

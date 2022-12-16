@@ -1,4 +1,4 @@
-set VERSION=3.11.1
+set VERSION=3.10.9
 
 set mypath=%~dp0
 cd %mypath:~0,-1%
@@ -8,7 +8,7 @@ if not exist dist\Python-%VERSION%.tgz (
   curl https://www.python.org/ftp/python/%VERSION%/Python-%VERSION%.tgz --output dist\Python-%VERSION%.tgz
 )
 
-if not exist "%1\python311.lib" (
+if not exist "%1\python310.lib" (
   echo building in %1
   rd /q /s build\Python-%VERSION%
 
@@ -16,6 +16,7 @@ if not exist "%1\python311.lib" (
   build\Python-%VERSION%\PCBuild\build.bat
   (robocopy build\Python-%VERSION%\PCBuild\amd64 %1 /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
   (robocopy build\Python-%VERSION%\Lib %1\lib /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
+  (robocopy build\Python-%VERSION%\Include %1\include /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
   set PYTHONHOME=%~1
   %1\python -m ensurepip
 )

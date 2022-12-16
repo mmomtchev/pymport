@@ -9,7 +9,15 @@ const bin_dir = path.resolve(path.dirname(
 const exe = os.platform() === 'win32' ? 'python.exe' : path.join('bin', 'python3');
 const python = path.join(bin_dir, exe);
 if (fs.existsSync(python)) {
-  cp.spawnSync(python, ['-m', 'pip', ...process.argv.slice(2)], { stdio: 'inherit', env: { PYTHONHOME: bin_dir } });
+  console.log(bin_dir);
+  cp.spawnSync(python, ['-m', 'pip', ...process.argv.slice(2)], {
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      PYTHONHOME: bin_dir,
+      CFLAGS: (process.env.CFLAGS || '') + ` -I${bin_dir}/include/python3.10`
+    }
+  });
 } else {
   console.error('You don\'t appear to have the pymport built-in Python environment installed: ',
     python);

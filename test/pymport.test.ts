@@ -16,8 +16,8 @@ describe('pymport', () => {
     if (version.pythonLibrary.builtin) {
       assert.isString(version.pythonHome);
       assert.strictEqual(version.pythonLibrary.major, 3);
-      assert.strictEqual(version.pythonLibrary.minor, 11);
-      assert.strictEqual(version.pythonLibrary.micro, 1);
+      assert.strictEqual(version.pythonLibrary.minor, 10);
+      assert.strictEqual(version.pythonLibrary.micro, 9);
       assert.strictEqual(version.pythonLibrary.release, 15);
       assert.strictEqual(version.pythonLibrary.serial, 0);
       assert.isString(version.pythonLibrary.version);
