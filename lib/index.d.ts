@@ -331,7 +331,7 @@ declare const version: {
   };
   readonly pythonHome: string;
   /**
-   * Supported only on Python 3.11+
+   * Supported only on Python 3.10+
    */
   readonly pythonRuntime: null | string;
 };

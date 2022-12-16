@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] WIP
 
 #### New Features
- - Builtin Python 3.11.1
+ - Builtin Python 3.10.9
  - Multithreading safety
  - `callAsync` method allowing asynchronous calling of Python functions
  - On Linux and macOS, the builtin Python interpreter includes static versions of OpenSSL and libffi, this ensures better compatiblity at the price of disabling the OpenSSL extensions supporting dedicated crypto hardware - this restriction does not apply if `pymport` is rebuilt from source

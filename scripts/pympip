@@ -15,7 +15,7 @@ if (fs.existsSync(python)) {
     env: {
       ...process.env,
       PYTHONHOME: bin_dir,
-      CFLAGS: (process.env.CFLAGS || '') + ` -I${bin_dir}/include/python3.11`
+      CFLAGS: (process.env.CFLAGS || '') + ` -I${bin_dir}/include/python3.10`
     }
   });
 } else {
