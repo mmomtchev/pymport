@@ -1,5 +1,5 @@
 --- setup.py.orig	2022-12-06 19:31:21.000000000 +0100
-+++ setup.py	2022-12-16 13:14:39.256469721 +0100
++++ setup.py	2022-12-16 15:34:27.000000000 +0100
 @@ -2272,7 +2272,8 @@
                                 libraries=['m']))
  
@@ -10,3 +10,15 @@
  
          ffi_inc_dirs = self.inc_dirs.copy()
          if MACOS:
+@@ -2488,6 +2489,11 @@
+         # Only tested on GCC and clang on X86_64.
+         if os.environ.get("PY_UNSUPPORTED_OPENSSL_BUILD") == "static":
+             extra_linker_args = []
++            if MACOS:
++                openssl_libs = split_var('OPENSSL_LIBS', '-Wl,')
++                for lib in openssl_libs:
++                  extra_linker_args.append(f"-Wl,{lib}")
++            else:
+             for lib in openssl_extension_kwargs["libraries"]:
+                 # link statically
+                 extra_linker_args.append(f"-l:lib{lib}.a")
