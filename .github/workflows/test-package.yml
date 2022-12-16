@@ -50,6 +50,9 @@ jobs:
           npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 --v8-expose-gc *.test.ts *.test.cjs *.test.mjs
         env:
           TS_NODE_PROJECT: tsconfig.test.json
+      - name: Test rebuilding a Python package
+        run: |
+          npx pympip3 install --no-binary :all: xxhash
 
   test_npm_rebuild:
     runs-on: ${{ matrix.platform }}
@@ -94,6 +97,9 @@ jobs:
           npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 --v8-expose-gc *.test.ts *.test.cjs *.test.mjs
         env:
           TS_NODE_PROJECT: tsconfig.test.json
+      - name: Test rebuilding a Python package
+        run: |
+          npx pympip3 install --no-binary :all: xxhash
 
   test_npm_rebuild_external:
     runs-on: ${{ matrix.platform }}
@@ -133,3 +139,6 @@ jobs:
           npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 --v8-expose-gc *.test.ts *.test.cjs *.test.mjs
         env:
           TS_NODE_PROJECT: tsconfig.test.json
+      - name: Test rebuilding a Python package
+        run: |
+          npx pympip3 install --no-binary :all: xxhash
