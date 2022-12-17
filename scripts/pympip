@@ -14,8 +14,7 @@ if (fs.existsSync(python)) {
     stdio: 'inherit',
     env: {
       ...process.env,
-      PYTHONHOME: bin_dir,
-      CFLAGS: (process.env.CFLAGS || '') + ` -I${bin_dir}/include/python3.10`
+      PYTHONHOME: bin_dir
     }
   });
 } else {
