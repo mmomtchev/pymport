@@ -79,6 +79,22 @@ describe('pymport', () => {
       const a = np.get('fromfunction').call(fn, [2, 3]);
       assert.deepEqual(a.get('tolist').call().toJS(), [[0, 1, 2], [1, 2, 3]]);
     });
+
+    it('operator overloading', () => {
+      const np = pymport('numpy');
+      const operator = pymport('operator');
+
+      const a = np.get('ones').call(6).get('reshape').call(2, 3);
+      const b = np.get('arange').call(6).get('reshape').call(2, 3);
+
+      const eq = operator.get('eq').call(a, b);
+      assert.equal(eq.type, 'numpy.ndarray');
+      assert.deepEqual(eq.get('tolist').call().toJS(), [[false, true, false], [false, false, false]]);
+
+      const sum = operator.get('add').call(a, b);
+      assert.equal(sum.type, 'numpy.ndarray');
+      assert.deepEqual(sum.get('tolist').call().toJS(), [[1, 2, 3], [4, 5, 6]]);
+    });
   });
 
   describe('pandas', () => {

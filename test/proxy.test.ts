@@ -31,6 +31,22 @@ describe('proxy', () => {
     assert.deepEqual(df3.values.tolist().toJS(), [[0, 1, 2]]);
   });
 
+  it('operator overloading', () => {
+    const np = pymport('numpy');
+    const operator = pymport('operator');
+
+    const a = np.ones(6).reshape(2, 3);
+    const b = np.arange(6).reshape(2, 3);
+
+    const eq = operator.eq(a, b);
+    assert.equal(eq.type, 'numpy.ndarray');
+    assert.deepEqual(eq.tolist().toJS(), [[false, true, false], [false, false, false]]);
+
+    const sum = operator.add(a, b);
+    assert.equal(sum.type, 'numpy.ndarray');
+    assert.deepEqual(sum.tolist().toJS(), [[1, 2, 3], [4, 5, 6]]);
+  });
+
   it('proxified PyObject constructs proxified objects', () => {
     const py = PyObject.fromJS({ name: 'value' });
 

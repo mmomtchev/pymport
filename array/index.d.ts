@@ -1,4 +1,4 @@
-import { PyObject } from '.';
+import { PyObject } from '..';
 
 export type TypedArray = Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array |
   BigUint64Array | BigInt64Array | Float32Array | Float64Array;
