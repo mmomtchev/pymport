@@ -99,7 +99,7 @@ jobs:
           TS_NODE_PROJECT: tsconfig.test.json
       - name: Test rebuilding a Python package
         run: |
-          npx pympip3 install --no-binary :all: xxhash
+          pip3 install --no-binary :all: xxhash
 
   test_npm_rebuild_external:
     runs-on: ${{ matrix.platform }}
@@ -141,4 +141,4 @@ jobs:
           TS_NODE_PROJECT: tsconfig.test.json
       - name: Test rebuilding a Python package
         run: |
-          npx pympip3 install --no-binary :all: xxhash
+          pip3 install --no-binary :all: xxhash
