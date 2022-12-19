@@ -26,7 +26,7 @@ describe('callAsync', () => {
       done('Not expected to succeed');
     }).catch((err) => {
       try {
-        assert.match(err.toString(), /unsupported operand type/);
+        assert.match(err.toString(), /supported/);
         done();
       } catch (err) {
         done(err);
