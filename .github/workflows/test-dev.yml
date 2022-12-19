@@ -59,7 +59,7 @@ jobs:
       - run: |
           import os
           import sys
-          print(dict(os.environ)))
+          print(dict(os.environ))
           print(sys.path)
         shell: python
       - run: |
