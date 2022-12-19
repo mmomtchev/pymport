@@ -10,7 +10,7 @@ on:
     branches: ["*"]
 
 jobs:
-  shared_python:
+  python3-config:
     runs-on: ${{ matrix.platform }}
     continue-on-error: true
 
@@ -33,3 +33,26 @@ jobs:
       - run: echo CFLAGS=`python3-config --cflags --embed` >> $GITHUB_ENV
       - run: gcc ${CFLAGS} python_test.c -o python_test ${LDFLAGS}
       - run: ./python_test
+
+  ctypes:
+    runs-on: ${{ matrix.platform }}
+    continue-on-error: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - ubuntu-20.04
+          - ubuntu-22.04
+          - macos-11
+          - macos-12
+          - windows-2019
+          - windows-2022
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python3 ./test_ctypes.py
