@@ -61,6 +61,7 @@ jobs:
       - run: npm test
       - run: |
           node ./scripts/pympip install --no-binary :all: xxhash
+          node -e "require('pymport').pymport('xxhash')"
 
   external_python:
     runs-on: ${{ matrix.platform }}

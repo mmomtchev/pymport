@@ -41,9 +41,27 @@ const b = np.ones([2, 3], { dtype: np.int16 });
 
 Then head to the [wiki](https://github.com/mmomtchev/pymport/wiki) for the full documentation.
 
+# Supported Versions
+
+`pymport` is unit-tested on all combinations of:
+
+| Platforms | Versions                                                 |
+| --------- | -------------------------------------------------------- |
+| OS        | Windows 2019 & 2022, Ubuntu 20.04 & 22.04, macOS 11 & 12 (x86 only) |
+| Node.js   | 14.x, 16.x and 18.x                                      |
+| Python    | 3.8, 3.9, 3.10 and 3.11                                  |
+
+except for the following combinations that are not supported:
+
+* **Node.js 14.x with Python 3.11**: rebuilding from source is not possible due to `node-gyp` version being too old to support Python 3.11, upgrading `npm` or using the precompiled binaries solves this issue
+
+* **Node.js 14.x/16.x on Ubuntu 22.04**: rebuilding from source against the system-installed Python is not possible due to Node.js containing a built-in OpenSSL 1.1 with exported symbols while the system-provided Python is built vs OpenSSL 3.0, upgrading Node.js or using the precompiled interpreter solves this issue
+
+* **Python 3.11.1 on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)]
+
 # License
 
-Copyright 2022 Momtchil Momtchev <momtchil@momtchev.com>
+Copyright 2022 Momtchil Momtchev <momtchil@momtchev.com> and contributors
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
