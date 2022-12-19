@@ -17,6 +17,8 @@ if not exist "%1\python310.lib" (
   (robocopy build\Python-%VERSION%\PCBuild\amd64 %1 /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
   (robocopy build\Python-%VERSION%\Lib %1\lib /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
   (robocopy build\Python-%VERSION%\Include %1\include /MIR) ^& if %ERRORLEVEL% leq 1 set ERRORLEVEL = 0
+  mkdir %1\DLLs
+  move %1\*.pyd %1\DLLs
   set PYTHONHOME=%~1
   %1\python -m ensurepip
 )
