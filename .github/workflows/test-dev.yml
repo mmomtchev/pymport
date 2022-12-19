@@ -55,5 +55,18 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip3 install pandas
-      - run: python3 ./test_ctypes.py
+      - run: pip3 install pandas numpy
+      - run: |
+          import os
+          import sys
+          print(dict(os.environ)))
+          print(sys.path)
+        shell: python
+      - run: |
+          import pandas
+          print(dir(pandas))
+        shell: python
+      - run: |
+          import numpy
+          print(dir(numpy))
+        shell: python
