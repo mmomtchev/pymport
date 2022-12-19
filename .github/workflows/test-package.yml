@@ -54,6 +54,7 @@ jobs:
       - name: Test rebuilding a Python package
         run: |
           npx pympip3 install --no-binary :all: xxhash
+          node -e "require('pymport').pymport('xxhash')"
 
   test_npm_rebuild:
     runs-on: ${{ matrix.platform }}
@@ -101,6 +102,7 @@ jobs:
       - name: Test rebuilding a Python package
         run: |
           pip3 install --no-binary :all: xxhash
+          node -e "require('pymport').pymport('xxhash')"
 
   test_npm_rebuild_external:
     runs-on: ${{ matrix.platform }}
@@ -143,3 +145,4 @@ jobs:
       - name: Test rebuilding a Python package
         run: |
           pip3 install --no-binary :all: xxhash
+          node -e "require('pymport').pymport('xxhash')"
