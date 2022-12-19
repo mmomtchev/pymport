@@ -9,7 +9,6 @@ const bin_dir = path.resolve(path.dirname(
 const exe = os.platform() === 'win32' ? 'python.exe' : path.join('bin', 'python3');
 const python = path.join(bin_dir, exe);
 if (fs.existsSync(python)) {
-  console.log(bin_dir);
   cp.spawnSync(python, ['-m', 'pip', ...process.argv.slice(2)], {
     stdio: 'inherit',
     env: {
