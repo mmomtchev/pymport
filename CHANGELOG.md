@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Add `PyObject.with` implementing Python `with`
  - Return the Python exception object and its constructor in `PythonError.pythonValue` and `PythonError.pythonType`
 
-### Bug Fixes
+#### Bug Fixes
  - Fix [#27](https://github.com/mmomtchev/pymport/issues/27), a function as a single argument is considered a kwargs object
  - Fix [#33](https://github.com/mmomtchev/pymport/issues/33), `PyObject.prototype.constr` has wrong TypeScript type
 
