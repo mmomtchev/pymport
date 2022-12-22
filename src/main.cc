@@ -14,7 +14,7 @@ using namespace Napi;
 using namespace pymport;
 
 #define STR(s) __STR(s)
-#define __STR(x) #x
+#define __STR(x) #x ""
 
 size_t pymport::active_environments = 0;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
