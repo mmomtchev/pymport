@@ -5,7 +5,7 @@
     "tsconfig-paths/register",
     "test/_init.ts"
   ],
-  "timeout": "20000",
+  "timeout": "30000",
   "reporter": "tap",
   "v8-expose-gc": true
 }
