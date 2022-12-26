@@ -184,6 +184,12 @@ describe('proxy', () => {
       }
       assert.deepEqual(result, [8, 9, 3]);
     });
+
+    it('empty', () => {
+      const list = PyObject.list([]);
+      assert.strictEqual(list.type, 'list');
+      assert.strictEqual(list.length, 0);
+    });
   });
 
   describe('dict', () => {
@@ -197,6 +203,12 @@ describe('proxy', () => {
         result.push(el.toJS());
       }
       assert.deepEqual(result, ['a', 'b', 'c']);
+    });
+
+    it('empty', () => {
+      const t = PyObject.tuple([]);
+      assert.strictEqual(t.type, 'tuple');
+      assert.strictEqual(t.length, 0);
     });
   });
 

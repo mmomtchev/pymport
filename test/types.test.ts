@@ -203,6 +203,12 @@ describe('types', () => {
       assert.deepEqual(list.toJS(), ['a', 'b', 'c', 'd']);
     });
 
+    it('empty', () => {
+      const list = PyObject.list([]);
+      assert.strictEqual(list.type, 'list');
+      assert.strictEqual(list.length, 0);
+    });
+
     it('append()', () => {
       const a = PyObject.list([1]);
       assert.lengthOf(a, 1);
@@ -327,6 +333,12 @@ describe('types', () => {
       assert.throws(() => t.item(10));
       assert.throws(() => PyObject.keys(t), /'tuple' object has no attribute 'keys'/);
       assert.throws(() => PyObject.values(t), /'tuple' object has no attribute 'values'/);
+    });
+
+    it('empty', () => {
+      const t = PyObject.tuple([]);
+      assert.strictEqual(t.type, 'tuple');
+      assert.strictEqual(t.length, 0);
     });
 
     it('tuple() from PyObject iterable', () => {
