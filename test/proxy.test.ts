@@ -73,7 +73,7 @@ describe('proxy', () => {
   it('toString()', () => {
     const a = np.arange(2).reshape(1, 2);
 
-    assert.equal(a.toString(), '[object [[0 1]]]');
+    assert.equal(a.toString(), '[[0 1]]');
   });
 
   it('PyObject pass-through', () => {
@@ -189,6 +189,14 @@ describe('proxy', () => {
       const list = PyObject.list([]);
       assert.strictEqual(list.type, 'list');
       assert.strictEqual(list.length, 0);
+    });
+
+    it('toString()', () => {
+      const list = PyObject.list([8, 9, 3]);
+      assert.strictEqual(list.toString(), '[8, 9, 3]');
+
+      // must be a unique reference
+      assert.strictEqual(list.toString, list.toString);
     });
   });
 
