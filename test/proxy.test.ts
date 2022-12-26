@@ -185,4 +185,19 @@ describe('proxy', () => {
       assert.deepEqual(result, [8, 9, 3]);
     });
   });
+
+  describe('dict', () => {
+    it('iterator', () => {
+      const dict = PyObject.dict({ a: 3, b: 5, c: 8 });
+
+      const result = [];
+      for (const el of dict) {
+        // check that the returned elements are also proxified
+        assert.instanceOf(el.__PyObject__, PyObject);
+        result.push(el.toJS());
+      }
+      assert.deepEqual(result, ['a', 'b', 'c']);
+    });
+  });
+
 });
