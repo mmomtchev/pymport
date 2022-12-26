@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [1.3.1] WIP
  - Fix [#48](https://github.com/mmomtchev/pymport/issues/48), do not consider falsy properties as being undefined
+ - Fix [#50](https://github.com/mmomtchev/pymport/issues/50), proxified `.toString()` is not identical to `PyObject.toString()`
 
 ## [1.3.0] 2022-12-22
 
