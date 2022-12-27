@@ -15,6 +15,11 @@
   (info.Length() <= arg || !info[arg].IsObject() ? throw Napi::TypeError::New(env, "Argument must be an object")       \
                                                  : info[arg].ToObject())
 
+#define NAPI_OPT_ARG_OBJECT(arg)                                                                                       \
+  (info.Length() <= arg                                                                                                \
+     ? Napi::Object()                                                                                                  \
+     : (!info[arg].IsObject() ? throw Napi::TypeError::New(env, "Argument must be an object") : info[arg].ToObject()))
+
 #define NAPI_ARG_ARRAY(arg)                                                                                            \
   (info.Length() <= arg || !info[arg].IsArray() ? throw Napi::TypeError::New(env, "Argument must be an array")         \
                                                 : info[arg].As<Napi::Array>())

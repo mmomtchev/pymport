@@ -231,7 +231,8 @@ export class PyObject implements Iterable<PyObject> {
    * A dictionary becomes an object.
    * 
    * Any object implementing the Buffer Protocol - bytes, bytearray or a memoryview - becomes a Buffer.
-   * The memory referenced by the Buffer is a copy of the Python memory.
+   * The memory referenced by the Buffer is a copy of the Python memory. This behavior can be disabled
+   * by passing { buffer: false }.
    * 
    * A callable becomes a native (binary) function.
    * 
@@ -239,9 +240,15 @@ export class PyObject implements Iterable<PyObject> {
    *
    * Everything else remains a PyObject.
    * 
+   * The maximum recursion depth can be set by passing { depth: number }. Without this parameter
+   * pymport will go down to the furthest possible level. By setting the depth to 1 it is possible
+   * to transform a Python list to a JavaScript array while keeping all elements as Python objects.
+   * Refer to the performance section of the wiki for the possible implications and especially
+   * the memory overhead.
+   * 
    * @returns {any}
    */
-  toJS: () => any;
+  toJS: (opts?: { depth?: number; buffer?: boolean; }) => any;
 
   /**
    * Transform the PyObject to a plain JS object. Equivalent to toJS().

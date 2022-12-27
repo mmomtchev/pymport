@@ -7,7 +7,8 @@ using namespace Napi;
 using namespace pymport;
 
 // _ToJS expects a borrowed reference
-Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store, ToJSOpts opts) {
+  if (opts.depth == 0) return New(env, std::move(PyStrongRef(py)));
   // This is a temporary store that breaks recursion, it keeps tracks of the locally
   // created Napi::Objects for each PyObject and if one is encountered multiple times,
   // then it is replaced by the same reference
@@ -30,7 +31,7 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
 
   if (PyFloat_Check(*py)) { return Number::New(env, PyFloat_AsDouble(*py)); }
 
-  if (PyList_Check(*py)) { return _ToJS_List(env, py, store); }
+  if (PyList_Check(*py)) { return _ToJS_List(env, py, store, opts); }
 
   if (PyUnicode_Check(*py)) {
     PyStrongRef utf16 = PyUnicode_AsUTF16String(*py);
@@ -40,17 +41,17 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
     return String::New(env, reinterpret_cast<char16_t *>(raw + 2), PyUnicode_GET_LENGTH(*py));
   }
 
-  if (PyDict_Check(*py)) { return _ToJS_Dictionary(env, py, store); }
+  if (PyDict_Check(*py)) { return _ToJS_Dictionary(env, py, store, opts); }
 
-  if (PyTuple_Check(*py)) { return _ToJS_Tuple(env, py, store); }
+  if (PyTuple_Check(*py)) { return _ToJS_Tuple(env, py, store, opts); }
 
-  if (PyAnySet_Check(*py)) { return _ToJS_Set(env, py, store); }
+  if (PyAnySet_Check(*py)) { return _ToJS_Set(env, py, store, opts); }
 
-  if (PyModule_Check(*py)) { return _ToJS_Dir(env, py, store); }
-
-  if (PyObject_CheckBuffer(*py)) { return _ToJS_Buffer(env, py, store); }
+  if (PyModule_Check(*py)) { return _ToJS_Dir(env, py, store, opts); }
 
   if (PyObject_Type(*py) == *JSCall_Trampoline_Type) { return _ToJS_JSFunction(env, py); }
+
+  if (opts.buffer && PyObject_CheckBuffer(*py)) { return _ToJS_Buffer(env, py, store); }
 
   // Everything else is kept as a PyObject
   // (New/NewCallable expect a strong reference and steal it)
@@ -59,21 +60,21 @@ Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectSt
   return New(env, std::move(strong));
 }
 
-Napi::Value PyObjectWrap::_ToJS_Dictionary(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+Napi::Value PyObjectWrap::_ToJS_Dictionary(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store, ToJSOpts opts) {
   auto obj = Object::New(env);
 
   PyWeakRef key = nullptr, value = nullptr;
   Py_ssize_t pos = 0;
   store.insert({*py, obj});
   while (PyDict_Next(*py, &pos, &key, &value)) {
-    auto jsKey = _ToJS(env, key, store);
-    auto jsValue = _ToJS(env, value, store);
+    auto jsKey = _ToJS(env, key, store, {opts.depth - 1, opts.buffer});
+    auto jsValue = _ToJS(env, value, store, {opts.depth - 1, opts.buffer});
     obj.Set(jsKey, jsValue);
   }
   return obj;
 }
 
-Napi::Value PyObjectWrap::_ToJS_Tuple(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+Napi::Value PyObjectWrap::_ToJS_Tuple(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store, ToJSOpts opts) {
   Napi::Array r = Array::New(env);
   size_t len = PyTuple_Size(*py);
   store.insert({*py, r});
@@ -81,13 +82,13 @@ Napi::Value PyObjectWrap::_ToJS_Tuple(Napi::Env env, const PyWeakRef &py, NapiOb
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyTuple_GetItem(*py, i);
     EXCEPTION_CHECK(env, v);
-    Napi::Value js = _ToJS(env, v, store);
+    Napi::Value js = _ToJS(env, v, store, {opts.depth - 1, opts.buffer});
     r.Set(i, js);
   }
   return r;
 }
 
-Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store, ToJSOpts opts) {
   Napi::Array r = Array::New(env);
   size_t len = PyList_Size(*py);
   store.insert({*py, r});
@@ -95,13 +96,13 @@ Napi::Value PyObjectWrap::_ToJS_List(Napi::Env env, const PyWeakRef &py, NapiObj
   for (size_t i = 0; i < len; i++) {
     PyWeakRef v = PyList_GetItem(*py, i);
     EXCEPTION_CHECK(env, v);
-    Napi::Value js = _ToJS(env, v, store);
+    Napi::Value js = _ToJS(env, v, store, {opts.depth - 1, opts.buffer});
     r.Set(i, js);
   }
   return r;
 }
 
-Napi::Value PyObjectWrap::_ToJS_Set(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+Napi::Value PyObjectWrap::_ToJS_Set(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store, ToJSOpts opts) {
   auto array = Array::New(env);
 
   PyStrongRef iter = PyObject_GetIter(*py);
@@ -110,14 +111,14 @@ Napi::Value PyObjectWrap::_ToJS_Set(Napi::Env env, const PyWeakRef &py, NapiObje
   PyStrongRef item = nullptr;
   size_t i = 0;
   while ((item = PyIter_Next(*iter)) != nullptr) {
-    array.Set(i, _ToJS(env, item, store));
+    array.Set(i, _ToJS(env, item, store, {opts.depth - 1, opts.buffer}));
     item = nullptr;
     i++;
   }
   return array;
 }
 
-Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store) {
+Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store, ToJSOpts opts) {
   Napi::Object r = Object::New(env);
   PyStrongRef list = PyObject_Dir(*py);
   // It seems that some system modules are hidden, we return an empty array
@@ -141,8 +142,8 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
     }
 
     VERBOSE_PYOBJ(*key, "key");
-    Napi::Value jsKey = _ToJS(env, key, store);
-    Napi::Value jsValue = _ToJS(env, value, store);
+    Napi::Value jsKey = _ToJS(env, key, store, {opts.depth - 1, opts.buffer});
+    Napi::Value jsValue = _ToJS(env, value, store, {opts.depth - 1, opts.buffer});
     r.Set(jsKey, jsValue);
   }
   return r;
@@ -161,14 +162,24 @@ Napi::Value PyObjectWrap::_ToJS_Buffer(Napi::Env env, const PyWeakRef &py, NapiO
   return buffer;
 }
 
-Napi::Value PyObjectWrap::ToJS(Napi::Env env, const PyWeakRef &py) {
+Napi::Value PyObjectWrap::ToJS(Napi::Env env, const PyWeakRef &py, ToJSOpts opts) {
   NapiObjectStore store;
-  return _ToJS(env, py, store);
+  return _ToJS(env, py, store, opts);
 }
 
 Napi::Value PyObjectWrap::ToJS(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
 
-  return PyObjectWrap::ToJS(env, self);
+  ToJSOpts opts = {-1, true};
+  Object js_opts = NAPI_OPT_ARG_OBJECT(0);
+  if (!js_opts.IsEmpty()) {
+    if (js_opts.Has("buffer")) opts.buffer = js_opts.Get("buffer").ToBoolean().Value();
+    if (js_opts.Has("depth")) {
+      float depth = js_opts.Get("depth").ToNumber().FloatValue();
+      if (!std::isinf(depth)) opts.depth = js_opts.Get("depth").ToNumber().Int32Value();
+    }
+  }
+
+  return PyObjectWrap::ToJS(env, self, opts);
 }
