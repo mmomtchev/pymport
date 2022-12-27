@@ -1,7 +1,8 @@
+#include <cmath>
+#include <map>
 #include "pymport.h"
 #include "pystackobject.h"
 #include "values.h"
-#include <map>
 
 using namespace Napi;
 using namespace pymport;
