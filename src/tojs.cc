@@ -9,7 +9,7 @@ using namespace pymport;
 
 // _ToJS expects a borrowed reference
 Napi::Value PyObjectWrap::_ToJS(Napi::Env env, const PyWeakRef &py, NapiObjectStore &store, ToJSOpts opts) {
-  if (opts.depth == 0) return New(env, std::move(PyStrongRef(py)));
+  if (opts.depth == 0) return New(env, PyStrongRef(py));
   // This is a temporary store that breaks recursion, it keeps tracks of the locally
   // created Napi::Objects for each PyObject and if one is encountered multiple times,
   // then it is replaced by the same reference
