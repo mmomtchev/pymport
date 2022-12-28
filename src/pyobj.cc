@@ -90,7 +90,7 @@ Value PyObjectWrap::ToString(const CallbackInfo &info) {
 
   PyStrongRef r = PyObject_Str(*self);
   EXCEPTION_CHECK(env, r);
-  return ToJS(env, r);
+  return ToJS(env, r, {1, false});
 }
 
 Value PyObjectWrap::Id(const CallbackInfo &info) {

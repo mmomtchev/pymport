@@ -34,6 +34,11 @@ class PythonException {
   Napi::Error ToJS(Napi::Env);
 };
 
+struct ToJSOpts {
+  int depth;
+  bool buffer;
+};
+
 class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
     public:
   PyObjectWrap(const Napi::CallbackInfo &);
@@ -57,7 +62,7 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static Napi::Value Eval(const Napi::CallbackInfo &);
 
   static Napi::Value FromJS(const Napi::CallbackInfo &);
-  static Napi::Value ToJS(Napi::Env, const PyWeakRef &);
+  static Napi::Value ToJS(Napi::Env, const PyWeakRef &, ToJSOpts);
   Napi::Value ToJS(const Napi::CallbackInfo &);
 
   static Napi::Value Keys(const Napi::CallbackInfo &);
@@ -127,12 +132,12 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
 
   void Release();
 
-  static Napi::Value _ToJS(Napi::Env, const PyWeakRef &, NapiObjectStore &);
-  static Napi::Value _ToJS_Dictionary(Napi::Env, const PyWeakRef &, NapiObjectStore &);
-  static Napi::Value _ToJS_Tuple(Napi::Env, const PyWeakRef &, NapiObjectStore &);
-  static Napi::Value _ToJS_List(Napi::Env, const PyWeakRef &, NapiObjectStore &);
-  static Napi::Value _ToJS_Set(Napi::Env, const PyWeakRef &, NapiObjectStore &);
-  static Napi::Value _ToJS_Dir(Napi::Env, const PyWeakRef &, NapiObjectStore &);
+  static Napi::Value _ToJS(Napi::Env, const PyWeakRef &, NapiObjectStore &, ToJSOpts);
+  static Napi::Value _ToJS_Dictionary(Napi::Env, const PyWeakRef &, NapiObjectStore &, ToJSOpts);
+  static Napi::Value _ToJS_Tuple(Napi::Env, const PyWeakRef &, NapiObjectStore &, ToJSOpts);
+  static Napi::Value _ToJS_List(Napi::Env, const PyWeakRef &, NapiObjectStore &, ToJSOpts);
+  static Napi::Value _ToJS_Set(Napi::Env, const PyWeakRef &, NapiObjectStore &, ToJSOpts);
+  static Napi::Value _ToJS_Dir(Napi::Env, const PyWeakRef &, NapiObjectStore &, ToJSOpts);
   static Napi::Value _ToJS_Buffer(Napi::Env, const PyWeakRef &, NapiObjectStore &);
   static Napi::Value _ToJS_JSFunction(Napi::Env, const PyWeakRef &);
 

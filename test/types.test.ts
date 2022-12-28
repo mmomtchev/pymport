@@ -169,6 +169,20 @@ describe('types', () => {
       assert.deepEqual(a.get('tolist').call().toJS(), [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]);
     });
 
+    it('toJS() w/depth', () => {
+      const t = PyObject.list(array);
+
+      assert.strictEqual(t.toJS({ depth: 0 }), t);
+
+      const js = t.toJS({ depth: 1 });
+      assert.strictEqual(js.length, 3);
+      assert.instanceOf(js[0], PyObject);
+      assert.instanceOf(js[1], PyObject);
+      assert.instanceOf(js[2], PyObject);
+
+      assert.deepEqual(t.toJS({ depth: 2 }), array);
+    });
+
     it('automatic from array argument', () => {
       const a = np.get('array').call([[1, 2, 3], [4, 5, 6]]).get('reshape').call(3, 2);
       assert.deepEqual(a.get('tolist').call().toJS(), [[1, 2], [3, 4], [5, 6]]);
@@ -354,6 +368,25 @@ describe('types', () => {
     it('toJS()', () => {
       const t = PyObject.tuple(array);
       assert.deepEqual(t.toJS(), array);
+    });
+
+    it('toJS() w/depth', () => {
+      const t = PyObject.tuple(array);
+
+      assert.strictEqual(t.toJS({ depth: 0 }), t);
+
+      const js1 = t.toJS({ depth: 1 });
+      assert.strictEqual(js1.length, 3);
+      assert.instanceOf(js1[0], PyObject);
+      assert.instanceOf(js1[1], PyObject);
+      assert.instanceOf(js1[2], PyObject);
+
+      const js2 = t.toJS({ depth: 2 });
+      assert.strictEqual(js2.length, 3);
+      assert.strictEqual(js2[0], 1);
+      assert.strictEqual(js2[1], 'a');
+      assert.typeOf(js2[2], 'object');
+      assert.instanceOf(js2[2].name, PyObject);
     });
 
     it('toString()', () => {
@@ -727,6 +760,13 @@ describe('types', () => {
       assert.equal(buf.length, text.length);
       assert.instanceOf(buf, Buffer);
       assert.equal(buf.toString(), text);
+    });
+
+    it('toJS({buffer: false})', () => {
+      const text = 'no conversion';
+      const bytes = PyObject.bytes(Buffer.from(text));
+      assert.equal(bytes.type, 'bytes');
+      assert.strictEqual(bytes.toJS({ buffer: false }), bytes);
     });
 
     it('bytearray toJS()', () => {

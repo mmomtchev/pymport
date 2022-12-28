@@ -50,7 +50,7 @@ static PyObject *CallJSWithPythonArgs(JSCall_Trampoline *fn, PyObject *args, PyO
     PyWeakRef key = nullptr, value = nullptr;
     Py_ssize_t pos = 0;
     while (PyDict_Next(kw, &pos, &key, &value)) {
-      auto jsKey = PyObjectWrap::ToJS(env, key);
+      auto jsKey = PyObjectWrap::ToJS(env, key, {1, true});
       js_kwargs.Set(jsKey, PyObjectWrap::New(env, PyStrongRef(value)));
     }
     js_args.push_back(js_kwargs);
