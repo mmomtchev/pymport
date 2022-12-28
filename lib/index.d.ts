@@ -281,7 +281,7 @@ export class PyObject implements Iterable<PyObject> {
    * on every array element
    * @param {unknown} [this] optional this value to be provided to the function
    */
-  map: <T, U>(callback: (this: U, element: PyObject, index: number, array: PyObject) => T, thisArg?: U) => T[];
+  map: <T, U>(callback: (this: U, element: PyObject, index: number, iterable: PyObject) => T, thisArg?: U) => T[];
 }
 
 /**

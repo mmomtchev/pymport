@@ -159,7 +159,7 @@ describe('types', () => {
       assert.throws(() => toArray(PyObject.int(2)), /int is not iterable/);
     });
 
-    it('map', () => {
+    it('map()', () => {
       assert.throws(() => PyObject.int(2).map(() => undefined), /is not iterable/);
     });
   });
