@@ -212,7 +212,6 @@ export class PyObject implements Iterable<PyObject> {
    */
   callAsync: (...args: any[]) => Promise<PyObject>;
 
-
   /**
    * Transform the PyObject to a plain JS object. Equivalent to valueOf().
    * 
@@ -246,6 +245,9 @@ export class PyObject implements Iterable<PyObject> {
    * Refer to the performance section of the wiki for the possible implications and especially
    * the memory overhead.
    * 
+   * @param {object} [opts] options
+   * @param {number} [opts.depth] maximum recursion depth, undefined for unlimited
+   * @param {boolean} [opts.buffer] do not convert objects that implement only the Buffer protocol
    * @returns {any}
    */
   toJS: (opts?: { depth?: number; buffer?: boolean; }) => any;
@@ -268,6 +270,18 @@ export class PyObject implements Iterable<PyObject> {
    * @returns {string}
    */
   [Symbol.iterator]: () => Iterator<PyObject>;
+
+  /**
+   * Create a new array populated with the results of calling a provided function on every element in the
+   * calling array.
+   * 
+   * Works on all iterable objects.
+   * 
+   * @param {(this: U, element: PyObject, index: number, array: PyObject) => T} callback function to be called
+   * on every array element
+   * @param {unknown} [this] optional this value to be provided to the function
+   */
+  map: <T, U>(callback: (this: U, element: PyObject, index: number, iterable: PyObject) => T, thisArg?: U) => T[];
 }
 
 /**
