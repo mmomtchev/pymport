@@ -158,6 +158,10 @@ describe('types', () => {
     it('iterator', () => {
       assert.throws(() => toArray(PyObject.int(2)), /int is not iterable/);
     });
+
+    it('map', () => {
+      assert.throws(() => PyObject.int(2).map(() => undefined), /is not iterable/);
+    });
   });
 
   describe('list', () => {
@@ -249,6 +253,17 @@ describe('types', () => {
 
     it('iterator', () => {
       assert.deepEqual(toArray(PyObject.list([8, 9, 3])).map(el => el.toJS()), [8, 9, 3]);
+    });
+
+    it('map()', () => {
+      const a = PyObject.list(array);
+      assert.equal(a.type, 'list');
+      const b = a.map(function (x, i, o) {
+        assert.strictEqual(o, a);
+        assert.strictEqual(this, 1);
+        return x.type === 'int' ? x.toString() : i.toString();
+      }, 1);
+      assert.deepEqual(b, ['1', '1', '2']);
     });
   });
 
@@ -411,6 +426,17 @@ describe('types', () => {
     it('iterator', () => {
       assert.deepEqual(toArray(PyObject.tuple([3, 5, 8])).map(el => el.toJS()), [3, 5, 8]);
     });
+
+    it('map()', () => {
+      const t = PyObject.tuple(array);
+      assert.equal(t.type, 'tuple');
+      const a = t.map(function (x, i, o) {
+        assert.strictEqual(o, t);
+        assert.strictEqual(this, 'this');
+        return x.type === 'int' ? x.toString() : i.toString();
+      }, 'this');
+      assert.deepEqual(a, ['1', '1', '2']);
+    });
   });
 
   describe('string', () => {
@@ -451,6 +477,17 @@ describe('types', () => {
 
     it('iterator', () => {
       assert.deepEqual(toArray(PyObject.string('abc')).map(el => el.toJS()), ['a', 'b', 'c']);
+    });
+
+    it('map()', () => {
+      const s = PyObject.string('hello');
+      assert.equal(s.type, 'str');
+      const a = s.map(function (x, i, o) {
+        assert.strictEqual(o, s);
+        assert.strictEqual(this, 'this');
+        return x.toJS();
+      }, 'this');
+      assert.deepEqual(a, ['h', 'e', 'l', 'l', 'o']);
     });
   });
 
@@ -511,6 +548,17 @@ describe('types', () => {
 
     it('iterator', () => {
       assert.deepEqual(toArray(PyObject.dict({ x: 0, y: 1, z: 2 })).map(el => el.toJS()), ['x', 'y', 'z']);
+    });
+
+    it('map()', () => {
+      const d = PyObject.dict(o);
+      assert.equal(d.type, 'dict');
+      const a = d.map(function (x, i, o) {
+        assert.strictEqual(o, d);
+        assert.strictEqual(this, 'this');
+        return x.toString();
+      }, 'this');
+      assert.deepEqual(a, ['text', 'number', 'obj']);
     });
   });
 
