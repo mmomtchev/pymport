@@ -220,4 +220,15 @@ describe('proxy', () => {
     });
   });
 
+  describe('class', () => {
+    it('class w/ static member', () => {
+      const klass = pymport('python_helpers').SomeClass;
+      assert.instanceOf(klass.__PyObject__, PyObject);
+      assert.strictEqual(klass.type, 'type');
+      const staticMember = klass.static_member;
+      assert.instanceOf(staticMember, PyObject);
+      assert.strictEqual(staticMember.type, 'int');
+      assert.strictEqual(staticMember.toJS(), 42);
+    });
+  });
 });

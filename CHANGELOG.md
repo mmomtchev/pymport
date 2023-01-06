@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.4.0] WIP
+#### New Features
  - Allow limiting the depth of the recursion of `toJS()`
  - Allow disabling of the generic Buffer protocol transformation to `toJS()`
  - Add `PyObject.prototype.map` method compatible with `Array.prototype.map`
+ - Proxified functions are now also `Proxy` objects, resolves [#58](https://github.com/mmomtchev/pymport/issues/58)
 
 ### [1.3.1] WIP
  - Fix [#48](https://github.com/mmomtchev/pymport/issues/48), do not consider falsy properties as being undefined
