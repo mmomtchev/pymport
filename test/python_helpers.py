@@ -20,3 +20,7 @@ def dont_catch_exception(callable):
 
 def call_with_cheese(callable):
   return callable(slice(1, 2, 3))
+
+class SomeClass:
+  static_member = 42
+

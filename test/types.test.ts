@@ -961,6 +961,18 @@ describe('types', () => {
     });
   });
 
+  describe('class', () => {
+    it('class w/ static member', () => {
+      const klass = pymport('python_helpers').get('SomeClass');
+      assert.instanceOf(klass, PyObject);
+      assert.strictEqual(klass.type, 'type');
+      const staticMember = klass.get('static_member');
+      assert.instanceOf(staticMember, PyObject);
+      assert.strictEqual(staticMember.type, 'int');
+      assert.strictEqual(staticMember.toJS(), 42);
+    });
+  });
+
   describe('types w/o equivalence', () => {
     it('loader', () => {
       const loader = np.get('__loader__');
