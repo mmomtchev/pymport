@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Allow limiting the depth of the recursion of `toJS()`
  - Allow disabling of the generic Buffer protocol transformation to `toJS()`
 
-### [1.3.1] WIP
+### [1.3.1] 2023-01-07
+
  - Fix [#63](https://github.com/mmomtchev/pymport/issues/63), restore the executable bit of `pympip3`
  - Fix [#40](https://github.com/mmomtchev/pymport/issues/40), revert and lock `setuptools` for the builtin interpreter to 65.1.1 due to [setuptools#3589](https://github.com/pypa/setuptools/issues/3589)
  - Fix [#60](https://github.com/mmomtchev/pymport/issues/60), proxified objects are not GCed
