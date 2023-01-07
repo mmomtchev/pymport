@@ -100,9 +100,20 @@ Value PyObjectWrap::Id(const CallbackInfo &info) {
   return Number::New(env, reinterpret_cast<uint64_t>(*self));
 }
 
+void PyObjectWrap::UpdateMemoryHint() {
+  Napi::Env env = this->Env();
+
+  auto new_memory_hint = PyObject_LengthHint(*self, sizeof(PyObject));
+  if (memory_hint != new_memory_hint) {
+    Napi::MemoryManagement::AdjustExternalMemory(env, static_cast<int64_t>(new_memory_hint - memory_hint));
+    memory_hint = new_memory_hint;
+  }
+}
+
 Value PyObjectWrap::Get(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
+  UpdateMemoryHint();
 
   std::string name = NAPI_ARG_STRING(0).Utf8Value();
   PyStrongRef r = PyObject_GetAttrString(*self, name.c_str());
@@ -158,6 +169,7 @@ Value PyObjectWrap::Constructor(const CallbackInfo &info) {
 Value PyObjectWrap::Item(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
+  UpdateMemoryHint();
 
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
   PyStrongRef item = FromJS(info[0]);
@@ -193,6 +205,7 @@ Value PyObjectWrap::Values(const CallbackInfo &info) {
 Value PyObjectWrap::Length(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
+  UpdateMemoryHint();
 
   if (PySequence_Check(*self)) return Number::New(env, static_cast<long>(PySequence_Size(*self)));
   if (PyMapping_Check(*self)) return Number::New(env, static_cast<long>(PyMapping_Size(*self)));

@@ -162,6 +162,8 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
   static void _ExceptionThrow(Napi::Env);
 #endif
 
+  void UpdateMemoryHint();
+
   static PyStrongRef JSCall_Trampoline_Type;
   PyStrongRef self;
   Py_ssize_t memory_hint;

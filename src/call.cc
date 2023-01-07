@@ -251,6 +251,7 @@ PyCallExecutor PyObjectWrap::CreateCallExecutor(const PyWeakRef &py, const Callb
 Value PyObjectWrap::Call(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
+  UpdateMemoryHint();
   PyStrongRef r = CreateCallExecutor(self, info)();
   EXCEPTION_CHECK(env, r);
   return New(env, std::move(r));
