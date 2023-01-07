@@ -19,7 +19,7 @@ jobs:
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python=true
       - run: npx @mapbox/node-pre-gyp build -j max
-      - run: npx pympip install setuptools==65.1.1
+      - run: node scripts/pympip install setuptools==65.1.1
       - run: npx @mapbox/node-pre-gyp package
       - run: npx @mmomtchev/node-pre-gyp-github publish
         env:
