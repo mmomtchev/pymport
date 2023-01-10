@@ -4,7 +4,12 @@ const bin_dir = path.resolve(path.dirname(
   require('@mapbox/node-pre-gyp').find(path.join(__dirname, '..', 'package.json'))));
 
 const sysconfigDataPath = path.join(bin_dir, 'lib', 'python3.10');
-const sysconfigs = fs.readdirSync(sysconfigDataPath).filter((file) => file.match(/_sysconfigdata_.*py/));
+let sysconfigs = [];
+try {
+  sysconfigs = fs.readdirSync(sysconfigDataPath).filter((file) => file.match(/_sysconfigdata_.*py/));
+} catch (e) {
+  console.log('prefix does seem to need patching (Windows platform)');
+}
 for (const f of sysconfigs) {
   const original = fs.readFileSync(path.join(sysconfigDataPath, f), 'utf-8');
   const platformDir = path.basename(bin_dir);
