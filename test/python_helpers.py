@@ -22,5 +22,9 @@ def call_with_cheese(callable):
   return callable(slice(1, 2, 3))
 
 class SomeClass:
+  name = 'Python_name'
   static_member = 42
+
+  def method():
+    return None
 
