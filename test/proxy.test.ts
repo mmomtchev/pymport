@@ -225,10 +225,21 @@ describe('proxy', () => {
       const klass = pymport('python_helpers').SomeClass;
       assert.instanceOf(klass.__PyObject__, PyObject);
       assert.strictEqual(klass.type, 'type');
+
       const staticMember = klass.static_member;
       assert.instanceOf(staticMember, PyObject);
       assert.strictEqual(staticMember.type, 'int');
       assert.strictEqual(staticMember.toJS(), 42);
+
+      const name = klass.name;
+      assert.instanceOf(name.__PyObject__, PyObject);
+      assert.strictEqual(name.type, 'str');
+      assert.strictEqual(name.toJS(), 'Python_name');
+
+      const method = klass.method;
+      assert.isTrue(method.callable);
+      assert.isFunction(method);
+      assert.strictEqual(method.name, 'method');
     });
   });
 });
