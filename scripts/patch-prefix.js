@@ -10,7 +10,5 @@ for (const f of sysconfigs) {
   const platformDir = path.basename(bin_dir);
   const re = new RegExp(`\\/[-_a-zA-Z0-9/]+\\/pymport\\/lib\\/binding\\/${platformDir}/*([-_a-z0-9/]*)`, 'g');
   const patched = original.replace(re, path.join(bin_dir, '$1'));
-  console.log(patched);
-  console.log(re);
   fs.writeFileSync(path.join(sysconfigDataPath, f), patched);
 }
