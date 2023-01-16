@@ -86,6 +86,12 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
     context->function_store.insert({*py, jsRef});
     js.AddFinalizer(
       [](Napi::Env env, FunctionReference *fini_fn, PyObject *fini_py) {
+#ifdef DEBUG
+        // This is because the Python shutdown chain will be run in DEBUG mode
+        // Refer to the comment in PyObject::~PyObject about https://github.com/nodejs/node/issues/45088
+        if (active_environments == 0) return;
+#endif
+
         // This is called from a JS context
         PyGILGuard pyGilGuard;
         VERBOSE_PYOBJ(fini_py, "Funcstore erase");
