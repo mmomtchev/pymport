@@ -36,7 +36,11 @@
       'conditions': [
         ['enable_asan == "true"', {
           'cflags_cc': [ '-fsanitize=address' ],
-          'ldflags' : [ '-fsanitize=address' ]
+          'ldflags' : [ '-fsanitize=address' ],
+          'xcode_settings': {
+            'OTHER_CPLUSPLUSFLAGS': [ '-fsanitize=address' ],
+            'OTHER_LDFLAGS': [ '-fsanitize=address' ]
+          }
         }],
         ['enable_coverage == "true"', {
           'cflags_cc': [ '-fprofile-arcs', '-ftest-coverage' ],
