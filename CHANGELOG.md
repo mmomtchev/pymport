@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Add `PyObject.prototype.map` method compatible with `Array.prototype.map`
  - Proxified functions are now also `Proxy` objects, resolves [#58](https://github.com/mmomtchev/pymport/issues/58)
 
+### [1.3.2] WIP
+
+ - Fix [#40](https://github.com/mmomtchev/pymport/issues/40), patch `_sysconfigdata` after installation
+
 ### [1.3.1] 2023-01-07
 
  - Fix [#63](https://github.com/mmomtchev/pymport/issues/63), restore the executable bit of `pympip3`
