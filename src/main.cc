@@ -108,17 +108,29 @@ Napi::Object Init(Env env, Object exports) {
     static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 
   env.SetInstanceData<EnvContext>(context);
-  env.AddCleanupHook(
-    [](EnvContext *context) {
+  napi_status r = napi_add_async_cleanup_hook(
+    env,
+    [](napi_async_cleanup_hook_handle hook, void *arg) {
+      auto context = reinterpret_cast<EnvContext *>(arg);
       VERBOSE(
         "PyGIL: Cleaning up environment, V8 main thread is %lu\n",
         static_cast<unsigned long>(std::hash<std::thread::id>{}(context->v8_main)));
       active_environments--;
       context->pyObj->Reset();
       delete context->pyObj;
+      // abuse the data pointer to send the async hook
+      context->v8_queue.handle->data = hook;
       uv_close(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle), [](uv_handle_t *handle) {
         VERBOSE("Finalizing the finalizer...\n");
+        auto hook = reinterpret_cast<napi_async_cleanup_hook_handle>(handle->data);
         delete reinterpret_cast<uv_async_t *>(handle);
+        napi_status r = napi_remove_async_cleanup_hook(hook);
+        if (r != napi_ok) {
+          printf("Failed to unload the environment\n");
+#ifdef DEBUG
+          abort();
+#endif
+        }
       });
 #ifdef DEBUG
       // This is complicated because of
@@ -132,7 +144,9 @@ Napi::Object Init(Env env, Object exports) {
 #endif
       // context will be deleted by the NAPI Finalizer
     },
-    context);
+    context,
+    nullptr);
+  if (r != napi_ok) { throw Error::New(env, "Failed registering a cleanup hook"); }
   if (active_environments == 0 && !Py_IsInitialized()) {
     PyConfig config;
 
