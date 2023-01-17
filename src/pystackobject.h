@@ -144,7 +144,7 @@ class PyStrongRef : public PyWeakRef {
   INLINE virtual ~PyStrongRef() {
 #if defined(DEBUG) || defined(DEBUG_VERBOSE)
     if (active_environments == 0) {
-      printf("Dereference running after environment cleanup: %p\n", self);
+      VERBOSE("Dereference running after environment cleanup: %p\n", self);
       return;
     }
 #endif
