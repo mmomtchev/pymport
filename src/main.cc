@@ -118,6 +118,9 @@ Napi::Object Init(Env env, Object exports) {
       active_environments--;
       context->pyObj->Reset();
       delete context->pyObj;
+      // release all TSFNs (destruction path 2)
+      for (auto const &tsfn : context->tsfn_store) { tsfn->Release(); }
+      context->tsfn_store.clear();
       // abuse the data pointer to send the async hook
       context->v8_queue.handle->data = hook;
       uv_close(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle), [](uv_handle_t *handle) {
