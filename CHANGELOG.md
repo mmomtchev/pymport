@@ -6,11 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.4.0] WIP
+ - The new minimum supported versions of Node.js are now v12.22.0, v14.17.0, v16.0.0
+
 #### New Features
  - Allow limiting the depth of the recursion of `toJS()`
  - Allow disabling of the generic Buffer protocol transformation to `toJS()`
  - Add `PyObject.prototype.map` method compatible with `Array.prototype.map`
  - Proxified functions are now also `Proxy` objects, resolves [#58](https://github.com/mmomtchev/pymport/issues/58)
+
+#### Bug Fixes
+ - Fix [#66](https://github.com/mmomtchev/pymport/issues/66), race condition can result in an abort when using `pymport` with `worker_threads`
 
 ### [1.3.2] WIP
 

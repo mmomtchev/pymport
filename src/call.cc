@@ -132,7 +132,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
 }
 
 // Finalizer for pymport.js_function
-// Called from Python context
+// Can be called both from Python and JS context
 static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
   VERBOSE_PYOBJ(self, "jscall_trampoline finalizer");
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
@@ -141,14 +141,18 @@ static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyO
   auto tsfn = me->js_tsfn;
   if (fn == nullptr) Py_RETURN_NONE;
 
-  auto finalizer = [fn, tsfn]() {
+  auto context = fn->Env().GetInstanceData<EnvContext>();
+  auto finalizer = [fn, tsfn, context]() {
     fn->Reset();
-    tsfn->Release();
     delete fn;
-    delete tsfn;
+    // release the TSFN only if it hasn't been destroyed (destruction path 1)
+    if (context->tsfn_store.count(tsfn) > 0) {
+      context->tsfn_store.erase(tsfn);
+      tsfn->Release();
+      delete tsfn;
+    }
   };
 
-  auto context = fn->Env().GetInstanceData<EnvContext>();
 #ifndef DEBUG
   if (std::this_thread::get_id() == context->v8_main)
     finalizer();
@@ -347,6 +351,9 @@ PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
   raw->js_tsfn = new ThreadSafeFunction(ThreadSafeFunction::New(env, js_fn, "pymport.js_function", 0, 1));
   // Sometimes V8 won't destroy some objects - so these TSFN should not block the event loop's exit
   raw->js_tsfn->Unref(env);
+
+  auto context = env.GetInstanceData<EnvContext>();
+  context->tsfn_store.insert(raw->js_tsfn);
 
   return trampoline;
 }

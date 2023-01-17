@@ -2,6 +2,7 @@
 
 #include <map>
 #include <list>
+#include <set>
 #include <thread>
 #include <functional>
 #include <queue>
@@ -171,6 +172,11 @@ struct EnvContext {
   Napi::FunctionReference *pyObj;
   std::map<PyObject *, PyObjectWrap *> object_store;
   std::map<PyObject *, Napi::FunctionReference *> function_store;
+  // There are two destruction paths for TSFNs:
+  // * death by JSCall_Trampoline_Finalizer - when the object is GCed
+  // * death by napi_async_cleanup_hook - when the environment shuts down before the GC
+  // https://github.com/nodejs/node/pull/45903
+  std::set<Napi::ThreadSafeFunction *> tsfn_store;
   // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
   std::thread::id v8_main;
   // libuv queue for running lambdas on the V8 main thread
@@ -179,6 +185,13 @@ struct EnvContext {
     std::queue<std::function<void()>> jobs;
     std::mutex lock;
   } v8_queue;
+#ifdef DEBUG_VERBOSE
+  ~EnvContext() {
+    VERBOSE(
+      "Destroying the environment context for %lu\n",
+      static_cast<unsigned long>(std::hash<std::thread::id>{}(v8_main)));
+  }
+#endif
 };
 
 // GIL locking rule:
