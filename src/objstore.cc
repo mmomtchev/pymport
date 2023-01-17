@@ -89,7 +89,10 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
 #ifdef DEBUG
         // This is because the Python shutdown chain will be run in DEBUG mode
         // Refer to the comment in PyObject::~PyObject about https://github.com/nodejs/node/issues/45088
-        if (active_environments == 0) return;
+        if (active_environments == 0) {
+          printf("Funcstore erase running after the environment cleanup: %p\n", fini_py);
+          return;
+        }
 #endif
 
         // This is called from a JS context
