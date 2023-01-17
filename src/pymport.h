@@ -179,6 +179,13 @@ struct EnvContext {
     std::queue<std::function<void()>> jobs;
     std::mutex lock;
   } v8_queue;
+#ifdef DEBUG_VERBOSE
+  ~EnvContext() {
+    VERBOSE(
+      "Destroying the environment context for %lu\n",
+      static_cast<unsigned long>(std::hash<std::thread::id>{}(v8_main)));
+  }
+#endif
 };
 
 // GIL locking rule:
