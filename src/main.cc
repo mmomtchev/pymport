@@ -99,7 +99,11 @@ Napi::Object Init(Env env, Object exports) {
   *context->pyObj = Persistent(pyObjCons);
   context->v8_main = std::this_thread::get_id();
   context->v8_queue.handle = new uv_async_t;
-  if (uv_async_init(uv_default_loop(), context->v8_queue.handle, RunInV8Context) != 0)
+
+  uv_loop_t *event_loop;
+  napi_status r = napi_get_uv_event_loop(env, &event_loop);
+  if (r != napi_ok) throw Error::New(env, "Failed retrieving libuv event loop");
+  if (uv_async_init(event_loop, context->v8_queue.handle, RunInV8Context) != 0)
     throw Error::New(env, "Failed initializing libuv queue");
   uv_unref(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle));
   context->v8_queue.handle->data = context;
@@ -108,7 +112,7 @@ Napi::Object Init(Env env, Object exports) {
     static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 
   env.SetInstanceData<EnvContext>(context);
-  napi_status r = napi_add_async_cleanup_hook(
+  r = napi_add_async_cleanup_hook(
     env,
     [](napi_async_cleanup_hook_handle hook, void *arg) {
       auto context = reinterpret_cast<EnvContext *>(arg);
@@ -118,13 +122,17 @@ Napi::Object Init(Env env, Object exports) {
       active_environments--;
       context->pyObj->Reset();
       delete context->pyObj;
+
       // release all TSFNs (destruction path 2)
       for (auto const &tsfn : context->tsfn_store) { tsfn->Release(); }
       context->tsfn_store.clear();
+
       // abuse the data pointer to send the async hook
       context->v8_queue.handle->data = hook;
       uv_close(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle), [](uv_handle_t *handle) {
-        VERBOSE("Finalizing the finalizer...\n");
+        VERBOSE(
+          "Finalizing the finalizer (%lu)...\n",
+          static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
         auto hook = reinterpret_cast<napi_async_cleanup_hook_handle>(handle->data);
         delete reinterpret_cast<uv_async_t *>(handle);
         napi_status r = napi_remove_async_cleanup_hook(hook);
@@ -153,7 +161,7 @@ Napi::Object Init(Env env, Object exports) {
   if (active_environments == 0 && !Py_IsInitialized()) {
     PyConfig config;
 
-    VERBOSE("Bootstrapping Python\n");
+    printf("Bootstrapping Python\n");
     PyConfig_InitPythonConfig(&config);
 #ifdef BUILTIN_PYTHON_PATH
     auto pathPymport = std::getenv("PYMPORTPATH");
