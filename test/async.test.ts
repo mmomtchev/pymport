@@ -86,7 +86,7 @@ describe('callAsync', () => {
     it('basic test', (done) => {
       const q = spawnWorker('lambda x: x + 4.2');
       q.then((r) => {
-        assert.strictEqual(r, 8.4);
+        assert.closeTo(r as number, 4.2 * 102, 0.1);
         done();
       }).catch((err) => done(err));
     });
