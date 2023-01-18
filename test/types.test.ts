@@ -21,7 +21,7 @@ describe('types', () => {
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
-      assert.throws(() => f.item(0), /not subscriptable/);
+      assert.isUndefined(f.item(0));
       assert.throws(() => PyObject.keys(f), /does not support mapping/);
       assert.throws(() => PyObject.values(f), /does not support mapping/);
       assert.equal(f.type, 'float');
@@ -85,7 +85,7 @@ describe('types', () => {
       assert.instanceOf(f, PyObject);
       assert.isFalse(f.callable);
       assert.isUndefined(f.length);
-      assert.throws(() => f.item(0), /not subscriptable/);
+      assert.isUndefined(f.item(0));
       assert.throws(() => PyObject.keys(f), /does not support mapping/);
       assert.throws(() => PyObject.values(f), /does not support mapping/);
       assert.equal(f.type, 'int');
@@ -197,7 +197,7 @@ describe('types', () => {
       assert.equal(a.type, 'list');
       assert.equal(a.length, 3);
       assert.equal(a.item(1).toJS(), 2.1);
-      assert.throws(() => a.item(10));
+      assert.isUndefined(a.item(10));
       assert.throws(() => PyObject.keys(a), /'list' object has no attribute 'keys'/);
       assert.throws(() => PyObject.values(a), /'list' object has no attribute 'values'/);
       assert.deepEqual(a.toJS(), array);
@@ -274,7 +274,7 @@ describe('types', () => {
       const set = PyObject.set(array);
       assert.equal(set.type, 'set');
       assert.equal(set.length, 3);
-      assert.throws(() => set.item(1), /'set' object is not subscriptable/);
+      assert.isUndefined(set.item(1));
       assert.throws(() => PyObject.keys(set), /Object does not support mapping protocol/);
       assert.throws(() => PyObject.values(set), /Object does not support mapping protocol/);
       assert.isTrue(set.get('__contains__').call(2).toJS());
@@ -359,7 +359,7 @@ describe('types', () => {
       assert.isFalse(t.callable);
       assert.equal(t.length, 3);
       assert.equal(t.item(1).toJS(), 'a');
-      assert.throws(() => t.item(10));
+      assert.isUndefined(t.item(10));
       assert.throws(() => PyObject.keys(t), /'tuple' object has no attribute 'keys'/);
       assert.throws(() => PyObject.values(t), /'tuple' object has no attribute 'values'/);
     });
