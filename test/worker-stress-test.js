@@ -3,7 +3,7 @@ const { Worker } = require('worker_threads');
 const path = require('path');
 const Queue = require('async-await-queue');
 
-const queue = new Queue(4, 0);
+const queue = new Queue(24, 0);
 
 // Make sure the dynamic library is loaded from the main thread
 // https://github.com/mmomtchev/pymport/issues/69
@@ -39,9 +39,9 @@ async function main() {
       })
       .finally(() => queue.end(me));
     const { waiting } = queue.stat();
-    if (waiting > 1) {
+    if (waiting > 100) {
       const throttle = Symbol();
-      await queue.wait(throttle).finally(() => queue.end(throttle));
+      await queue.wait(throttle, -1).finally(() => queue.end(throttle));
     }
   }
 }
