@@ -13,12 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Allow disabling of the generic Buffer protocol transformation to `toJS()`
  - Add `PyObject.prototype.map` method compatible with `Array.prototype.map`
  - Proxified functions are now also `Proxy` objects, resolves [#58](https://github.com/mmomtchev/pymport/issues/58)
+ - `PyObject.item()` now returns `undefined` instead of throwing an exception when an element cannot be retrieved by `[]`
 
-#### Bug Fixes
+##### Bug Fixes
  - Fix [#66](https://github.com/mmomtchev/pymport/issues/66), race condition can result in an abort when using `pymport` with `worker_threads`
-
-### [1.3.2] WIP
-
  - Fix [#40](https://github.com/mmomtchev/pymport/issues/40), patch `_sysconfigdata` after installation
 
 ### [1.3.1] 2023-01-07

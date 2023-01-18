@@ -165,7 +165,10 @@ Value PyObjectWrap::Item(const CallbackInfo &info) {
   if (info.Length() < 1) throw Error::New(env, "Missing mandatory argument");
   PyStrongRef item = FromJS(info[0]);
   PyStrongRef r = PyObject_GetItem(*self, *item);
-  EXCEPTION_CHECK(env, r);
+  if (r == nullptr) {
+    PyErr_Clear();
+    return env.Undefined();
+  }
   return New(env, std::move(r));
 }
 
