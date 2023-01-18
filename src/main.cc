@@ -161,7 +161,7 @@ Napi::Object Init(Env env, Object exports) {
   if (active_environments == 0 && !Py_IsInitialized()) {
     PyConfig config;
 
-    printf("Bootstrapping Python\n");
+    VERBOSE("Bootstrapping Python\n");
     PyConfig_InitPythonConfig(&config);
 #ifdef BUILTIN_PYTHON_PATH
     auto pathPymport = std::getenv("PYMPORTPATH");
