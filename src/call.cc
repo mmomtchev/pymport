@@ -91,6 +91,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
   ASSERT(PyTuple_Check(args));
   ASSERT(kw == nullptr || PyDict_Check(kw));
 
+  // We always call JavaScript synchronously but this function can be called from a background thread
   if (async) {
     // We have been called in a worker thread, we will schedule the call in the V8 main thread
     // And we will block until that call returns
