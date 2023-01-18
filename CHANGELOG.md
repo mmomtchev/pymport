@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ##### Bug Fixes
  - Fix [#66](https://github.com/mmomtchev/pymport/issues/66), race condition can result in an abort when using `pymport` with `worker_threads`
  - Fix [#40](https://github.com/mmomtchev/pymport/issues/40), patch `_sysconfigdata` after installation
+ - Fix [#70](https://github.com/mmomtchev/pymport/issues/70), use the correct event loop when running in a `worker_thread`
 
 ### [1.3.1] 2023-01-07
 
