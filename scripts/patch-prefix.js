@@ -16,4 +16,5 @@ for (const f of sysconfigs) {
   const re = new RegExp(`\\/[-_a-zA-Z0-9/]+\\/pymport\\/lib\\/binding\\/${platformDir}/*([-_a-z0-9/]*)`, 'g');
   const patched = original.replace(re, path.join(bin_dir, '$1'));
   fs.writeFileSync(path.join(sysconfigDataPath, f), patched);
+  console.log(`successfully set the Python prefix in ${path.join(sysconfigDataPath, f)} to ${bin_dir}`);
 }
