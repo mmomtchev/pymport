@@ -31,7 +31,7 @@ PyObjectWrap::~PyObjectWrap() {
   // This is because the Python shutdown chain will be run in DEBUG mode
   // Refer to the comment about https://github.com/nodejs/node/issues/45088
   if (active_environments == 0) {
-    VERBOSE(OBJS, "Destructor running after the environment cleanup: %p\n", *self);
+    VERBOSE(INIT, "Destructor running after the environment cleanup: %p\n", *self);
     return;
   }
 #endif

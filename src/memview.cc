@@ -20,7 +20,7 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
   // This is in fact a borrowed reference, but this is the counterpart to the inversion below
   PyStrongRef weak = PyTuple_GetItem(args, 0);
   ASSERT(*weak != nullptr);
-  VERBOSE_PYOBJ(OBJS, *weak, "memview weak");
+  VERBOSE_PYOBJ(MEMV, *weak, "memview weak");
 
   auto it = memview_store.find(*weak);
   ASSERT(it != memview_store.end());
