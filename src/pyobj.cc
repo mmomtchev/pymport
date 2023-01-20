@@ -27,14 +27,13 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 
 PyObjectWrap::~PyObjectWrap() {
   Napi::Env env = Env();
-#ifdef DEBUG
-  // This is because the Python shutdown chain will be run in DEBUG mode
+  // Skip if Python has been shut down
   // Refer to the comment about https://github.com/nodejs/node/issues/45088
   if (active_environments == 0) {
     VERBOSE(INIT, "Destructor running after the environment cleanup: %p\n", *self);
     return;
   }
-#endif
+
   // This is, in fact, a function that is called from a JavaScript context
   // TODO: this can block the event loop with long-running Python operations
   PyGILGuard pyGILGuard;
