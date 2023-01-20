@@ -209,20 +209,27 @@ struct EnvContext {
 // has the added benefit of provoking a segfault if the GIL is not held
 class PyGILGuard {
   PyGILState_STATE state;
+  bool aborted;
 
     public:
-  inline PyGILGuard() {
-    VERBOSE(PGIL,
+  inline PyGILGuard() : aborted(false) {
+    VERBOSE(
+      PGIL,
       "PyGIL: Will obtain from %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     state = PyGILState_Ensure();
   }
 
+  inline void abort() {
+    aborted = true;
+  }
+
   inline ~PyGILGuard() {
-    VERBOSE(PGIL,
+    VERBOSE(
+      PGIL,
       "PyGIL: Will release from %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-    PyGILState_Release(state);
+    if (!aborted) PyGILState_Release(state);
   }
 };
 }; // namespace pymport

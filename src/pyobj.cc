@@ -46,7 +46,8 @@ PyObjectWrap::~PyObjectWrap() {
   // on the GIL and the Python environment got shutdown
   if (active_environments == 0) {
     printf("Obviously a major malfunction\n");
-    abort();
+    pyGILGuard.abort();
+    return;
   }
 
   VERBOSE_PYOBJ(OBJS, *self, "ObjWrap delete");
