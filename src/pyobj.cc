@@ -27,6 +27,10 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 
 PyObjectWrap::~PyObjectWrap() {
   Napi::Env env = Env();
+
+  // Whether the object has been evicted or not, the adjusting happens here
+  if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
+
   // Skip if Python has been shut down
   // Refer to the comment about https://github.com/nodejs/node/issues/45088
   if (active_environments == 0) {
@@ -38,13 +42,17 @@ PyObjectWrap::~PyObjectWrap() {
   // TODO: this can block the event loop with long-running Python operations
   PyGILGuard pyGILGuard;
 
+  // This is a nightmarish scenario - the destructor has been waiting
+  // on the GIL and the Python environment got shutdown
+  if (active_environments == 0) {
+    printf("Obviously a major malfunction\n");
+    abort();
+  }
+
   VERBOSE_PYOBJ(OBJS, *self, "ObjWrap delete");
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
   if (*self != nullptr) { Release(); }
-
-  // Whether the object has been evicted or not, the adjusting happens here
-  if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
 
   // We need to manually unreference, otherwise we won't be covered by the
   // GIL guard - pyGILGuard will be destroyed before the member variables
