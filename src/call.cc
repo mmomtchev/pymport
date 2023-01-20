@@ -135,7 +135,7 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
 // Finalizer for pymport.js_function
 // Can be called both from Python and JS context
 static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
-  VERBOSE_PYOBJ(self, "jscall_trampoline finalizer");
+  VERBOSE_PYOBJ(CALL, self, "jscall_trampoline finalizer");
   JSCall_Trampoline *me = reinterpret_cast<JSCall_Trampoline *>(self);
 
   auto fn = me->js_fn;
@@ -160,7 +160,7 @@ static PyObject *JSCall_Trampoline_Finalizer(PyObject *self, PyObject *args, PyO
   else
 #endif
   {
-    VERBOSE("jscall_trampoline asynchronous finalization\n");
+    VERBOSE(CALL, "jscall_trampoline asynchronous finalization\n");
     std::lock_guard<std::mutex> lock(context->v8_queue.lock);
     context->v8_queue.jobs.emplace(std::move(finalizer));
     assert(uv_async_send(context->v8_queue.handle) == 0);

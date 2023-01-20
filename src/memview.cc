@@ -15,12 +15,12 @@ static std::map<PyObject *, Reference<Buffer<char>> *> memview_store;
 // This is the only case in which the V8 GC can be blocked by the Python GC
 // Called from Python context
 static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw) {
-  VERBOSE_PYOBJ(self, "memview finalizer");
+  VERBOSE_PYOBJ(MEMV, self, "memview finalizer");
 
   // This is in fact a borrowed reference, but this is the counterpart to the inversion below
   PyStrongRef weak = PyTuple_GetItem(args, 0);
   ASSERT(*weak != nullptr);
-  VERBOSE_PYOBJ(*weak, "memview weak");
+  VERBOSE_PYOBJ(OBJS, *weak, "memview weak");
 
   auto it = memview_store.find(*weak);
   ASSERT(it != memview_store.end());
@@ -42,7 +42,7 @@ static PyObject *MemView_Finalizer(PyObject *self, PyObject *args, PyObject *kw)
   else
 #endif
   {
-    VERBOSE("memview asynchronous finalization\n");
+    VERBOSE(MEMV, "memview asynchronous finalization\n");
     std::lock_guard<std::mutex> lock(context->v8_queue.lock);
     context->v8_queue.jobs.emplace(std::move(finalizer));
     assert(uv_async_send(context->v8_queue.handle) == 0);
@@ -88,7 +88,7 @@ Value PyObjectWrap::MemoryView(const CallbackInfo &info) {
   *persistent = Persistent(buffer);
   memview_store.insert({*weak, persistent});
 
-  VERBOSE_PYOBJ(*weak, "memview register finalizer");
+  VERBOSE_PYOBJ(MEMV, *weak, "memview register finalizer");
 
   return New(env, std::move(memoryView));
 }

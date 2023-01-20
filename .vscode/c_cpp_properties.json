@@ -26,6 +26,21 @@
       "cppStandard": "c++14"
     },
     {
+      "name": "Linux w/DEBUG",
+      "includePath": [
+        "/usr/include/node",
+        "${workspaceFolder}/node_modules/node-addon-api",
+        "/usr/include/python3.8"
+      ],
+      "defines": [
+        "${projectDefines}",
+        "DEBUG"
+      ],
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "c17",
+      "cppStandard": "c++14"
+    },
+    {
       "name": "Linux w/ Python",
       "includePath": [
         "/usr/include/node",

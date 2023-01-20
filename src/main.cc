@@ -12,9 +12,19 @@
 
 using namespace Napi;
 using namespace pymport;
+using namespace std::string_literals;
 
 #define STR(s) __STR(s)
 #define __STR(x) #x ""
+
+#ifdef DEBUG
+#define V(X) STR(X)
+const char *debug_opt_names[] = {DEBUG_OPTS(V)};
+#undef V
+#define V(X) false
+bool debug_opt_enabled[] = {DEBUG_OPTS(V)};
+#undef V
+#endif
 
 size_t pymport::active_environments = 0;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
@@ -74,7 +84,7 @@ Value Version(const CallbackInfo &info) {
 // Runs the queue of V8 tasks scheduled from Python contexts
 static void RunInV8Context(uv_async_t *async) {
   auto context = reinterpret_cast<EnvContext *>(async->data);
-  VERBOSE("RunInV8Context, queue length %d\n", static_cast<int>(context->v8_queue.jobs.size()));
+  VERBOSE(CALL, "RunInV8Context, queue length %d\n", static_cast<int>(context->v8_queue.jobs.size()));
   // As the lambdas are very light, it is better to not release the lock at all
   std::lock_guard<std::mutex> lock(context->v8_queue.lock);
   while (!context->v8_queue.jobs.empty()) {
@@ -86,7 +96,24 @@ static void RunInV8Context(uv_async_t *async) {
 
 extern void MemInit();
 
+#ifdef DEBUG
+static bool debug_init = false;
+static void InitDebug() {
+  if (debug_init) return;
+  debug_init = true;
+  for (size_t i = 0; i < sizeof(debug_opt_names) / sizeof(debug_opt_names[0]); i++) {
+    if (std::getenv(("PYMPORT_DEBUG_"s + debug_opt_names[i]).c_str())) {
+      printf("%s debug enabled\n", debug_opt_names[i]);
+      debug_opt_enabled[i] = true;
+    }
+  }
+}
+#endif
+
 Napi::Object Init(Env env, Object exports) {
+#ifdef DEBUG
+  InitDebug();
+#endif
   Function pyObjCons = PyObjectWrap::GetClass(env);
 
   exports.Set("PyObject", pyObjCons);
@@ -108,6 +135,7 @@ Napi::Object Init(Env env, Object exports) {
   uv_unref(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle));
   context->v8_queue.handle->data = context;
   VERBOSE(
+    INIT,
     "PyGIL: Initialized new environment, V8 main thread is %lu\n",
     static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 
@@ -117,6 +145,7 @@ Napi::Object Init(Env env, Object exports) {
     [](napi_async_cleanup_hook_handle hook, void *arg) {
       auto context = reinterpret_cast<EnvContext *>(arg);
       VERBOSE(
+        INIT,
         "PyGIL: Cleaning up environment, V8 main thread is %lu\n",
         static_cast<unsigned long>(std::hash<std::thread::id>{}(context->v8_main)));
       active_environments--;
@@ -131,6 +160,7 @@ Napi::Object Init(Env env, Object exports) {
       context->v8_queue.handle->data = hook;
       uv_close(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle), [](uv_handle_t *handle) {
         VERBOSE(
+          INIT,
           "Finalizing the finalizer (%lu)...\n",
           static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
         auto hook = reinterpret_cast<napi_async_cleanup_hook_handle>(handle->data);
@@ -148,7 +178,7 @@ Napi::Object Init(Env env, Object exports) {
       // https://github.com/nodejs/node/issues/45088
       // Anyway, it is really needed only for the asan build
       if (active_environments == 0) {
-        VERBOSE("Shutting down Python\n");
+        VERBOSE(INIT, "Shutting down Python\n");
         PyEval_RestoreThread(py_main);
         Py_Finalize();
       }
@@ -161,7 +191,7 @@ Napi::Object Init(Env env, Object exports) {
   if (active_environments == 0 && !Py_IsInitialized()) {
     PyConfig config;
 
-    VERBOSE("Bootstrapping Python\n");
+    VERBOSE(INIT, "Bootstrapping Python\n");
     PyConfig_InitPythonConfig(&config);
 #ifdef BUILTIN_PYTHON_PATH
     auto pathPymport = std::getenv("PYMPORTPATH");

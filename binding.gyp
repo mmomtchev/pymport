@@ -2,7 +2,6 @@
   'variables': {
     'enable_asan%': 'false',
     'enable_coverage%': 'false',
-    'debug_verbose%': 'false',
     'builtin_python%': 'false',
     'external_python%': 'false',
     'binding_dir': '<!(node -e "console.log(path.dirname(require(\'@mapbox/node-pre-gyp\').find(\'package.json\')))")',
@@ -48,9 +47,6 @@
         }],
         ['builtin_python == "true"', {
           'defines': [ 'BUILTIN_PYTHON_PATH=LR"(<(binding_dir))"' ]
-        }],
-        ['debug_verbose == "true"', {
-          'defines': [ 'DEBUG_VERBOSE' ]
         }],
         ['OS == "win"', {
           'msvs_settings': {

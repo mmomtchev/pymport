@@ -142,7 +142,7 @@ Napi::Value PyObjectWrap::_ToJS_Dir(Napi::Env env, const PyWeakRef &py, NapiObje
       continue;
     }
 
-    VERBOSE_PYOBJ(*key, "key");
+    VERBOSE_PYOBJ(OBJS, *key, "key");
     Napi::Value jsKey = _ToJS(env, key, store, {opts.depth - 1, opts.buffer});
     Napi::Value jsValue = _ToJS(env, value, store, {opts.depth - 1, opts.buffer});
     r.Set(jsKey, jsValue);
