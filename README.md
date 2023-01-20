@@ -59,6 +59,11 @@ except for the following combinations that are not supported:
 
 * **Python 3.11.1 on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)]
 
+# Known Issues
+
+The wiki has a list of some known and hard to fix issues:
+[Known Issues](https://github.com/mmomtchev/pymport/wiki#known-issues)
+
 # License
 
 Copyright 2022 Momtchil Momtchev <momtchil@momtchev.com> and contributors
