@@ -78,5 +78,5 @@ enum debug_opt { DEBUG_OPTS(V) };
 #define INLINE
 #define ASSERT(x)
 #define VERBOSE(...)
-#define VERBOSE_PYOBJ(o, msg)
+#define VERBOSE_PYOBJ(sys, o, msg)
 #endif
