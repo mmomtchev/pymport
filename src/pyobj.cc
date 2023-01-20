@@ -31,7 +31,7 @@ PyObjectWrap::~PyObjectWrap() {
   // This is because the Python shutdown chain will be run in DEBUG mode
   // Refer to the comment about https://github.com/nodejs/node/issues/45088
   if (active_environments == 0) {
-    VERBOSE("Destructor running after the environment cleanup: %p\n", *self);
+    VERBOSE(INIT, "Destructor running after the environment cleanup: %p\n", *self);
     return;
   }
 #endif
@@ -39,7 +39,7 @@ PyObjectWrap::~PyObjectWrap() {
   // TODO: this can block the event loop with long-running Python operations
   PyGILGuard pyGILGuard;
 
-  VERBOSE_PYOBJ(*self, "ObjWrap delete");
+  VERBOSE_PYOBJ(OBJS, *self, "ObjWrap delete");
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
   if (*self != nullptr) { Release(); }

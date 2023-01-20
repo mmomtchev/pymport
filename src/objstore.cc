@@ -18,7 +18,7 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
   EXCEPTION_CHECK(env, obj);
 
   auto context = env.GetInstanceData<EnvContext>();
-  VERBOSE_PYOBJ(*obj, "Objstore new");
+  VERBOSE_PYOBJ(OBJS, *obj, "Objstore new");
 
   Object js;
   auto it = context->object_store.find(*obj);
@@ -28,12 +28,12 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
     if (it != context->object_store.end()) {
       // prevent the dying object from deleting the entry of the new one
       // as they share the same PyObject
-      VERBOSE_PYOBJ(*obj, "Objstore is dying");
+      VERBOSE_PYOBJ(OBJS, *obj, "Objstore is dying");
       auto o = it->second;
       context->object_store.erase(*o->self);
       o->self = nullptr;
     }
-    VERBOSE_PYOBJ(*obj, "Objstore insert");
+    VERBOSE_PYOBJ(OBJS, *obj, "Objstore insert");
 
     // This is a very ugly workaround for https://github.com/nodejs/node-addon-api/issues/1239
     napi_value ext = External<PyObject>::New(env, obj.gift());
@@ -49,7 +49,7 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
     context->object_store.insert({*result->self, result});
   } else {
     // Retrieve the existing object from the store
-    VERBOSE_PYOBJ(*obj, "Objstore retrieve");
+    VERBOSE_PYOBJ(OBJS, *obj, "Objstore retrieve");
     js = it->second->Value();
   }
 
@@ -60,17 +60,17 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
 Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
   EXCEPTION_CHECK(env, py);
 
-  VERBOSE_PYOBJ(*py, "Funcstore new callable");
+  VERBOSE_PYOBJ(CALL, *py, "Funcstore new callable");
   auto context = env.GetInstanceData<EnvContext>();
   auto it = context->function_store.find(*py);
   Function js;
   if (it == context->function_store.end() || it->second->Value().IsEmpty()) {
     if (it != context->function_store.end()) {
       // The function has been GCed but it hasn't been destroyed, same situation as objects above
-      VERBOSE_PYOBJ(*py, "Funcstore evict dying");
+      VERBOSE_PYOBJ(CALL, *py, "Funcstore evict dying");
       context->function_store.erase(*py);
     }
-    VERBOSE_PYOBJ(*py, "Funcstore insert");
+    VERBOSE_PYOBJ(CALL, *py, "Funcstore insert");
     // py is a strong reference that will be duplicated here
     // - one copy goes to the __PyObject__ property of the function which is a normal PyObject
     // - the other copy goes to the hint of the function descriptor which will be passed to the trampoline
@@ -90,14 +90,14 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
         // This is because the Python shutdown chain will be run in DEBUG mode
         // Refer to the comment in PyObject::~PyObject about https://github.com/nodejs/node/issues/45088
         if (active_environments == 0) {
-          VERBOSE("Funcstore erase running after the environment cleanup: %p\n", fini_py);
+          VERBOSE(INIT, "Funcstore erase running after the environment cleanup: %p\n", fini_py);
           return;
         }
 #endif
 
         // This is called from a JS context
         PyGILGuard pyGilGuard;
-        VERBOSE_PYOBJ(fini_py, "Funcstore erase");
+        VERBOSE_PYOBJ(CALL, fini_py, "Funcstore erase");
         auto context = env.GetInstanceData<EnvContext>();
         auto stored = context->function_store.find(fini_py);
         // Does the stored function match our reference?
@@ -108,7 +108,7 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
         if (stored != context->function_store.end() && stored->second == fini_fn) {
           context->function_store.erase(fini_py);
         } else {
-          VERBOSE_PYOBJ(fini_py, "Funcstore already erased");
+          VERBOSE_PYOBJ(CALL, fini_py, "Funcstore already erased");
         }
         delete fini_fn;
       },
@@ -117,7 +117,7 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
 
     js.DefineProperty(Napi::PropertyDescriptor::Value("__PyObject__", New(env, std::move(py)), napi_default));
   } else {
-    VERBOSE_PYOBJ(*py, "Funcstore retrieve");
+    VERBOSE_PYOBJ(CALL, *py, "Funcstore retrieve");
     assert(!it->second->Value().IsEmpty());
     js = it->second->Value();
   }
@@ -134,6 +134,6 @@ void PyObjectWrap::Release() {
   auto context = env.GetInstanceData<EnvContext>();
 
   ASSERT(context->object_store.find(*self) != context->object_store.end());
-  VERBOSE_PYOBJ(*self, "Objstore erase");
+  VERBOSE_PYOBJ(OBJS, *self, "Objstore erase");
   context->object_store.erase(*self);
 }

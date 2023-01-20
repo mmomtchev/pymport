@@ -69,13 +69,13 @@ class PyStrongRef : public PyWeakRef {
   // Regular constructor from a raw strong reference returned by Python
   INLINE PyStrongRef(PyObject *v) : PyWeakRef(v) {
     ASSERT(self == nullptr || self->ob_refcnt > 0);
-    VERBOSE_PYOBJ(self, "StrongRef create");
+    VERBOSE_PYOBJ(REFS, self, "StrongRef create");
   };
 
   // Copying is allowed only if explicit
   // (this is, in fact, a performance problem)
   explicit INLINE PyStrongRef(const PyWeakRef &v) : PyWeakRef(v) {
-    VERBOSE_PYOBJ(self, "StrongRef copy/weak");
+    VERBOSE_PYOBJ(REFS, self, "StrongRef copy/weak");
     ASSERT(self->ob_refcnt > 0);
     Py_INCREF(self);
   }
@@ -83,7 +83,7 @@ class PyStrongRef : public PyWeakRef {
   // The previous function won't get called for a PyStrongRef
   // because the compiler will generate an implicit deleted copy constructor
   explicit INLINE PyStrongRef(const PyStrongRef &v) : PyWeakRef(v.self) {
-    VERBOSE_PYOBJ(self, "StrongRef copy/strong");
+    VERBOSE_PYOBJ(REFS, self, "StrongRef copy/strong");
     ASSERT(self->ob_refcnt > 0);
     Py_INCREF(self);
   }
@@ -95,7 +95,7 @@ class PyStrongRef : public PyWeakRef {
   INLINE PyStrongRef(PyStrongRef &&v) : PyWeakRef(v.self) {
     ASSERT(self->ob_refcnt > 0);
     v.self = nullptr;
-    VERBOSE_PYOBJ(self, "StrongRef move");
+    VERBOSE_PYOBJ(REFS, self, "StrongRef move");
   };
 
   // Destructive move-assignment constructor
@@ -110,12 +110,12 @@ class PyStrongRef : public PyWeakRef {
   INLINE PyStrongRef &operator=(PyStrongRef &&v) {
     ASSERT(self == nullptr || v.self == nullptr);
     if (self == nullptr) {
-      VERBOSE_PYOBJ(v.self, "StrongRef move-assignment");
+      VERBOSE_PYOBJ(REFS, v.self, "StrongRef move-assignment");
       ASSERT(v.self == nullptr || v.self->ob_refcnt > 0);
       self = v.self;
       v.self = nullptr;
     } else if (v.self == nullptr) {
-      VERBOSE_PYOBJ(v.self, "StrongRef unreference");
+      VERBOSE_PYOBJ(REFS, v.self, "StrongRef unreference");
       ASSERT(self->ob_refcnt > 0);
       Py_DECREF(self);
       self = nullptr;
@@ -129,7 +129,7 @@ class PyStrongRef : public PyWeakRef {
   // This is a destructive move to plain C (to the Python C-API)
   INLINE PyObject *gift() {
     ASSERT(self->ob_refcnt > 0);
-    VERBOSE_PYOBJ(self, "StrongRef gift");
+    VERBOSE_PYOBJ(REFS, self, "StrongRef gift");
     PyObject *r = self;
     self = nullptr;
     return r;
@@ -144,11 +144,11 @@ class PyStrongRef : public PyWeakRef {
   INLINE virtual ~PyStrongRef() {
 #if defined(DEBUG) || defined(DEBUG_VERBOSE)
     if (active_environments == 0) {
-      VERBOSE("Dereference running after environment cleanup: %p\n", self);
+      VERBOSE(INIT, "Dereference running after environment cleanup: %p\n", self);
       return;
     }
 #endif
-    VERBOSE_PYOBJ(self, "StrongRef delete");
+    VERBOSE_PYOBJ(REFS, self, "StrongRef delete");
     if (self != nullptr) {
       ASSERT(self->ob_refcnt > 0);
       Py_DECREF(self);

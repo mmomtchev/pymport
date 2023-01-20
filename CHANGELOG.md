@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Add `PyObject.prototype.map` method compatible with `Array.prototype.map`
  - Proxified functions are now also `Proxy` objects, resolves [#58](https://github.com/mmomtchev/pymport/issues/58)
  - `PyObject.item()` now returns `undefined` instead of throwing an exception when an element cannot be retrieved by `[]`
+ - Allow enabling of debug output via the environment (`PYMPORT_DEBUG_sys` vars)
 
 ##### Bug Fixes
  - Fix [#66](https://github.com/mmomtchev/pymport/issues/66), race condition can result in an abort when using `pymport` with `worker_threads`

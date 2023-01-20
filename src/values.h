@@ -39,34 +39,44 @@
                                                  : info[arg].ToObject()))
 
 #ifdef DEBUG
+#define DEBUG_OPTS(V) V(REFS), V(INIT), V(OBJS), V(CALL), V(MEMV), V(PGIL)
+extern bool debug_opt_enabled[];
+
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
 #define INLINE inline
 #define ASSERT(x) assert(x)
 #define LINEINFO (std::string(" @ " + std::string(__FILE__) + ":" + std::to_string(__LINE__)))
 #define EXCEPTION_CHECK(env, val) ExceptionCheck(env, val, LINEINFO)
+
+#define V(X) X
+enum debug_opt { DEBUG_OPTS(V) };
+#undef V
+
+#define VERBOSE(sys, ...)                                                                                              \
+  do {                                                                                                                 \
+    if (debug_opt_enabled[debug_opt::sys]) printf(__VA_ARGS__);                                                        \
+  } while (0)
+
+#define VERBOSE_PYOBJ(sys, o, msg)                                                                                     \
+  do {                                                                                                                 \
+    if (debug_opt_enabled[debug_opt::sys]) {                                                                           \
+      printf(                                                                                                          \
+        "%s %p : %s (refs %lu): ",                                                                                     \
+        msg,                                                                                                           \
+        (o),                                                                                                           \
+        (o) != nullptr ? (o)->ob_type->tp_name : "null",                                                               \
+        (o) != nullptr ? (unsigned long)((o)->ob_refcnt) : 0);                                                         \
+      if (o != nullptr) PyObject_Print(o, stdout, 0);                                                                  \
+      printf("\n");                                                                                                    \
+    }                                                                                                                  \
+  } while (0)
+
 #else
 #define LINEINFO
 #define EXCEPTION_CHECK(env, val) ExceptionCheck(env, val)
 #define LOG(...)
 #define INLINE
 #define ASSERT(x)
-#endif
-
-#ifdef DEBUG_VERBOSE
-#define VERBOSE(...) printf(__VA_ARGS__)
-#define VERBOSE_PYOBJ(o, msg)                                                                                          \
-  {                                                                                                                    \
-    printf(                                                                                                            \
-      "%s %p : %s (refs %lu): ",                                                                                       \
-      msg,                                                                                                             \
-      (o),                                                                                                             \
-      (o) != nullptr ? (o)->ob_type->tp_name : "null",                                                                 \
-      (o) != nullptr ? (unsigned long)((o)->ob_refcnt) : 0);                                                           \
-    if (o != nullptr) PyObject_Print(o, stdout, 0);                                                                    \
-    printf("\n");                                                                                                      \
-  }
-
-#else
 #define VERBOSE(...)
-#define VERBOSE_PYOBJ(o, msg)
+#define VERBOSE_PYOBJ(sys, o, msg)
 #endif

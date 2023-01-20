@@ -185,9 +185,11 @@ struct EnvContext {
     std::queue<std::function<void()>> jobs;
     std::mutex lock;
   } v8_queue;
-#ifdef DEBUG_VERBOSE
+
+#ifdef DEBUG
   ~EnvContext() {
     VERBOSE(
+      INIT,
       "Destroying the environment context for %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(v8_main)));
   }
@@ -210,14 +212,14 @@ class PyGILGuard {
 
     public:
   inline PyGILGuard() {
-    VERBOSE(
+    VERBOSE(PGIL,
       "PyGIL: Will obtain from %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     state = PyGILState_Ensure();
   }
 
   inline ~PyGILGuard() {
-    VERBOSE(
+    VERBOSE(PGIL,
       "PyGIL: Will release from %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     PyGILState_Release(state);
