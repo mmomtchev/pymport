@@ -17,15 +17,6 @@ using namespace std::string_literals;
 #define STR(s) __STR(s)
 #define __STR(x) #x ""
 
-#ifdef DEBUG
-#define V(X) STR(X)
-const char *debug_opt_names[] = {DEBUG_OPTS(V)};
-#undef V
-#define V(X) false
-bool debug_opt_enabled[] = {DEBUG_OPTS(V)};
-#undef V
-#endif
-
 size_t pymport::active_environments = 0;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
 PyThreadState *py_main;
@@ -97,6 +88,14 @@ static void RunInV8Context(uv_async_t *async) {
 extern void MemInit();
 
 #ifdef DEBUG
+
+#define V(X) STR(X)
+const char *debug_opt_names[] = {DEBUG_OPTS(V)};
+#undef V
+#define V(X) false
+bool debug_opt_enabled[] = {DEBUG_OPTS(V)};
+#undef V
+
 static bool debug_init = false;
 static void InitDebug() {
   if (debug_init) return;
