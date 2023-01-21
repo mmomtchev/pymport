@@ -5,12 +5,12 @@
 #include <set>
 #include <thread>
 #include <mutex>
-#include <shared_mutex>
 #include <functional>
 #include <queue>
 #include <napi.h>
 #include <uv.h>
 
+#include "shared_mutex.h"
 #include "pystackobject.h"
 
 namespace pymport {
@@ -197,7 +197,7 @@ struct EnvContext {
 #endif
 };
 
-extern std::shared_mutex init_and_shutdown_mutex;
+extern shared_mutex init_and_shutdown_mutex;
 
 // GIL locking rule:
 // Every time we enter C++ called from JS context, we obtain the GIL

@@ -27,7 +27,7 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 
 PyObjectWrap::~PyObjectWrap() {
   // This is never contested unless running a thread creation stress test
-  std::shared_lock<std::shared_mutex> lock(pymport::init_and_shutdown_mutex);
+  shared_guard lock(pymport::init_and_shutdown_mutex);
   Napi::Env env = Env();
 
   // Whether the object has been evicted or not, the adjusting happens here

@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 
 #define MAX_SAFE_JS_INTEGER 9007199254740991
 #define MIN_SAFE_JS_INTEGER -9007199254740991
