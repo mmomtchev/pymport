@@ -1,6 +1,10 @@
 #pragma once
 #include "values.h"
 
+// Normally, C++14 should have shared_timed_mutex and C++17 should have shared_mutex
+// However Apple and Google decided that these weren't so important so they left them out
+// from clang/LLVM on macOS <12
+
 class shared_mutex {
     public:
   inline shared_mutex() {
