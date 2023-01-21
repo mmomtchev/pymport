@@ -5,11 +5,6 @@ const Queue = require('async-await-queue');
 
 const queue = new Queue(24, 0);
 
-// Make sure the dynamic library is loaded from the main thread
-// https://github.com/mmomtchev/pymport/issues/69
-const { PyObject } = require('pymport');
-PyObject.fromJS(3.14);
-
 function spawnWorker(script) {
   return new Promise((resolve, reject) => {
     const worker = new Worker(path.resolve(__dirname, './worker_thread.js'), {

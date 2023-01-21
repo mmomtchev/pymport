@@ -4,12 +4,13 @@
 #include <list>
 #include <set>
 #include <thread>
+#include <mutex>
 #include <functional>
 #include <queue>
-#include <mutex>
 #include <napi.h>
 #include <uv.h>
 
+#include "shared_mutex.h"
 #include "pystackobject.h"
 
 namespace pymport {
@@ -196,6 +197,8 @@ struct EnvContext {
 #endif
 };
 
+extern shared_mutex init_and_shutdown_mutex;
+
 // GIL locking rule:
 // Every time we enter C++ called from JS context, we obtain the GIL
 //
@@ -212,14 +215,16 @@ class PyGILGuard {
 
     public:
   inline PyGILGuard() {
-    VERBOSE(PGIL,
+    VERBOSE(
+      PGIL,
       "PyGIL: Will obtain from %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     state = PyGILState_Ensure();
   }
 
   inline ~PyGILGuard() {
-    VERBOSE(PGIL,
+    VERBOSE(
+      PGIL,
       "PyGIL: Will release from %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     PyGILState_Release(state);

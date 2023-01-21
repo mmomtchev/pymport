@@ -26,26 +26,29 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 }
 
 PyObjectWrap::~PyObjectWrap() {
+  // This is never contested unless running a thread creation stress test
+  shared_guard lock(pymport::init_and_shutdown_mutex);
   Napi::Env env = Env();
-#ifdef DEBUG
-  // This is because the Python shutdown chain will be run in DEBUG mode
+
+  // Whether the object has been evicted or not, the adjusting happens here
+  if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
+
+  // Skip if Python has been shut down
   // Refer to the comment about https://github.com/nodejs/node/issues/45088
   if (active_environments == 0) {
     VERBOSE(INIT, "Destructor running after the environment cleanup: %p\n", *self);
     return;
   }
-#endif
+
   // This is, in fact, a function that is called from a JavaScript context
   // TODO: this can block the event loop with long-running Python operations
   PyGILGuard pyGILGuard;
+  ASSERT(active_environments > 0);
 
   VERBOSE_PYOBJ(OBJS, *self, "ObjWrap delete");
   // self == nullptr when the object has been evicted from the ObjectStore
   // because it was dying - refer to the comments there
   if (*self != nullptr) { Release(); }
-
-  // Whether the object has been evicted or not, the adjusting happens here
-  if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
 
   // We need to manually unreference, otherwise we won't be covered by the
   // GIL guard - pyGILGuard will be destroyed before the member variables
