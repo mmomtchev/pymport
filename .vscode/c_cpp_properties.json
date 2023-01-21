@@ -23,7 +23,7 @@
       ],
       "compilerPath": "/usr/bin/g++",
       "cStandard": "c17",
-      "cppStandard": "c++14"
+      "cppStandard": "c++17"
     },
     {
       "name": "Linux w/DEBUG",
@@ -38,7 +38,7 @@
       ],
       "compilerPath": "/usr/bin/g++",
       "cStandard": "c17",
-      "cppStandard": "c++14"
+      "cppStandard": "c++17"
     },
     {
       "name": "Linux w/ Python",
@@ -53,7 +53,7 @@
       ],
       "compilerPath": "/usr/bin/g++",
       "cStandard": "c17",
-      "cppStandard": "c++14"
+      "cppStandard": "c++17"
     },
     {
       "name": "macOS",
@@ -67,7 +67,7 @@
       ],
       "compilerPath": "/usr/bin/g++",
       "cStandard": "c17",
-      "cppStandard": "c++14"
+      "cppStandard": "c++17"
     },
     {
       "name": "Windows",
@@ -81,7 +81,7 @@
       ],
       "compilerPath": "cl.exe",
       "cStandard": "c17",
-      "cppStandard": "c++14"
+      "cppStandard": "c++17"
     }
   ],
   "version": 4

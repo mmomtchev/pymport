@@ -17,7 +17,7 @@ using namespace std::string_literals;
 #define STR(s) __STR(s)
 #define __STR(x) #x ""
 
-std::mutex bootstrap_mutex;
+std::shared_mutex pymport::init_and_shutdown_mutex;
 size_t pymport::active_environments = 0;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
 PyThreadState *py_main;
@@ -114,7 +114,7 @@ Napi::Object Init(Env env, Object exports) {
 #ifdef DEBUG
   InitDebug();
 #endif
-  std::lock_guard<std::mutex> lock(bootstrap_mutex);
+  std::unique_lock<std::shared_mutex> lock(init_and_shutdown_mutex);
   Function pyObjCons = PyObjectWrap::GetClass(env);
 
   exports.Set("PyObject", pyObjCons);
@@ -149,7 +149,7 @@ Napi::Object Init(Env env, Object exports) {
         INIT,
         "PyGIL: Cleaning up environment, V8 main thread is %lu\n",
         static_cast<unsigned long>(std::hash<std::thread::id>{}(context->v8_main)));
-      std::lock_guard<std::mutex> lock(bootstrap_mutex);
+      std::unique_lock<std::shared_mutex> lock(init_and_shutdown_mutex);
 
       active_environments--;
       context->pyObj->Reset();
@@ -166,7 +166,7 @@ Napi::Object Init(Env env, Object exports) {
           INIT,
           "Finalizing the finalizer (%lu)...\n",
           static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-        std::lock_guard<std::mutex> lock(bootstrap_mutex);
+        std::unique_lock<std::shared_mutex> lock(init_and_shutdown_mutex);
 
         auto hook = reinterpret_cast<napi_async_cleanup_hook_handle>(handle->data);
         delete reinterpret_cast<uv_async_t *>(handle);

@@ -183,6 +183,11 @@ static PyType_Spec jscall_trampoline_spec = {
 PyStrongRef PyObjectWrap::JSCall_Trampoline_Type = nullptr;
 
 void PyObjectWrap::InitJSTrampoline() {
+  if (PyObjectWrap::JSCall_Trampoline_Type != nullptr) {
+    VERBOSE(INIT, "Re-initializing PyObjectWrap::JSCall_Trampoline_Type (Python shutdown without dlclose)\n");
+    PyObjectWrap::JSCall_Trampoline_Type = nullptr;
+  }
+
   JSCall_Trampoline_Type = PyType_FromSpec(&jscall_trampoline_spec);
 
   if (JSCall_Trampoline_Type == nullptr) {

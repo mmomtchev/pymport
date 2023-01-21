@@ -60,6 +60,10 @@ static PyType_Spec memview_finalizer_spec = {
 static PyStrongRef MemView_Finalizer_Type = nullptr;
 
 void memview::Init() {
+  if (MemView_Finalizer_Type != nullptr) {
+    VERBOSE(INIT, "Re-initializing MemView_Finalizer_Type (Python shutdown without dlclose)\n");
+    MemView_Finalizer_Type = nullptr;
+  }
   MemView_Finalizer_Type = PyType_FromSpec(&memview_finalizer_spec);
 
   if (MemView_Finalizer_Type == nullptr) {

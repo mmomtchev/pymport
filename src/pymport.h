@@ -4,9 +4,10 @@
 #include <list>
 #include <set>
 #include <thread>
+#include <mutex>
+#include <shared_mutex>
 #include <functional>
 #include <queue>
-#include <mutex>
 #include <napi.h>
 #include <uv.h>
 
@@ -196,6 +197,8 @@ struct EnvContext {
 #endif
 };
 
+extern std::shared_mutex init_and_shutdown_mutex;
+
 // GIL locking rule:
 // Every time we enter C++ called from JS context, we obtain the GIL
 //
@@ -209,10 +212,9 @@ struct EnvContext {
 // has the added benefit of provoking a segfault if the GIL is not held
 class PyGILGuard {
   PyGILState_STATE state;
-  bool aborted;
 
     public:
-  inline PyGILGuard() : aborted(false) {
+  inline PyGILGuard() {
     VERBOSE(
       PGIL,
       "PyGIL: Will obtain from %lu\n",
@@ -220,16 +222,12 @@ class PyGILGuard {
     state = PyGILState_Ensure();
   }
 
-  inline void abort() {
-    aborted = true;
-  }
-
   inline ~PyGILGuard() {
     VERBOSE(
       PGIL,
       "PyGIL: Will release from %lu\n",
       static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-    if (!aborted) PyGILState_Release(state);
+    PyGILState_Release(state);
   }
 };
 }; // namespace pymport
