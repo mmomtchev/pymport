@@ -43,7 +43,6 @@ PyObjectWrap::~PyObjectWrap() {
   // This is, in fact, a function that is called from a JavaScript context
   // TODO: this can block the event loop with long-running Python operations
   PyGILGuard pyGILGuard;
-
   ASSERT(active_environments > 0);
 
   VERBOSE_PYOBJ(OBJS, *self, "ObjWrap delete");
