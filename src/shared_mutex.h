@@ -8,7 +8,7 @@
 class shared_mutex {
     public:
   inline shared_mutex() {
-    ASSERT(uv_rwlock_init(&mutex) == 0);
+    assert(uv_rwlock_init(&mutex) == 0);
   }
 
   inline virtual ~shared_mutex() {
