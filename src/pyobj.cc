@@ -26,6 +26,7 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 }
 
 PyObjectWrap::~PyObjectWrap() {
+  // This is never contested unless running a thread creation stress test
   std::shared_lock<std::shared_mutex> lock(pymport::init_and_shutdown_mutex);
   Napi::Env env = Env();
 
@@ -43,11 +44,7 @@ PyObjectWrap::~PyObjectWrap() {
   // TODO: this can block the event loop with long-running Python operations
   PyGILGuard pyGILGuard;
 
-  // This is not supposed to happen anymore
-  if (active_environments == 0) {
-    printf("Python disappeared under our nose (Obviously a major malfunction)\n");
-    abort();
-  }
+  ASSERT(active_environments > 0);
 
   VERBOSE_PYOBJ(OBJS, *self, "ObjWrap delete");
   // self == nullptr when the object has been evicted from the ObjectStore
