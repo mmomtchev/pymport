@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] WIP
+## [1.4.0] 2023-01-22
  - The new minimum supported versions of Node.js are now v12.22.0, v14.17.0, v16.0.0
 
 #### New Features
@@ -20,7 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ##### Bug Fixes
  - Fix [#66](https://github.com/mmomtchev/pymport/issues/66), race condition can result in an abort when using `pymport` with `worker_threads`
  - Fix [#40](https://github.com/mmomtchev/pymport/issues/40), patch `_sysconfigdata` after installation
- - Fix [#70](https://github.com/mmomtchev/pymport/issues/70), use the correct event loop when running in a `worker_thread`
+ - Fix [#70](https://github.com/mmomtchev/pymport/issues/70), random crash in a `worker_thread`
+ - Fix [#69](https://github.com/mmomtchev/pymport/issues/69), `pymport` leaks TLS memory when used in a `worker_thread`
 
 ### [1.3.1] 2023-01-07
 
