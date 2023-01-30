@@ -59,6 +59,35 @@ except for the following combinations that are not supported:
 
 * **Python 3.11.1 on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)]
 
+# `pymport` vs `PyScript/Pyodide`
+
+Although both projects provide similar functionality, they are completely unrelated with very different design goals:
+* `pymport` goal is to allow using standard Python libraries without any modification in Node.js
+* `Pyodide` goal is to allow using modified Python both in the browser and in Node.js
+
+Comparison:
+
+Software | `pymport` | `Pyodide` |
+--- | --- | --- |
+Target JS Environment | Node.js | Node.js & Browser  | 
+Compatibility | all existing Python libraries w/o modification | libraries ported to `Pyodide` |
+Python stdlib support | all | most
+Existing environment support | yes | no
+Special semantics for expressing all missing language features | yes | yes
+Performance | native |  3x to 5x slower |
+Interpreter support | Standard CPython, latest 3.10 version comes built-in | Modified recent CPython
+Using Python objects from JS | yes, with a transparent `Proxy` | yes, with a transparent `Proxy`
+Using JS objects from Python | not directly, must copy-convert with `fromJS` before calling Python | yes, with a transparent proxy type from the `js` module
+Round-trip conversion of objects restores the original | yes | yes
+Calling Python functions from JS | yes | yes 
+Calling JS functions from Python | yes | yes
+Asynchronous calling from JS to Python | yes | no
+Asynchronous calling from Python to JS | no | yes
+Interoperability between JS `Promise` and Python `Future` | no | yes
+Exception conversion | bi-directional | bi-directional
+Program entrypoint | must be JavaScript | JavaScript or Python
+Redirecting stdio | no | from Python to JavaScript
+
 # Known Issues
 
 The wiki has a list of some known and hard to fix issues:
