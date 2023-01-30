@@ -71,8 +71,9 @@ Software | `pymport` | `Pyodide` |
 --- | --- | --- |
 Target JS Environment | Node.js | Node.js & Browser  | 
 Compatibility | all existing Python libraries w/o modification | libraries ported to `Pyodide` |
+Contains binary platform-dependent code | requires binaries for the specific platform, supports Windows, Linux & macOS | fully portable
 Python stdlib support | all | most
-Existing environment support | yes | no
+Existing external environment support | yes, but must compile C++ | no
 Special semantics for expressing all missing language features | yes | yes
 Performance | native |  3x to 5x slower |
 Interpreter support | Standard CPython, latest 3.10 version comes built-in | Modified recent CPython
@@ -87,6 +88,8 @@ Interoperability between JS `Promise` and Python `Future` | no | yes
 Exception conversion | bi-directional | bi-directional
 Program entrypoint | must be JavaScript | JavaScript or Python
 Redirecting stdio | no | from Python to JavaScript
+Inline Python | only `eval` | full
+Importing `.py` files | yes | no
 
 # Known Issues
 
