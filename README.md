@@ -65,33 +65,7 @@ Although both projects provide similar functionality, they are completely unrela
 * `pymport` goal is to allow using standard Python libraries without any modification in Node.js - it brings software such as  `numpy`, `pandas` to Node.js
 * `Pyodide` goal is to allow using Python code in a modified interpreter both in the browser and in Node.js - it allows scripting a web page in Python
 
-Comparison:
-
-Software | `pymport` | `Pyodide` |
---- | --- | --- |
-Target JS Environment | Node.js | Node.js & Browser  | 
-Compatibility | all existing Python libraries w/o modification | libraries ported to `Pyodide` |
-Contains binary platform-dependent code | requires binaries for the specific platform, supports Windows, Linux & macOS | fully portable
-Python stdlib support | all | most
-Existing external environment support | yes, but must compile C++ | no
-Special semantics for expressing all missing language features | yes | yes
-Performance | native |  3x to 5x slower |
-Interpreter support | Standard CPython, latest 3.10 version comes built-in | Modified recent CPython
-Using Python objects from JS | yes, with a transparent `Proxy` | yes, with a transparent `Proxy`
-Using JS objects from Python | not directly, must copy-convert with `fromJS` before calling Python | yes, with a transparent proxy type from the `js` module
-Round-trip conversion of objects restores the original | only Python to JS to Python | both
-Calling Python functions from JS | yes | yes 
-Calling JS functions from Python | yes | yes
-Asynchronous calling from JS to Python | yes | no
-Asynchronous calling from Python to JS | no | yes
-Interoperability between JS `Promise` and Python `Future` | no | yes
-Exception conversion | bi-directional | bi-directional
-Program entrypoint | must be JavaScript | JavaScript or Python
-Redirecting stdio | no | from Python to JavaScript
-Inline Python in JavaScript | only `eval` context | full
-Importing `.py` files | may load from the filesystem | may load from an URL
-`worker_threads` | yes, all threads share a single Python interpreter | yes, each thread runs a separate Python interpreter
-TypeScript support | partial, TypeScript typings for the project itself, but does not generate TypeScript typings for Python packages | partial, TypeScript typings for the project itself, but does not generate TypeScript typings for Python packages
+You can check [the wiki](https://github.com/mmomtchev/pymport/wiki/vs-Pyodide) for a more detailed comparison.
 
 # Known Issues
 
