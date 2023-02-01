@@ -44,7 +44,7 @@
 extern bool debug_opt_enabled[];
 
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
-#define INLINE inline
+#define INLINE
 #define ASSERT(x) assert(x)
 #define LINEINFO (std::string(" @ " + std::string(__FILE__) + ":" + std::to_string(__LINE__)))
 #define EXCEPTION_CHECK(env, val) ExceptionCheck(env, val, LINEINFO)
@@ -76,7 +76,7 @@ enum debug_opt { DEBUG_OPTS(V) };
 #define LINEINFO
 #define EXCEPTION_CHECK(env, val) ExceptionCheck(env, val)
 #define LOG(...)
-#define INLINE
+#define INLINE inline
 #define ASSERT(x)
 #define VERBOSE(...)
 #define VERBOSE_PYOBJ(sys, o, msg)
