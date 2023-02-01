@@ -62,7 +62,7 @@ except for the following combinations that are not supported:
 # `pymport` vs `PyScript/Pyodide`
 
 Although both projects provide similar functionality, they are completely unrelated with very different design goals:
-* `pymport` goal is to allow using standard Python libraries without any modification in Node.js - it brings software such as  `numpy`, `pandas` to Node.js
+* `pymport` goal is to allow using standard Python libraries without any modification in Node.js - it brings software such as `numpy` and `pandas` to Node.js
 * `Pyodide` goal is to allow using Python code in a modified interpreter both in the browser and in Node.js - it allows scripting a web page in Python
 
 You can check [the wiki](https://github.com/mmomtchev/pymport/wiki/vs-Pyodide) for a more detailed comparison.
