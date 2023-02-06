@@ -361,7 +361,7 @@ PyStrongRef PyObjectWrap::_FromJS(Napi::Value v, PyObjectStore &store) {
       return PyStrongRef(py->self);
     }
 
-    if (obj.IsBuffer()) { return _FromJS_BytesArray(obj.As<Buffer<char>>()); }
+    if (v.IsBuffer()) { return _FromJS_BytesArray(v.As<Buffer<char>>()); }
     if (v.IsFunction()) { return NewJSFunction(v.As<Function>()); }
 
     // These are not supported
