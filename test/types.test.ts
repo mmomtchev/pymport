@@ -864,6 +864,16 @@ describe('types', () => {
         v.toJS();
       }, /contiguous/);
     });
+
+    it('numpy round-trip conversion through the Buffer protocol', () => {
+      const py = np.get('ones').call(6);
+      const js = py.get('tolist').call().toJS();  // to JS array
+
+      const buf = py.toJS();                      // to JS Buffer
+      const r = np.get('frombuffer').call(buf);   // back to Python numpy
+
+      assert.deepEqual(r.get('tolist').call().toJS(), js);
+    });
   });
 
   describe('BigInt', () => {

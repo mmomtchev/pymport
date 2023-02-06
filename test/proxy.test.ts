@@ -6,16 +6,28 @@ describe('proxy', () => {
   const np = pymport('numpy');
   const pd = pymport('pandas');
 
-  it('numpy', () => {
-    const a = np.arange(15).reshape(3, 5);
-    const r = a.tolist().toJS();
+  describe('numpy', () => {
+    it('simple conversion', () => {
+      const a = np.arange(15).reshape(3, 5);
+      const r = a.tolist().toJS();
 
-    assert.isTrue(np.has('ones'));
-    assert.isTrue(a.has('tolist'));
-    assert.throws(() => {
-      a.has([1]);
-    }, /must be a string/);
-    assert.deepEqual(r, [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]);
+      assert.isTrue(np.has('ones'));
+      assert.isTrue(a.has('tolist'));
+      assert.throws(() => {
+        a.has([1]);
+      }, /must be a string/);
+      assert.deepEqual(r, [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14]]);
+    });
+
+    it('numpy round-trip conversion through the Buffer protocol', () => {
+      const py = np.ones(6);
+      const js = py.tolist().toJS(); // to JS array
+
+      const buf = py.toJS();         // to JS Buffer
+      const r = np.frombuffer(buf);  // back to Python numpy
+
+      assert.deepEqual(r.tolist().toJS(), js);
+    });
   });
 
   it('pandas', () => {

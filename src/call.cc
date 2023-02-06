@@ -204,7 +204,7 @@ Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env env, const PyWeakRef &py) {
 }
 
 #define IS_INFO_ARG_KWARGS(n)                                                                                          \
-  (info[n].IsObject() && !info[n].IsArray() && !info[n].IsFunction() && !_InstanceOf(info[n]))
+  (info[n].IsObject() && !info[n].IsArray() && !info[n].IsFunction() && !_InstanceOf(info[n]) && !info[n].IsBuffer())
 
 // Transform the JS arguments to Python references and return a lambda making the actual Python call
 PyCallExecutor PyObjectWrap::CreateCallExecutor(const PyWeakRef &py, const CallbackInfo &info) {
