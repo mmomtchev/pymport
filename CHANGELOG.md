@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [1.4.1] 2023-05-01
  - Node.js 20 support
  - Builtin Python updated to 3.10.11
- - Python 3.12 support
  - Fix [#78], a single `Buffer` argument is interpreted as `kwargs`
 
 ## [1.4.0] 2023-01-22
@@ -23,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Allow enabling of debug output via the environment (`PYMPORT_DEBUG_sys` vars)
  - Improved bootstrap and shutdown allowing to load and unload the addon in `worker_threads`, partially resolves [#69](https://github.com/mmomtchev/pymport/issues/69)
 
-##### Bug Fixes
+#### Bug Fixes
  - Fix [#66](https://github.com/mmomtchev/pymport/issues/66), race condition can result in an abort when using `pymport` with `worker_threads`
  - Fix [#40](https://github.com/mmomtchev/pymport/issues/40), patch `_sysconfigdata` after installation
  - Fix [#70](https://github.com/mmomtchev/pymport/issues/70), random crash in a `worker_thread`
