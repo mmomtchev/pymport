@@ -1,4 +1,4 @@
-set VERSION=3.10.9
+set VERSION=3.10.11
 
 set mypath=%~dp0
 cd %mypath:~0,-1%

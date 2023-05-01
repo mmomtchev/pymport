@@ -20,7 +20,7 @@ jobs:
           - macos-11
           - macos-12
         node-version: [14.x, 16.x, 18.x, 20.x]
-        python-version: ["3.8", "3.9", "3.10", "3.11.0"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v3

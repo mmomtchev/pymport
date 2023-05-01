@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [1.4.1] 2023-05-01
  - Node.js 20 support
+ - Builtin Python updated to 3.10.11
+ - Python 3.12 support
  - Fix [#78], a single `Buffer` argument is interpreted as `kwargs`
 
 ## [1.4.0] 2023-01-22
