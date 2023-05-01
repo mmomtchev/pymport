@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=3.10.9
+VERSION=3.10.11
 
 set -x
 unset MAKEFLAGS
