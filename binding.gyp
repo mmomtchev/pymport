@@ -66,7 +66,7 @@
             }],
             ['builtin_python == "true"', {
               'dependencies': [ 'builtin_python' ],
-              'include_dirs': [ 'build\Python-3.10.11\Include', 'build\Python-3.10.11\PC' ],
+              'include_dirs': [ 'build\Python-3.10.13\Include', 'build\Python-3.10.13\PC' ],
               'msvs_settings': {
                 'VCLinkerTool': {
                   'AdditionalLibraryDirectories': '<(module_path)'
@@ -182,7 +182,7 @@
         'actions': [{
           'action_name': 'Python',
           'inputs': [ './build_python.bat' ],
-          'outputs': [ '<(module_path)/Python310.lib', '<(module_root_dir)/build/Python-3.10.11/Include/Python.h' ],
+          'outputs': [ '<(module_path)/Python310.lib', '<(module_root_dir)/build/Python-3.10.13/Include/Python.h' ],
           'action': [ '<(module_root_dir)/build_python.bat', '<(module_path)' ]
         }]
       }]
