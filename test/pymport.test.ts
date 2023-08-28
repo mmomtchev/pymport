@@ -15,9 +15,11 @@ describe('pymport', () => {
     assert.isBoolean(version.pythonLibrary.builtin);
     if (version.pythonLibrary.builtin) {
       assert.isString(version.pythonHome);
-      assert.strictEqual(version.pythonLibrary.major, 3);
-      assert.strictEqual(version.pythonLibrary.minor, 10);
-      assert.strictEqual(version.pythonLibrary.micro, 11);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const builtin_version = process.env.BUILTIN_PYTHON_VERSION!.split('.').map((v) => +v);
+      assert.strictEqual(version.pythonLibrary.major, builtin_version[0]);
+      assert.strictEqual(version.pythonLibrary.minor, builtin_version[1]);
+      assert.strictEqual(version.pythonLibrary.micro, builtin_version[2]);
       assert.strictEqual(version.pythonLibrary.release, 15);
       assert.strictEqual(version.pythonLibrary.serial, 0);
       assert.isString(version.pythonLibrary.version);

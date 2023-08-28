@@ -2,6 +2,9 @@ name: Github packages publish
 
 on: workflow_dispatch
 
+env:
+  BUILTIN_PYTHON_VERSION: 3.10.13
+
 jobs:
   publish:
     runs-on: ${{ matrix.platform }}
