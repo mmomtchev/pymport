@@ -6,9 +6,6 @@ on:
 
   workflow_dispatch:
 
-env:
-  BUILTIN_PYTHON_VERSION: 3.10.13
-
 jobs:
   test_published:
     runs-on: ${{ matrix.platform }}
@@ -37,6 +34,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Set built-in Python version
+        shell: bash
+        run: echo BUILTIN_PYTHON_VERSION=`cat builtin_python_version` >> $GITHUB_ENV
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp install
       - run: node ./scripts/pympip install --upgrade pip

@@ -2,9 +2,6 @@ name: Github packages publish
 
 on: workflow_dispatch
 
-env:
-  BUILTIN_PYTHON_VERSION: 3.10.13
-
 jobs:
   publish:
     runs-on: ${{ matrix.platform }}
@@ -15,6 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Set built-in Python version
+        shell: bash
+        run: echo BUILTIN_PYTHON_VERSION=`cat builtin_python_version` >> $GITHUB_ENV
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:

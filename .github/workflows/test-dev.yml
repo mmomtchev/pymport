@@ -9,9 +9,6 @@ on:
   pull_request:
     branches: ["*"]
 
-env:
-  BUILTIN_PYTHON_VERSION: 3.10.13
-
 jobs:
   shared_python:
     runs-on: ${{ matrix.platform }}
@@ -56,6 +53,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Set built-in Python version
+        shell: bash
+        run: echo BUILTIN_PYTHON_VERSION=`cat builtin_python_version` >> $GITHUB_ENV
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -81,7 +81,10 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
+      - name: Set built-in Python version
+        shell: bash
+        run: echo BUILTIN_PYTHON_VERSION=`cat builtin_python_version` >> $GITHUB_ENV
       - name: set LIBS
         run: echo LIBS=`pkg-config --libs python3-embed` >> $GITHUB_ENV
       - name: set CXXFLAGS
@@ -108,7 +111,10 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
+      - name: Set built-in Python version
+        shell: bash
+        run: echo BUILTIN_PYTHON_VERSION=`cat builtin_python_version` >> $GITHUB_ENV
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -138,7 +144,10 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
+      - name: Set built-in Python version
+        shell: bash
+        run: echo BUILTIN_PYTHON_VERSION=`cat builtin_python_version` >> $GITHUB_ENV
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -170,7 +179,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --debug
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -189,6 +198,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+      - name: Set built-in Python version
+        shell: bash
+        run: echo BUILTIN_PYTHON_VERSION=`cat builtin_python_version` >> $GITHUB_ENV
       - run: npm install --ignore-scripts
       - run: npx node-pre-gyp configure --debug --enable_coverage
       - run: npx node-pre-gyp build
