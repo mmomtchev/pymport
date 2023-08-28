@@ -6,6 +6,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  BUILTIN_PYTHON_VERSION: 3.10.13
+
 jobs:
   test_published:
     runs-on: ${{ matrix.platform }}

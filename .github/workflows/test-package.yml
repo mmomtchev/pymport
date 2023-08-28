@@ -7,6 +7,9 @@ on:
         description: "Package version to test"
         required: true
 
+env:
+  BUILTIN_PYTHON_VERSION: 3.10.13
+
 jobs:
   test_npm_binaries:
     runs-on: ${{ matrix.platform }}

@@ -1,23 +1,21 @@
 #!/bin/bash
 
-VERSION=3.10.11
-
 set -x
 unset MAKEFLAGS
 
 mkdir -p dist
-if [ ! -r dist/Python-${VERSION}.tgz ]; then
-  curl https://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tgz --output dist/Python-${VERSION}.tgz
+if [ ! -r dist/Python-${BUILTIN_PYTHON_VERSION}.tgz ]; then
+  curl https://www.python.org/ftp/python/${BUILTIN_PYTHON_VERSION}/Python-${BUILTIN_PYTHON_VERSION}.tgz --output dist/Python-${BUILTIN_PYTHON_VERSION}.tgz
 fi
 
 if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
   echo building in $1
-  rm -rf build/Python-${VERSION}
+  rm -rf build/Python-${BUILTIN_PYTHON_VERSION}
   rm -rf build/openssl
 
-  tar -C build -zxf dist/Python-${VERSION}.tgz
+  tar -C build -zxf dist/Python-${BUILTIN_PYTHON_VERSION}.tgz
   (
-    cd build/Python-${VERSION}
+    cd build/Python-${BUILTIN_PYTHON_VERSION}
 
     export PY_UNSUPPORTED_OPENSSL_BUILD=static
     patch < ../../patches/python-3.10-setup.py.patch

@@ -9,6 +9,9 @@ on:
   pull_request:
     branches: ["*"]
 
+env:
+  BUILTIN_PYTHON_VERSION: 3.10.13
+
 jobs:
   shared_python:
     runs-on: ${{ matrix.platform }}
