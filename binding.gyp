@@ -88,8 +88,8 @@
             }],
             ['builtin_python == "true"', {
               'dependencies': [ 'builtin_python' ],
-              'include_dirs': [ '<(module_path)/include/python3.10' ],
-              'libraries': [ '-L<(module_path)/lib/ -lpython3.10' ],
+              'include_dirs': [ '<(module_path)/include/python3.11' ],
+              'libraries': [ '-L<(module_path)/lib/ -lpython3.11' ],
               'ldflags': [ '-Wl,-z,origin', '-Wl,-rpath,\'$$ORIGIN/lib\'' ]
             }]
           ],
@@ -127,7 +127,7 @@
         'actions': [{
           'action_name': 'Python',
           'inputs': [ './build_python.sh' ],
-          'outputs': [ '<(module_path)/lib/libpython3.10.so' ],
+          'outputs': [ '<(module_path)/lib/libpython3.11.so' ],
           'action': [ 'sh', 'build_python.sh', '<(module_path)' ]
         }]
       }]
@@ -140,7 +140,7 @@
           'actions': [{
             'action_name': 'Python',
             'inputs': [ './build_python.sh' ],
-            'outputs': [ '<(module_path)/lib/libpython3.10.dylib' ],
+            'outputs': [ '<(module_path)/lib/libpython3.11.dylib' ],
             'action': [ 'sh', 'build_python.sh', '<(module_path)' ]
           }]
         },
@@ -150,13 +150,13 @@
           'dependencies': [ 'action_after_build' ],
           'actions': [
             {
-              'action_name': 'install_name_tool_libpython3.10.dylib',
+              'action_name': 'install_name_tool_libpython3.11.dylib',
               'inputs': [ '<(module_path)/pymport.node' ],
               'outputs': [ '<(module_path)/.install_name_tool_dylib' ],
               'action': [
                 'install_name_tool', '-change',
-                '<(module_path)/lib/libpython3.10.dylib',
-                '@loader_path/lib/libpython3.10.dylib',
+                '<(module_path)/lib/libpython3.11.dylib',
+                '@loader_path/lib/libpython3.11.dylib',
                 '<(module_path)/pymport.node'
               ]
             },
@@ -166,9 +166,9 @@
               'outputs': [ '<(module_path)/.install_name_tool_exe' ],
               'action': [
                 'install_name_tool', '-change',
-                '<(module_path)/lib/libpython3.10.dylib',
-                '@loader_path/../lib/libpython3.10.dylib',
-                '<(module_path)/bin/python3.10'
+                '<(module_path)/lib/libpython3.11.dylib',
+                '@loader_path/../lib/libpython3.11.dylib',
+                '<(module_path)/bin/python3.11'
               ]
             }
           ]
