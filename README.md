@@ -57,7 +57,7 @@ except for the following combinations that are not supported:
 
 * **Node.js 14.x/16.x on Ubuntu 22.04**: rebuilding from source against the system-installed Python is not possible due to Node.js containing a built-in OpenSSL 1.1 with exported symbols while the system-provided Python is built vs OpenSSL 3.0, upgrading Node.js or using the precompiled interpreter solves this issue
 
-* **Python 3.11.1 on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)]
+* **Python 3.11.x on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)
 
 # `pymport` vs `PyScript/Pyodide`
 
@@ -74,7 +74,7 @@ The wiki has a list of some known and hard to fix issues:
 
 # License
 
-Copyright 2022 Momtchil Momtchev <momtchil@momtchev.com> and contributors
+Copyright 2022-2023 Momtchil Momtchev <momtchil@momtchev.com> and contributors
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
