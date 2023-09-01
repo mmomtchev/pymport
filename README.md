@@ -41,6 +41,10 @@ const b = np.ones([2, 3], { dtype: np.int16 });
 
 Then head to the [wiki](https://github.com/mmomtchev/pymport/wiki) for the full documentation.
 
+Or go for the quickstart by learning from the [examples](https://github.com/mmomtchev/pymport/tree/main/examples).
+
+There is also a [medium stort](https://medium.com/@mmomtchev/using-numpy-and-pandas-in-node-js-88fe30080938) with a brief introduction.
+
 # Supported Versions
 
 `pymport` is unit-tested on all combinations of:
