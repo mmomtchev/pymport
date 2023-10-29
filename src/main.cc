@@ -110,7 +110,7 @@ static void InitDebug() {
 }
 #endif
 
-Napi::Object Init(Env env, Object exports) {
+Napi::Object Pymp_Init(Env env, Object exports) {
 #ifdef DEBUG
   InitDebug();
 #endif
@@ -223,4 +223,4 @@ Napi::Object Init(Env env, Object exports) {
   return exports;
 }
 
-NODE_API_MODULE(pymport, Init)
+NODE_API_MODULE(pymport, Pymp_Init)
