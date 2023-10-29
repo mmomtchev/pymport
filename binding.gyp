@@ -99,6 +99,7 @@
             'MACOSX_DEPLOYMENT_TARGET': '10.7',
             'OTHER_CPLUSPLUSFLAGS': [ '-std=c++14' ]
           },
+          'cflags': [ '-fvisibility=hidden '],
           'cflags_cc': [ '-std=c++14' ],
           'cflags!': [ '-fno-exceptions' ],
           'cflags_cc!': [ '-fno-exceptions' ],
