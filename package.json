@@ -66,7 +66,7 @@
     "bench": "node bench/bench.js"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.4",
+    "@types/chai": "^4.3.7",
     "@types/chai-spies": "^1.0.3",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.18.4",
