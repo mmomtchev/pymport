@@ -19,6 +19,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python=true
       - run: npx @mapbox/node-pre-gyp build -j max
