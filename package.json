@@ -72,7 +72,7 @@
     "@types/node": "^18.19.6",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "async-await-queue": "^1.2.1",
+    "async-await-queue": "^2.1.4",
     "benny": "^3.7.1",
     "chai": "^4.4.0",
     "chai-spies": "^1.1.0",
