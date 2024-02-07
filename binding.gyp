@@ -183,7 +183,7 @@
         'actions': [{
           'action_name': 'Python',
           'inputs': [ './build_python.bat' ],
-          'outputs': [ '<(module_path)/Python310.lib', '<(module_root_dir)/build/Python-$(BUILTIN_PYTHON_VERSION)/Include/Python.h' ],
+          'outputs': [ '<(module_path)/Python312.lib', '<(module_root_dir)/build/Python-$(BUILTIN_PYTHON_VERSION)/Include/Python.h' ],
           'action': [ '<(module_root_dir)/build_python.bat', '<(module_path)' ]
         }]
       }]
