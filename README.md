@@ -52,14 +52,12 @@ There is also a [medium stort](https://medium.com/@mmomtchev/using-numpy-and-pan
 | Platforms | Versions                                                 |
 | --------- | -------------------------------------------------------- |
 | OS        | Windows 2019 & 2022, Ubuntu 20.04 & 22.04, macOS 11 & 12 (x86 only) |
-| Node.js   | 14.x, 16.x and 18.x                                      |
-| Python    | 3.8, 3.9, 3.10 and 3.11                                  |
+| Node.js   | 16.x, 18.x and 20.x                                      |
+| Python    | 3.8, 3.9, 3.10, 3.11 and 3.12                            |
 
 except for the following combinations that are not supported:
 
-* **Node.js 14.x with Python 3.11**: rebuilding from source is not possible due to `node-gyp` version being too old to support Python 3.11, upgrading `npm` or using the precompiled binaries solves this issue
-
-* **Node.js 14.x/16.x on Ubuntu 22.04**: rebuilding from source against the system-installed Python is not possible due to Node.js containing a built-in OpenSSL 1.1 with exported symbols while the system-provided Python is built vs OpenSSL 3.0, upgrading Node.js or using the precompiled interpreter solves this issue
+* **Node.js 16.x on Ubuntu 22.04**: rebuilding from source against the system-installed Python is not possible due to Node.js containing a built-in OpenSSL 1.1 with exported symbols while the system-provided Python is built vs OpenSSL 3.0, upgrading Node.js or using the precompiled interpreter solves this issue
 
 * **Python 3.11.x on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)
 
@@ -78,7 +76,7 @@ The wiki has a list of some known and hard to fix issues:
 
 # License
 
-Copyright 2022-2023 Momtchil Momtchev <momtchil@momtchev.com> and contributors
+Copyright 2022-2024 Momtchil Momtchev <momtchil@momtchev.com> and contributors
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
