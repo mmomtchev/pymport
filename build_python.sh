@@ -45,5 +45,6 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
     make -j4 install
   )
   rm -f $1/python
+  [ ! -r $1/bin/python3 ] && ln -s python3 $1/bin/python3.12
   ln -s bin/python3 $1/python
 fi
