@@ -214,7 +214,9 @@ static Napi::Object PympInit(Env env, Object exports) {
 #endif
     auto status = Py_InitializeFromConfig(&config);
     PyConfig_Clear(&config);
-    if (PyStatus_Exception(status)) { throw Error::New(env, "Failed initializing Python"); }
+    if (PyStatus_Exception(status)) {
+      throw Error::New(env, "Failed initializing Python: "s + std::string{status.err_msg});
+    }
     memview::Init();
     PyObjectWrap::InitJSTrampoline();
     py_main = PyEval_SaveThread();
