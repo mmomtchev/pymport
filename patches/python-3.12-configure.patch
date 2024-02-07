@@ -1,0 +1,17 @@
+--- configure.orig	2024-02-06 21:19:44.000000000 +0100
++++ configure	2024-02-08 00:03:52.000000000 +0100
+@@ -28183,7 +28183,14 @@
+   -l*) :
+ 
+         libname=$(echo $arg | cut -c3-)
++        case `uname` in
++          Linux)
+         new_OPENSSL_LIBS="$new_OPENSSL_LIBS -l:lib${libname}.a -Wl,--exclude-libs,lib${libname}.a"
++            ;;
++          Darwin)
++            new_OPENSSL_LIBS="$new_OPENSSL_LIBS -Wl,-hidden-l${libname}"
++            ;;
++        esac
+        ;; #(
+   *) :
+     new_OPENSSL_LIBS="$new_OPENSSL_LIBS $arg"
