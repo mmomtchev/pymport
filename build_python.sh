@@ -18,8 +18,6 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
     cd build/Python-${BUILTIN_PYTHON_VERSION}
 
     export PY_UNSUPPORTED_OPENSSL_BUILD=static
-    patch < ../../patches/python-3.12-setup.py.patch
-    patch < ../../patches/python-3.12-configure.patch
     case `uname` in
       'Linux')
         export LDFLAGS="-Wl,-z,origin -Wl,-rpath,'\$\$ORIGIN/../lib'"
