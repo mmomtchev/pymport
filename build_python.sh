@@ -22,9 +22,9 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
   rm -rf build/openssl
 
   tar -C build -zxf dist/Python-${BUILTIN_PYTHON_VERSION}.tgz
-  patch < ../../patches/python-3.12-configure.patch
   (
     cd build/Python-${BUILTIN_PYTHON_VERSION}
+    patch < ../../patches/python-3.12-configure.patch
 
     export PY_UNSUPPORTED_OPENSSL_BUILD=static
     case `uname` in
