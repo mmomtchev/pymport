@@ -16,7 +16,7 @@
       "includePath": [
         "/usr/include/node",
         "${workspaceFolder}/node_modules/node-addon-api",
-        "/usr/include/python3.10"
+        "/usr/include/python3.12"
       ],
       "defines": [
         "${projectDefines}"
@@ -30,7 +30,7 @@
       "includePath": [
         "/usr/include/node",
         "${workspaceFolder}/node_modules/node-addon-api",
-        "/usr/include/python3.10"
+        "/usr/include/python3.12"
       ],
       "defines": [
         "${projectDefines}",
@@ -45,7 +45,7 @@
       "includePath": [
         "/usr/include/node",
         "${workspaceFolder}/node_modules/node-addon-api",
-        "/usr/include/python3.10"
+        "/usr/include/python3.12"
       ],
       "defines": [
         "${projectDefines}",

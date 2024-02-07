@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Fix [#104](https://github.com/mmomtchev/pymport/issues/104), do not mess up the loading of additional binary modules after `pymport`
 
 ### [1.4.2] 2023-08-28
- - Builtin Python updated to 3.10.13
+ - Builtin Python updated to 3.12.2
 
 ### [1.4.1] 2023-05-01
  - Node.js 20 support
