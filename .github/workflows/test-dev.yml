@@ -22,6 +22,8 @@ jobs:
         exclude:
           - node-version: 16.x
             platform: ubuntu-22.04
+          - node-version: 16.x
+            python-version: 3.12
 
     steps:
       - uses: actions/checkout@v4
@@ -81,7 +83,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
       - name: set LIBS
         run: echo LIBS=`pkg-config --libs python3-embed` >> $GITHUB_ENV
       - name: set CXXFLAGS
@@ -108,7 +110,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -138,7 +140,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -170,7 +172,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --debug
       - run: npx @mapbox/node-pre-gyp build -j max
