@@ -45,7 +45,7 @@
       "includePath": [
         "/usr/include/node",
         "${workspaceFolder}/node_modules/node-addon-api",
-        "/usr/include/python3.12"
+        "${workspaceFolder}/lib/binding/linux-x64/include/python3.12/"
       ],
       "defines": [
         "${projectDefines}",
