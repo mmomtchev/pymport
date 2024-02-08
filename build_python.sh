@@ -8,6 +8,14 @@ if [ ! -r dist/Python-${BUILTIN_PYTHON_VERSION}.tgz ]; then
   curl https://www.python.org/ftp/python/${BUILTIN_PYTHON_VERSION}/Python-${BUILTIN_PYTHON_VERSION}.tgz --output dist/Python-${BUILTIN_PYTHON_VERSION}.tgz
 fi
 
+case `uname` in
+  'Linux') LIBNAME="$1/lib/libpython3.12.so" ;;
+  'Darwin') LIBNAME="$1/lib/libpython3.12.dylib" ;;
+  *) echo 'Unsupported platform for the builtin Python interpreter'
+     exit 1
+     ;;
+esac
+
 if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
   echo building in $1
   rm -rf build/Python-${BUILTIN_PYTHON_VERSION}
@@ -16,15 +24,13 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
   tar -C build -zxf dist/Python-${BUILTIN_PYTHON_VERSION}.tgz
   (
     cd build/Python-${BUILTIN_PYTHON_VERSION}
+    patch < ../../patches/python-3.12-configure.patch
 
     export PY_UNSUPPORTED_OPENSSL_BUILD=static
-    patch < ../../patches/python-3.10-setup.py.patch
-    patch < ../../patches/python-3.10-configure.patch
     case `uname` in
       'Linux')
         export LDFLAGS="-Wl,-z,origin -Wl,-rpath,'\$\$ORIGIN/../lib'"
         export CFLAGS=""
-        LIBNAME="$1/lib/libpython3.10.so"
         export ZLIB_LIBS="-lz -ldl"
         ;;
       'Darwin')
@@ -34,18 +40,14 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
         cp $(brew --prefix openssl@1.1)/lib/*.a ../openssl/lib
         cp -r $(brew --prefix openssl@1.1)/include/openssl ../openssl/include
         export SSL="--with-openssl=$(pwd)/../openssl"
-        LIBNAME="$1/lib/libpython3.10.dylib"
-        ;;
-      *)
-        echo 'Unsupported platform for the builtin Python interpreter'
-        exit 1
         ;;
     esac
 
     ./configure --prefix $1 --enable-shared --enable-optimizations --without-system-ffi ${SSL}
     make -j4 build_all
-    make -j4 install
+    make install
   )
   rm -f $1/python
+  [ ! -r $1/bin/python3 ] && ln -s python3.12 $1/bin/python3
   ln -s bin/python3 $1/python
 fi

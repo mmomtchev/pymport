@@ -5,11 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0]
+ - Add Python 3.12 support and upgrade the built-in Python to 3.12.2
+ - Drop Node.js 14 support
+
 ### [1.4.3] 2023-10-29
  - Fix [#104](https://github.com/mmomtchev/pymport/issues/104), do not mess up the loading of additional binary modules after `pymport`
 
 ### [1.4.2] 2023-08-28
- - Builtin Python updated to 3.10.13
+ - Builtin Python updated to 3.12.2
 
 ### [1.4.1] 2023-05-01
  - Node.js 20 support

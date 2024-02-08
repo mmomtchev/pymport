@@ -3,12 +3,12 @@ name: Github packages publish
 on: workflow_dispatch
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.10.13
+  BUILTIN_PYTHON_VERSION: 3.12.2
 
 jobs:
   publish:
     runs-on: ${{ matrix.platform }}
-
+    
     strategy:
       matrix:
         platform: [ubuntu-20.04, windows-2019, macos-11]
@@ -25,7 +25,7 @@ jobs:
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python=true
       - run: npx @mapbox/node-pre-gyp build -j max
-      - run: node scripts/pympip install setuptools==65.1.1
+      - run: node scripts/pympip install setuptools==69.0.3
       - run: npx @mapbox/node-pre-gyp package
       - run: npx @mmomtchev/node-pre-gyp-github publish
         env:

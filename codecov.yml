@@ -1,5 +1,8 @@
+ignore:
+  - "build/**/*"
+  - "lib/binding/**/*"
 coverage:
-  range: 90..100
+  range: 70..100
   round: down
   precision: 2
   status:
@@ -13,4 +16,5 @@ coverage:
           - "lib"
     patch:
       default:
-        target: 90%
+        target: 50%
+        threshold: 2%

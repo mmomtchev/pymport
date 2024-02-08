@@ -8,7 +8,7 @@ on:
         required: true
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.10.13
+  BUILTIN_PYTHON_VERSION: 3.12.2
 
 jobs:
   test_npm_binaries:
@@ -24,11 +24,8 @@ jobs:
           - windows-2022
           - macos-11
           - macos-12
-        node-version: [14.x, 16.x, 18.x, 20.x]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-        exclude:
-          - node-version: 14.x # node-gyp not compatible with Python 3.11
-            python-version: "3.11"
+        node-version: [16.x, 18.x, 20.x]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
@@ -49,7 +46,7 @@ jobs:
         run: |
           npm i @types/chai @types/mocha @types/node chai chai-spies @types/chai-spies mocha ts-node typescript
       - name: Install pymport from npm
-        run: npm install --force pymport@${{ github.event.inputs.version }}
+        run: npm install pymport@${{ github.event.inputs.version }}
       - run: npx pympip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
@@ -68,15 +65,8 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-20.04, ubuntu-22.04, windows-2019, macos-11]
-        node-version: [14.x, 16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x, 20.x]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        exclude:
-          - node-version: 14.x # Node.js crypto not compatible with Ubuntu 22
-            platform: ubuntu-22.04
-          - node-version: 16.x # Node.js crypto not compatible with Ubuntu 22
-            platform: ubuntu-22.04
-          - node-version: 14.x # node-gyp not compatible with Python 3.11
-            python-version: "3.11"
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
@@ -97,7 +87,7 @@ jobs:
         run: |
           npm i @types/chai @types/mocha @types/node chai chai-spies @types/chai-spies mocha ts-node typescript
       - name: Install pymport from npm
-        run: npm install --force pymport@${{ github.event.inputs.version }} --build-from-source
+        run: npm install pymport@${{ github.event.inputs.version }} --build-from-source
       - run: pip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
@@ -124,7 +114,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.12"
       - name: set LIBS
         run: echo LIBS=`pkg-config --libs python3-embed` >> $GITHUB_ENV
       - name: set CXXFLAGS
@@ -140,7 +130,7 @@ jobs:
         run: |
           npm i @types/chai @types/mocha @types/node chai chai-spies @types/chai-spies mocha ts-node typescript
       - name: Install pymport from npm
-        run: npm install --force pymport@${{ github.event.inputs.version }} --build-from-source --external_python
+        run: npm install pymport@${{ github.event.inputs.version }} --build-from-source --external_python
       - run: pip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |

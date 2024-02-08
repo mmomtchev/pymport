@@ -3,7 +3,7 @@ const path = require('path');
 const bin_dir = path.resolve(path.dirname(
   require('@mapbox/node-pre-gyp').find(path.join(__dirname, '..', 'package.json'))));
 
-const sysconfigDataPath = path.join(bin_dir, 'lib', 'python3.10');
+const sysconfigDataPath = path.join(bin_dir, 'lib', 'python3.12');
 let sysconfigs = [];
 try {
   sysconfigs = fs.readdirSync(sysconfigDataPath).filter((file) => file.match(/_sysconfigdata_.*py/));
