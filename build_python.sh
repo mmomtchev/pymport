@@ -44,7 +44,7 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
     esac
 
     ./configure --prefix $1 --enable-shared --enable-optimizations --without-system-ffi ${SSL}
-    make build_all
+    make -j4 build_all
     make install
   )
   rm -f $1/python
