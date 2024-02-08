@@ -32,6 +32,7 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
         export LDFLAGS="-Wl,-z,origin -Wl,-rpath,'\$\$ORIGIN/../lib'"
         export CFLAGS=""
         export ZLIB_LIBS="-lz -ldl"
+        export LIBFFI_LIBS="-l:libffi_pic.a -Wl,--exclude-libs,libffi_pic.a"
         ;;
       'Darwin')
         export LDFLAGS="-Wl,-rpath,@loader_path/../lib"
@@ -43,7 +44,7 @@ if [ ! -d "$1" ] || [ ! -r "${LIBNAME}" ]; then
         ;;
     esac
 
-    ./configure --prefix $1 --enable-shared --enable-optimizations --without-system-ffi ${SSL}
+    ./configure --prefix $1 --enable-shared --enable-optimizations ${SSL}
     make -j4 build_all
     make install
   )

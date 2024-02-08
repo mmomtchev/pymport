@@ -59,6 +59,8 @@ except for the following combinations that are not supported:
 
 * **Node.js 16.x on Ubuntu 22.04**: rebuilding from source against the system-installed Python is not possible due to Node.js containing a built-in OpenSSL 1.1 with exported symbols while the system-provided Python is built vs OpenSSL 3.0, upgrading Node.js or using the precompiled interpreter solves this issue
 
+* **Node.js 16.x and Python 3.12**: `node-gyp` from Node.js 16.x does not work if Python 3.12 is installed
+
 * **Python 3.11.x on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)
 
 # `pymport` vs `PyScript/Pyodide`

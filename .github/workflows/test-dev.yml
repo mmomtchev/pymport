@@ -110,7 +110,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -120,7 +120,7 @@ jobs:
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $GITHUB_ENV
       - name: Test PYTHONOME
         run: echo READ_PYTHONHOME=$(node -e "console.log(require('pymport').version.pythonHome)") >> $GITHUB_ENV
-      - uses: nick-fields/assert-action@v1.2.0
+      - uses: nick-fields/assert-action@v2
         with:
           expected: ${{ env.PYTHONHOME }}
           actual: ${{ env.READ_PYTHONHOME }}
@@ -140,7 +140,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python
       - run: npx @mapbox/node-pre-gyp build -j max
