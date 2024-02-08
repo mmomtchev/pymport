@@ -1,6 +1,3 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Node.js CI
 
 on:
@@ -151,7 +148,7 @@ jobs:
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $env:GITHUB_ENV
       - name: Test PYTHONHOME
         run: echo READ_PYTHONHOME=$(node -e "console.log(require('pymport').version.pythonHome)") >> $env:GITHUB_ENV
-      - uses: nick-fields/assert-action@v1.2.0
+      - uses: nick-fields/assert-action@v2
         with:
           expected: ${{ env.PYTHONHOME }}
           actual: ${{ env.READ_PYTHONHOME }}
