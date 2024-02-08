@@ -8,6 +8,8 @@ const expect = chai.expect;
 describe('pymport', () => {
   it('version', function () {
     if (process.env['MOCHA_SKIP_VERSION_CHECK']) this.skip();
+    if (!process.env['BUILTIN_PYTHON_VERSION'])
+      console.warn('This test does not work without the BUILTIN_PYTHON_VERSION environment variable');
 
     assert.isNumber(version.pymport.major);
     assert.isNumber(version.pymport.minor);
