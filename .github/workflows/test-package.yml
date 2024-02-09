@@ -63,6 +63,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     strategy:
+      fail-fast: false
       matrix:
         platform: [ubuntu-20.04, ubuntu-22.04, windows-2019, macos-11]
         node-version: [16.x, 18.x, 20.x]
@@ -104,6 +105,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     strategy:
+      fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-11]
 
