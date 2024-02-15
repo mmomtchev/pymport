@@ -93,6 +93,6 @@
   "dependencies": {
     "@mapbox/node-pre-gyp": "^1.0.11",
     "@mmomtchev/node-pre-gyp-github": "^2.0.6",
-    "node-addon-api": "^5.0.0"
+    "node-addon-api": "^7.1.0"
   }
 }
