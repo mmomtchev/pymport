@@ -63,6 +63,11 @@ except for the following combinations that are not supported:
 
 * **Python 3.11.x on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)
 
+| `pymport` | Built-in Python interpreter           |
+| --------- | ------------------------------------- |
+| 1.4.x     | Python 3.10                           |
+| 1.5.x     | Pytnon 3.12                           |
+
 # `pymport` vs `PyScript/Pyodide`
 
 Although both projects provide similar functionality, they are completely unrelated with very different design goals:
