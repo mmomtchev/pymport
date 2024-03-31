@@ -23,7 +23,6 @@
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
       'defines': [
-        'NAPI_EXPERIMENTAL',
         'NODE_ADDON_API_DISABLE_DEPRECATED',
         'NAPI_VERSION=8',
         'PYMPORT_VERSION_MAJOR=<!(node -e "console.log(require(\'./package.json\').version.split(\'.\')[0])")',
