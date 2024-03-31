@@ -1,4 +1,5 @@
 #pragma once
+#define NODE_API_EXPERIMENTAL_NOGC_ENV_OPT_OUT
 
 #include <map>
 #include <list>
