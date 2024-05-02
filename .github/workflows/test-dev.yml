@@ -203,6 +203,9 @@ jobs:
           PYMPORT_DEBUG_INIT: 1
       - run: npm run gcov
       - run: npm run lcov
-      - run: npm run codecov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          directory: ${{ github.workspace }}/coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
