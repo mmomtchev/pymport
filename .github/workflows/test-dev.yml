@@ -83,6 +83,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
@@ -110,6 +112,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
@@ -140,6 +144,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
