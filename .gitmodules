@@ -1,3 +1,6 @@
 [submodule "pymport.wiki"]
 	path = wiki
 	url = ../pymport.wiki.git
+[submodule "deps/static-portable-python"]
+	path = deps/static-portable-python
+	url = https://github.com/mmomtchev/static-portable-python.git
