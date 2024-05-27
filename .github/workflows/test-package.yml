@@ -20,11 +20,14 @@ jobs:
         platform:
           - ubuntu-20.04
           - ubuntu-22.04
+          - ubuntu-24.04
           - windows-2019
           - windows-2022
           - macos-11
           - macos-12
-        node-version: [16.x, 18.x, 20.x]
+          - macos-13
+          - macos-14
+        node-version: [16.x, 18.x, 20.x, 22.x]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
@@ -65,14 +68,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-20.04, ubuntu-22.04, windows-2019, macos-11]
-        node-version: [16.x, 18.x, 20.x]
+        platform:
+          - ubuntu-20.04
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - windows-2019
+          - windows-2022
+          - macos-11
+          - macos-12
+          - macos-13
+          - macos-14
+        node-version: [18.x, 20.x, 22.x]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        exclude:
-          - node-version: 16.x
-            platform: ubuntu-22.04
-          - node-version: 16.x
-            python-version: 3.12
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
