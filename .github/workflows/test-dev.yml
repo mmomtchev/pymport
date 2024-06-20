@@ -121,10 +121,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: npm install --ignore-scripts
-      - run: npx @mapbox/node-pre-gyp configure --builtin_python
-      - run: npx @mapbox/node-pre-gyp build -j max
-      - run: python3 -m pip install --upgrade pip
+      - run: npm install
       - run: pip3 install -r test/requirements.txt
       - name: Find system Python
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $GITHUB_ENV
@@ -153,10 +150,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: npm install --ignore-scripts
-      - run: npx @mapbox/node-pre-gyp configure --builtin_python
-      - run: npx @mapbox/node-pre-gyp build -j max
-      - run: python3 -m pip install --upgrade pip
+      - run: npm install
       - run: pip3 install -r test/requirements.txt
       - name: Find system Python
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $env:GITHUB_ENV
