@@ -23,7 +23,6 @@ jobs:
           - ubuntu-24.04
           - windows-2019
           - windows-2022
-          - macos-11
           - macos-12
           - macos-13
           - macos-14
@@ -77,7 +76,6 @@ jobs:
           - ubuntu-24.04
           - windows-2019
           - windows-2022
-          - macos-11
           - macos-12
           - macos-13
           - macos-14
@@ -125,7 +123,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-11]
+        platform: [ubuntu-latest, macos-12, macos-14]
 
     steps:
       - name: Use Node.js 18.x

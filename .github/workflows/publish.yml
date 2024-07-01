@@ -11,7 +11,7 @@ jobs:
     
     strategy:
       matrix:
-        platform: [ubuntu-20.04, windows-2019, macos-11, macos-14]
+        platform: [ubuntu-20.04, windows-2019, macos-12, macos-14]
 
     steps:
       - uses: actions/checkout@v4
