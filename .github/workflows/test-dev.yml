@@ -120,7 +120,7 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
       - run: npm install
       - run: pip3 install -r test/requirements.txt
       - name: Find system Python
