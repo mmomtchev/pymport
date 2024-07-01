@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Drop macOS 11 support
  - Fix (and test) all compression modules on all platforms
  - Recompiling the built-in Python now requires that `conan>=2.0.0` is installed
+ - Fix [#193](https://github.com/mmomtchev/pymport/issues/193), use the Node.js solution for cancelling exceptions thrown in a running asynchronous operation after the thread has been terminated
  - Fix [#324](https://github.com/mmomtchev/pymport/issues/324), reference counting error when accessing the Python constructor `.constr`
  
 ### [1.5.1] 2024-04-01
