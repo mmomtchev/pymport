@@ -1,5 +1,6 @@
 #pragma once
 
+#define NODE_API_SWALLOW_UNTHROWABLE_EXCEPTIONS
 #include <map>
 #include <list>
 #include <set>
