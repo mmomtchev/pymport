@@ -2,8 +2,8 @@ import { pymport, PyObject, PythonError, version } from 'pymport';
 import chai from 'chai';
 import spies from 'chai-spies';
 chai.use(spies);
-const assert = chai.assert;
-const expect = chai.expect;
+const assert: Chai.AssertStatic = chai.assert;
+const expect: Chai.ExpectStatic = chai.expect;
 
 describe('pymport', () => {
   it('version', function () {
