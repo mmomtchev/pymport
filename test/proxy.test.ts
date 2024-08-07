@@ -63,7 +63,7 @@ describe('proxy', () => {
     const py = PyObject.fromJS({ name: 'value' });
 
     assert.instanceOf(py, PyObject);
-    assert.instanceOf(py.__PyObject__, PyObject);
+    assert.instanceOf((py as any).__PyObject__, PyObject);
   });
 
   it('proxified objects return unique references', () => {
@@ -121,13 +121,13 @@ describe('proxy', () => {
   it('passing proxified arguments', () => {
     const py_array = pyval('np.array([2, 1, 0]).tolist()', { np });
     assert.instanceOf(py_array, PyObject);
-    assert.deepEqual(py_array.toJS(), [2, 1, 0]);
+    assert.deepEqual((py_array as any).toJS(), [2, 1, 0]);
   });
 
   it('automatic conversion to JS objects through Symbol.toPrimitive', () => {
     const num = PyObject.int(10);
     assert.instanceOf(num, PyObject);
-    assert.equal(+num, 10);
+    assert.equal(+(num as any), 10);
     assert.throws(() => assert.strictEqual(num, 10));
   });
 
@@ -240,8 +240,8 @@ describe('proxy', () => {
 
       const staticMember = klass.static_member;
       assert.instanceOf(staticMember, PyObject);
-      assert.strictEqual(staticMember.type, 'int');
-      assert.strictEqual(staticMember.toJS(), 42);
+      assert.strictEqual((staticMember as any).type, 'int');
+      assert.strictEqual((staticMember as any).toJS(), 42);
 
       const name = klass.name;
       assert.instanceOf(name.__PyObject__, PyObject);
