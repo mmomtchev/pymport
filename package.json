@@ -52,7 +52,8 @@
   },
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build && node scripts/patch-prefix.js",
-    "test": "mocha",
+    "test": "npm run test:esm && mocha",
+    "test:esm": "tsc -p ./test/es-module/tsconfig.json",
     "doc": "npx documentation readme --readme-file wiki/API.md  --section API --config=documentation.yml lib/*.d.ts",
     "wiki": "cd wiki && git add API.md && git diff-index --quiet HEAD || git commit -m 'update API'",
     "wiki:sidebar": "cd wiki && github-wiki-sidebar --silent",
