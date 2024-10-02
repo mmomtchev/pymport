@@ -50,8 +50,7 @@
         ['OS == "win"', {
           'msvs_settings': {
             'VCCLCompilerTool': { 
-              'ExceptionHandling': 1,
-              'AdditionalOptions': [' /std:c++14' ]
+              'ExceptionHandling': 1
             },
           },
           'conditions': [
@@ -95,11 +94,9 @@
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
             'CLANG_CXX_LIBRARY': 'libc++',
-            'MACOSX_DEPLOYMENT_TARGET': '10.7',
-            'OTHER_CPLUSPLUSFLAGS': [ '-std=c++14' ]
+            'MACOSX_DEPLOYMENT_TARGET': '10.7'
           },
           'cflags': [ '-fvisibility=hidden '],
-          'cflags_cc': [ '-std=c++14' ],
           'cflags!': [ '-fno-exceptions' ],
           'cflags_cc!': [ '-fno-exceptions' ],
         }]
