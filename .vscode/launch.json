@@ -70,7 +70,11 @@
       "runtimeArgs": [
         "--expose-gc",
       ],
-      "program": "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js"
+      "program": "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js",
+      "args": [
+        "--timeout",
+        "0"
+      ]
     },
     {
       "name": "Launch benchmarks (gdb)",

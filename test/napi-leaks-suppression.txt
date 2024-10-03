@@ -1,0 +1,37 @@
+# All leaks listed here are non-repeat offenders
+# (ie they happen only a fixed number of times per process execution)
+# The list is maintained for Node.js 18
+
+# Ignore Python which does not have symbols
+# Alas, this also covers up all stale Python references
+leak:libpython3
+leak:site-packages
+
+# Known leaks in Node-API
+leak:napi_module_register
+leak:napi_register_module_v1
+
+# Known leaks in the Node.js runtime
+leak:node::builtins::BuiltinLoader::LoadBuiltinSource
+leak:ProcessWrap::OnExit
+leak:StringBytes::Encode
+leak:Realm::ExecuteBootstrapper
+
+# Known leaks in V8
+leak:Heap_GenerationalBarrierSlow
+leak:Scavenger::ScavengePage
+leak:Scavenger::Process
+leak:CompactionSpace::Expand
+leak:Heap::IterateRoots
+leak:Heap::PerformGarbageCollection
+leak:Heap::InsertIntoRememberedSetFromCode
+leak:Heap::SetUpSpaces
+leak:Heap::PerformGarbageCollection
+leak:PagedSpace::RefillLabMain
+leak:OldLargeObjectSpace::AllocateRaw
+leak:BaselineBatchCompiler::EnqueueFunction
+leak:Compiler::FinalizeTurbofanCompilationJob
+leak:v8::internal::Factory::CodeBuilder::Build
+leak:v8::internal::MemoryChunk::RegisterObjectWithInvalidatedSlots
+leak:v8::ScriptCompiler
+leak:v8::internal::Genesis::Genesis

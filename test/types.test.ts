@@ -746,11 +746,19 @@ describe('types', () => {
       assert.isTrue(fn.callable);
       assert.equal(fn.type, 'pymport.js_function');
 
-      const py_catch = pymport('python_helpers').get('dont_catch_exception');
+      const py_dont_catch = pymport('python_helpers').get('dont_catch_exception');
 
-      assert.throws(() => {
-        py_catch.call(fn);
-      }, /Python exception: JS exception/);
+      // V8 seems to have a problem with garbage collecting functions
+      // referenced in closures
+      // https://github.com/mmomtchev/pymport/issues/283
+      let failed = false;
+      try {
+        py_dont_catch.call(fn);
+      } catch (e: any) {
+        assert.match(e.toString(), /Python exception: JS exception/);
+        failed = true;
+      }
+      assert.isTrue(failed);
     });
 
     it('unsupported arguments', () => {

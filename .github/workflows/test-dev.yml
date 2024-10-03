@@ -215,7 +215,7 @@ jobs:
           node-version: 18.x
       - run: npm install --ignore-scripts
       - run: npx node-pre-gyp configure --debug --enable_coverage
-      - run: npx node-pre-gyp build
+      - run: npx node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npx c8 npm test
@@ -229,3 +229,23 @@ jobs:
           directory: ${{ github.workspace }}/coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
+
+
+  asan:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --debug --enable_asan
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: python3 -m pip install --upgrade pip
+      - run: pip3 install -r test/requirements.txt
+      - run: npm test -- --repeats 10
+        env:
+          LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.6
+          LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt
