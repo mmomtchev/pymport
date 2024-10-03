@@ -751,11 +751,14 @@ describe('types', () => {
       // V8 seems to have a problem with garbage collecting functions
       // referenced in closures
       // https://github.com/mmomtchev/pymport/issues/283
+      let failed = false;
       try {
         py_dont_catch.call(fn);
       } catch (e: any) {
         assert.match(e.toString(), /Python exception: JS exception/);
+        failed = true;
       }
+      assert.isTrue(failed);
     });
 
     it('unsupported arguments', () => {
