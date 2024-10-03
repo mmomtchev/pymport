@@ -243,8 +243,7 @@ jobs:
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --debug --enable_asan
       - run: npx @mapbox/node-pre-gyp build -j max
-      - run: npm test
+      - run: npm test -- --repeats 10
         env:
-          MOCHA_REPEAT: 10
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.6
           LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt

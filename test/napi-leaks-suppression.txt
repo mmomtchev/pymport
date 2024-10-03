@@ -1,5 +1,6 @@
 # All leaks listed here are non-repeat offenders
 # (ie they happen only a fixed number of times per process execution)
+# The list is maintained for Node.js 18
 
 # Known leaks in Node-API
 leak:napi_module_register
@@ -27,3 +28,5 @@ leak:BaselineBatchCompiler::EnqueueFunction
 leak:Compiler::FinalizeTurbofanCompilationJob
 leak:v8::internal::Factory::CodeBuilder::Build
 leak:v8::internal::MemoryChunk::RegisterObjectWithInvalidatedSlots
+leak:v8::ScriptCompiler
+leak:v8::internal::Genesis::Genesis
