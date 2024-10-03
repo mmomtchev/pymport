@@ -5,6 +5,7 @@
 # Ignore Python which does not have symbols
 # Alas, this also covers up all stale Python references
 leak:libpython3
+leak:site-packages
 
 # Known leaks in Node-API
 leak:napi_module_register
