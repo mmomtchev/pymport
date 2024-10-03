@@ -2,6 +2,10 @@
 # (ie they happen only a fixed number of times per process execution)
 # The list is maintained for Node.js 18
 
+# Ignore Python which does not have symbols
+# Alas, this also covers up all stale Python references
+leak:libpython3
+
 # Known leaks in Node-API
 leak:napi_module_register
 leak:napi_register_module_v1
