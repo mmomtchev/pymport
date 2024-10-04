@@ -9,9 +9,10 @@
 using namespace Napi;
 using namespace pymport;
 
-// An object of JSCall_Trampoline represents the Python view of a JS function
+// A JSCall_Trampoline is a Python callable object that contains a JS function
 // This callable type cannot be constructed from Python and is normally not visible
 // except when inspecting a function object passed from JS
+// It has a PyType_Slot descriptor that can be found below
 typedef struct {
   PyObject_HEAD;
   FunctionReference *js_fn;
@@ -182,6 +183,7 @@ static PyType_Spec jscall_trampoline_spec = {
 
 PyStrongRef PyObjectWrap::JSCall_Trampoline_Type = nullptr;
 
+// One-time setup of the JSCall_Trampoline object in Python
 void PyObjectWrap::InitJSTrampoline() {
   if (PyObjectWrap::JSCall_Trampoline_Type != nullptr) {
     VERBOSE(INIT, "Re-initializing PyObjectWrap::JSCall_Trampoline_Type (Python shutdown without dlclose)\n");
@@ -206,7 +208,15 @@ Napi::Value PyObjectWrap::_ToJS_JSFunction(Napi::Env env, const PyWeakRef &py) {
 #define IS_INFO_ARG_KWARGS(n)                                                                                          \
   (info[n].IsObject() && !info[n].IsArray() && !info[n].IsFunction() && !_InstanceOf(info[n]) && !info[n].IsBuffer())
 
-// Transform the JS arguments to Python references and return a lambda making the actual Python call
+// A PyCallExecutor is a C++ lambda wrapper for a Python callable object that
+// also encapsulates the transformed arguments (ie one object is one function call)
+// A PyCallExecutor can be constructed only on the main V8 thread but can be called
+// in any thread as long as the Python GIL is held
+// A PyCallExecutor handles the persistence of the arguments (PyStrongRefs),
+// but not the function itself which must continue to exist throughout the call
+// Deleting the PyCallExecutor releases the references
+// * in synchronous mode, it is an automatic stack-allocated object
+// * in asynchronous mode, the Execute() method of the AsyncWorker deletes it
 PyCallExecutor PyObjectWrap::CreateCallExecutor(const PyWeakRef &py, const CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -340,6 +350,8 @@ Napi::Error PythonException::ToJS(Napi::Env env) {
   return error_object;
 }
 
+// Returns a Python function from a JS function
+// (it returns a JSCall_Trampoline object)
 PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
   Napi::Env env = js_fn.Env();
 
