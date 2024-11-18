@@ -223,7 +223,7 @@ jobs:
           PYMPORT_DEBUG_INIT: 1
       - run: npm run gcov
       - run: npm run lcov
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
           directory: ${{ github.workspace }}/coverage
