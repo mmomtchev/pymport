@@ -21,7 +21,7 @@ jobs:
           - ubuntu-24.04
           - windows-2019
           - windows-2022
-          - macos-12
+          - macos-13
           - macos-13
           - macos-14
         node-version: [16.x, 18.x, 20.x, 22.x]
