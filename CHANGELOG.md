@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Drop macOS 11 support
  - Fix (and test) all compression modules on all platforms
  - Recompiling the built-in Python now requires that `conan>=2.0.0` is installed
-
+ - Fix [#324](https://github.com/mmomtchev/pymport/issues/324), reference counting error when accessing the Python constructor `.constr`
+ 
 ### [1.5.1] 2024-04-01
  - Fix the build with recent Node.js versions after `node_api_nogc_env` in Node.js 18.20
 
