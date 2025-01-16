@@ -51,11 +51,6 @@
           'defines': [ 'BUILTIN_PYTHON_PATH=LR"(<(binding_dir))"' ]
         }],
         ['OS == "win"', {
-          'msvs_settings': {
-            'VCCLCompilerTool': { 
-              'AdditionalOptions': [' /std:c++14' ]
-            },
-          },
           'conditions': [
             ['builtin_python == "false" and external_python == "false"', {
               'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
@@ -97,10 +92,8 @@
           'xcode_settings': {
             'CLANG_CXX_LIBRARY': 'libc++',
             'MACOSX_DEPLOYMENT_TARGET': '10.7',
-            'OTHER_CPLUSPLUSFLAGS': [ '-std=c++14' ]
           },
           'cflags': [ '-fvisibility=hidden '],
-          'cflags_cc': [ '-std=c++14' ]
         }]
       ]
     },
