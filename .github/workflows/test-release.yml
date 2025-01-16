@@ -29,6 +29,8 @@ jobs:
         exclude:
           - platform: ubuntu-24.04
             python-version: 8
+          - platform: ubuntu-20.04
+            node-version: 23.x
 
     steps:
       - uses: actions/checkout@v4

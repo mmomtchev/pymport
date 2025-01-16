@@ -31,6 +31,8 @@ jobs:
         exclude:
           - platform: ubuntu-24.04
             python-version: 3.8
+          - platform: ubuntu-20.04
+            node-version: 23.x
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
@@ -92,6 +94,8 @@ jobs:
         exclude:
           - platform: ubuntu-24.04
             python-version: 8
+          - platform: ubuntu-20.04
+            node-version: 23.x
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
