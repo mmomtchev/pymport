@@ -59,12 +59,12 @@
       "includePath": [
         "/usr/local/include/node",
         "${workspaceFolder}/node_modules/node-addon-api",
-        "/usr/local/Cellar/python@3.10/3.10.8/Frameworks/Python.framework/Headers"
+        "/System/Volumes/Data/Library/Frameworks/Python.framework/Versions/3.12/include/python3.12"
       ],
       "defines": [
         "${projectDefines}"
       ],
-      "compilerPath": "/usr/bin/g++",
+      "compilerPath": "/usr/bin/clang++",
       "cStandard": "c17",
       "cppStandard": "c++14"
     },
