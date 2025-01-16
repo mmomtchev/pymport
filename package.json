@@ -57,7 +57,7 @@
     "wiki:sidebar": "cd wiki && github-wiki-sidebar --silent",
     "build": "npx node-pre-gyp configure && npx node-pre-gyp build",
     "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
-    "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*",
+    "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*.c*",
     "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
     "codecov": "cd coverage && curl -s https://codecov.io/bash | bash",
     "preversion": "npm run lint && npm run test && npm run doc && npm run wiki && git add wiki",
