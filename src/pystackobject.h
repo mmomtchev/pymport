@@ -115,7 +115,7 @@ class PyStrongRef : public PyWeakRef {
       self = v.self;
       v.self = nullptr;
     } else if (v.self == nullptr) {
-      VERBOSE_PYOBJ(REFS, v.self, "StrongRef unreference");
+      VERBOSE_PYOBJ(REFS, self, "StrongRef unreference");
       ASSERT(self->ob_refcnt > 0);
       Py_DECREF(self);
       self = nullptr;
