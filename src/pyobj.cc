@@ -158,7 +158,7 @@ Value PyObjectWrap::Constructor(const CallbackInfo &info) {
   Napi::Env env = info.Env();
   PyGILGuard pyGilGuard;
 
-  return New(env, PyStrongRef(reinterpret_cast<PyObject *>(Py_TYPE(*self))));
+  return New(env, PyStrongRef(PyWeakRef(reinterpret_cast<PyObject *>(Py_TYPE(*self)))));
 }
 
 Value PyObjectWrap::Item(const CallbackInfo &info) {
