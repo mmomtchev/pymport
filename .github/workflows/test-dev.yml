@@ -43,7 +43,7 @@ jobs:
       - run: npx @mapbox/node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
-      - run: npm test
+      - run: npx mocha --repeats 20
 
   builtin_python:
     runs-on: ${{ matrix.platform }}
@@ -245,7 +245,7 @@ jobs:
       - run: npx @mapbox/node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
-      - run: npm test -- --repeats 10
+      - run: npm test -- --repeats 20
         env:
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.6
           LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt
