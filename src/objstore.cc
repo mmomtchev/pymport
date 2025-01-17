@@ -122,6 +122,8 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
     VERBOSE_PYOBJ(CALL, *py, "Funcstore retrieve");
     assert(!it->second->Value().IsEmpty());
     js = it->second->Value();
+    // The caller expects this to be destroyed
+    py = nullptr;
   }
 
   return js;
