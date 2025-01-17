@@ -51,6 +51,8 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
     // Retrieve the existing object from the store
     VERBOSE_PYOBJ(OBJS, *obj, "Objstore retrieve");
     js = it->second->Value();
+    // Do not forget to invalidate the passed reference
+    obj = nullptr;
   }
 
   return js;
