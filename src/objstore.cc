@@ -91,6 +91,8 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
         // Skip if Python has been shut down
         // Refer to the comment in PyObject::~PyObject about https://github.com/nodejs/node/issues/45088
         if (active_environments == 0) {
+          // This is only for ASAN
+          delete fini_fn;
           VERBOSE(INIT, "Funcstore erase running after the environment cleanup: %p\n", fini_py);
           return;
         }
@@ -111,6 +113,7 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
           VERBOSE_PYOBJ(CALL, fini_py, "Funcstore already erased");
         }
         delete fini_fn;
+        printf("Function finalized %p\n", fini_fn);
       },
       jsRef,
       *py);
