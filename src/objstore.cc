@@ -95,7 +95,9 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
 
         // This is called from a JS context
         PyGILGuard pyGilGuard;
-        VERBOSE_PYOBJ(CALL, fini_py, "Funcstore erase");
+        // As JS finalizers can be delayed,
+        // the Python object might already be destroyed here
+        VERBOSE(CALL, "Funcstore erase for %p\n", fini_py);
         auto context = env.GetInstanceData<EnvContext>();
         auto stored = context->function_store.find(fini_py);
         // Does the stored function match our reference?
@@ -106,7 +108,7 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
         if (stored != context->function_store.end() && stored->second == fini_fn) {
           context->function_store.erase(fini_py);
         } else {
-          VERBOSE_PYOBJ(CALL, fini_py, "Funcstore already erased");
+          VERBOSE(CALL, "Funcstore already erased for %p\n", fini_py);
         }
         delete fini_fn;
       },
