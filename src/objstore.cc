@@ -85,7 +85,7 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
     *jsRef = Napi::Weak(js);
     context->function_store.insert({*py, jsRef});
     js.AddFinalizer(
-      [](Napi::Env env, FunctionReference *fini_fn, PyObject *fini_py) {
+      [](Napi::BasicEnv env, FunctionReference *fini_fn, PyObject *fini_py) {
         // Skip if Python has been shut down
         // Refer to the comment in PyObject::~PyObject about https://github.com/nodejs/node/issues/45088
         if (active_environments == 0) {
