@@ -1,6 +1,8 @@
 #pragma once
 
 #define NODE_API_SWALLOW_UNTHROWABLE_EXCEPTIONS
+#define NODE_ADDON_API_REQUIRE_BASIC_FINALIZERS
+
 #include <map>
 #include <list>
 #include <set>
@@ -46,6 +48,8 @@ class PyObjectWrap : public Napi::ObjectWrap<PyObjectWrap> {
     public:
   PyObjectWrap(const Napi::CallbackInfo &);
   virtual ~PyObjectWrap();
+
+  virtual void Finalize(Napi::BasicEnv env);
 
   Napi::Value ToString(const Napi::CallbackInfo &);
 

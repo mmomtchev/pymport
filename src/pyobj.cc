@@ -25,10 +25,9 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
   }
 }
 
-PyObjectWrap::~PyObjectWrap() {
+void PyObjectWrap::Finalize(Napi::BasicEnv env) {
   // This is never contested unless running a thread creation stress test
   shared_guard lock(pymport::init_and_shutdown_mutex);
-  Napi::Env env = Env();
 
   // Whether the object has been evicted or not, the adjusting happens here
   if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));
@@ -53,6 +52,9 @@ PyObjectWrap::~PyObjectWrap() {
   // We need to manually unreference, otherwise we won't be covered by the
   // GIL guard - pyGILGuard will be destroyed before the member variables
   self = nullptr;
+}
+
+PyObjectWrap::~PyObjectWrap() {
 }
 
 Function PyObjectWrap::GetClass(Napi::Env env) {
