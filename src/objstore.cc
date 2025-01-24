@@ -51,6 +51,8 @@ Value PyObjectWrap::New(Napi::Env env, PyStrongRef &&obj) {
     // Retrieve the existing object from the store
     VERBOSE_PYOBJ(OBJS, *obj, "Objstore retrieve");
     js = it->second->Value();
+    // Consume the reference in case of C++17 copy elision
+    obj = nullptr;
   }
 
   return js;
@@ -89,6 +91,8 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
         // Skip if Python has been shut down
         // Refer to the comment in PyObject::~PyObject about https://github.com/nodejs/node/issues/45088
         if (active_environments == 0) {
+          // We are shutting down so this is only for ASAN
+          delete fini_fn;
           VERBOSE(INIT, "Funcstore erase running after the environment cleanup: %p\n", fini_py);
           return;
         }
@@ -120,6 +124,8 @@ Value PyObjectWrap::NewCallable(Napi::Env env, PyStrongRef &&py) {
     VERBOSE_PYOBJ(CALL, *py, "Funcstore retrieve");
     assert(!it->second->Value().IsEmpty());
     js = it->second->Value();
+    // The caller expects this to be destroyed
+    py = nullptr;
   }
 
   return js;
