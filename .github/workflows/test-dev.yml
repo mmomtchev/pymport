@@ -50,5 +50,5 @@ jobs:
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: |
-          while npx mocha --repeats 20; do true; done
+          for I in {1..50}; do npx mocha --repeats 20; do true; done
         shell: bash
