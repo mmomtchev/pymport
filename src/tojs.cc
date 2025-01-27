@@ -70,7 +70,13 @@ Napi::Value PyObjectWrap::_ToJS_Dictionary(Napi::Env env, const PyWeakRef &py, N
   while (PyDict_Next(*py, &pos, &key, &value)) {
     auto jsKey = _ToJS(env, key, store, {opts.depth - 1, opts.buffer});
     auto jsValue = _ToJS(env, value, store, {opts.depth - 1, opts.buffer});
-    obj.Set(jsKey, jsValue);
+    try {
+      obj.Set(jsKey, jsValue);
+    } catch (const Error &err) {
+      fprintf(
+        stderr,
+        "Warning, cannot convert dictionary key to string, ignoring element. See https://github.com/mmomtchev/pymport/issues/338\n");
+    }
   }
   return obj;
 }
