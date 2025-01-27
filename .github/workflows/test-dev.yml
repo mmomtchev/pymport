@@ -138,7 +138,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
-      - run: npm install
+      # Testing installing wo rebuild still requires rebuilding to
+      # avoid using the previous version available on npm
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: node ./scripts/pympip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - name: Find system Python
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $GITHUB_ENV
@@ -167,7 +172,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
-      - run: npm install
+      # Testing installing wo rebuild still requires rebuilding to
+      # avoid using the previous version available on npm
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: node ./scripts/pympip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - name: Find system Python
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $env:GITHUB_ENV
