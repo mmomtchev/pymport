@@ -75,7 +75,11 @@ Napi::Value PyObjectWrap::_ToJS_Dictionary(Napi::Env env, const PyWeakRef &py, N
     } catch (const Error &err) {
       fprintf(
         stderr,
-        "Warning, cannot convert dictionary key to string, ignoring element. See https://github.com/mmomtchev/pymport/issues/338\n");
+        "Warning, cannot convert dictionary key to string, ignoring element. "
+        "See https://github.com/mmomtchev/pymport/issues/338\n"
+        "Faulty element value is (key is not printable): ");
+      PyObject_Print(*value, stderr, 0);
+      fprintf(stderr, "\n");
     }
   }
   return obj;
