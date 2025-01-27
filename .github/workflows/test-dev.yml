@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-24.04, macos-13, macos-14, windows-2019]
+        platform: [ubuntu-24.04, macos-14, windows-2019]
         node-version: [18.x, 20.x, 22.x, 23.x]
         include:
           - platform: ubuntu-20.04
@@ -66,6 +66,8 @@ jobs:
             node-version: 20.x
           - platform: macos-13
             node-version: 16.x
+          - platform: macos-13
+            node-version: 22.x
 
     steps:
       - uses: actions/checkout@v4
