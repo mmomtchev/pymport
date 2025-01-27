@@ -8,9 +8,11 @@ module.exports = {
   'node-option': +process.versions.node.split('.')[
     0
   ] >= 23 ? [
-    'no-experimental-strip-types'
-  ] : [],
+    'no-experimental-strip-types',
+    'expose-gc'
+  ] : [
+    'expose-gc'
+  ],
   'timeout': '30000',
-  'reporter': 'tap',
-  'v8-expose-gc': true
+  'reporter': 'tap'
 };
