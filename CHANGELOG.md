@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Tested with Node.js 22 and 23
  - Drop macOS 11 and 12 support
  - Upgrade the built-in Python to 3.12.8
+ - Improved build of the built-in Python ensuring that all Python modules do not assume anything about the host system - including working SSL without requiring Homebrew on macOS
  - Fix (and test) all compression modules on all platforms
  - Recompiling the built-in Python now requires that `conan>=2.0.0` is installed
  - Fix [#3](https://github.com/mmomtchev/pymport/issues/3), allow Python objects to be garbage-collected in fully synchronous code
