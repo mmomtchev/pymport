@@ -3,8 +3,14 @@ name: Node.js CI
 on:
   push:
     branches: main
+    paths-ignore:
+      - '*.md'
+      - 'wiki/**'
   pull_request:
     branches: main
+    paths-ignore:
+      - '*.md'
+      - 'wiki/**'
 
 env:
   BUILTIN_PYTHON_VERSION: 3.12.8
