@@ -7,7 +7,7 @@ on:
     branches: main
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.12.2
+  BUILTIN_PYTHON_VERSION: 3.12.8
 
 jobs:
   shared_python:
@@ -18,7 +18,7 @@ jobs:
       matrix:
         platform: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, windows-2019]
         node-version: [16.x, 18.x, 20.x, 22.x, 23.x]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
           - node-version: 16.x
             platform: ubuntu-22.04
@@ -26,10 +26,14 @@ jobs:
             platform: ubuntu-24.04
           - node-version: 16.x
             python-version: 3.12
+          - node-version: 16.x
+            python-version: 3.13
           - platform: ubuntu-24.04
             python-version: 3.8
           - platform: ubuntu-20.04
             node-version: 23.x
+          - platform: ubuntu-20.04
+            python-version: 3.13
 
     steps:
       - uses: actions/checkout@v4
@@ -51,12 +55,19 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ubuntu-20.04, macos-13, macos-14, windows-2019]
-        node-version: [16.x, 18.x, 20.x, 22.x, 23.x]
-        exclude:
+        platform: [ubuntu-24.04, macos-14, windows-2019]
+        node-version: [18.x, 20.x, 22.x, 23.x]
+        include:
           - platform: ubuntu-20.04
-            node-version: 23.x
+            node-version: 16.x
+          - platform: ubuntu-22.04
+            node-version: 20.x
+          - platform: macos-13
+            node-version: 16.x
+          - platform: macos-13
+            node-version: 22.x
 
     steps:
       - uses: actions/checkout@v4
@@ -137,7 +148,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
-      - run: npm install
+      # Testing installing wo rebuild still requires rebuilding to
+      # avoid using the previous version available on npm
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: node ./scripts/pympip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - name: Find system Python
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $GITHUB_ENV
@@ -166,7 +182,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
-      - run: npm install
+      # Testing installing wo rebuild still requires rebuilding to
+      # avoid using the previous version available on npm
+      - run: npm install --ignore-scripts
+      - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
+      - run: npx @mapbox/node-pre-gyp build -j max
+      - run: node ./scripts/pympip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - name: Find system Python
         run: echo PYTHONHOME=$(python -c "import sys; print(sys.prefix)") >> $env:GITHUB_ENV

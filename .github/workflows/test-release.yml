@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.12.2
+  BUILTIN_PYTHON_VERSION: 3.12.8
 
 jobs:
   test_published:
@@ -25,7 +25,7 @@ jobs:
           - macos-13
           - macos-14
         node-version: [16.x, 18.x, 20.x, 22.x, 23.x]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
           - platform: ubuntu-24.04
             python-version: 8

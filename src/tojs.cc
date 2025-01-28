@@ -70,7 +70,24 @@ Napi::Value PyObjectWrap::_ToJS_Dictionary(Napi::Env env, const PyWeakRef &py, N
   while (PyDict_Next(*py, &pos, &key, &value)) {
     auto jsKey = _ToJS(env, key, store, {opts.depth - 1, opts.buffer});
     auto jsValue = _ToJS(env, value, store, {opts.depth - 1, opts.buffer});
-    obj.Set(jsKey, jsValue);
+// Remember to drop this kludge if/when Python+numpy behavior is different
+#if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 13
+    try {
+#endif
+      obj.Set(jsKey, jsValue);
+#if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 13
+    } catch (const Error &err) {
+      fprintf(
+        stderr,
+        "Warning, cannot convert dictionary key to string, ignoring element. "
+        "See https://github.com/mmomtchev/pymport/issues/338\n"
+        "Faulty element value is (key of type ");
+      PyObject_Print((PyObject *)(*value)->ob_type, stderr, 0);
+      fprintf(stderr, " is not printable): ");
+      PyObject_Print(*value, stderr, 0);
+      fprintf(stderr, "\n");
+    }
+#endif
   }
   return obj;
 }

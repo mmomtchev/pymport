@@ -6,6 +6,10 @@ const assert: Chai.AssertStatic = chai.assert;
 const expect: Chai.ExpectStatic = chai.expect;
 
 describe('pymport', () => {
+  it('the GC must be available', () => {
+    assert.isFunction(global.gc, 'These tests must be run with the V8 garbage collector exposed');
+  });
+
   it('version', function () {
     if (process.env['MOCHA_SKIP_VERSION_CHECK']) this.skip();
     if (!process.env['BUILTIN_PYTHON_VERSION'])
