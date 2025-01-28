@@ -344,4 +344,10 @@ describe('pymport', () => {
     });
 
   });
+
+  it('SSL module', () => {
+    const request = pymport('urllib.request');
+    const contents = request.get('urlopen').call('https://www.github.com').get('read').call();
+    assert.strictEqual(contents.type, 'bytes');
+  });
 });
