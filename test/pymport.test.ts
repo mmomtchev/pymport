@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { pymport, PyObject, PythonError, version } from 'pymport';
 import chai from 'chai';
 import spies from 'chai-spies';
@@ -21,7 +22,6 @@ describe('pymport', () => {
     assert.isBoolean(version.pythonLibrary.builtin);
     if (version.pythonLibrary.builtin) {
       assert.isString(version.pythonHome);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const builtin_version = process.env.BUILTIN_PYTHON_VERSION!.split('.').map((v) => +v);
       assert.strictEqual(version.pythonLibrary.major, builtin_version[0]);
       assert.strictEqual(version.pythonLibrary.minor, builtin_version[1]);
