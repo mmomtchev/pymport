@@ -210,6 +210,10 @@ static Napi::Object PympInit(Env env, Object exports) {
       memcpy(python_home, wstr.c_str(), wstr.size() * sizeof(wchar_t));
       python_home[wstr.size()] = 0;
       config.home = python_home;
+#ifdef CACERT_FILE
+      auto cacert = std::string{pathPymport} + CACERT_FILE;
+      setenv("SSL_CERT_FILE", cacert.c_str(), 0);
+#endif
     }
 #endif
     auto status = Py_InitializeFromConfig(&config);

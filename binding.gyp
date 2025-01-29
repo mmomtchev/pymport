@@ -115,6 +115,11 @@
     ['builtin_python == "true" and OS == "linux"', {
       'targets': [{
         'target_name': 'builtin_python',
+        'direct_dependent_settings': {
+          'defines': [
+            'CACERT_FILE="/cacert.pem"',
+          ]
+        },
         'type': 'none',
         'actions': [{
           'action_name': 'Python',
@@ -128,6 +133,11 @@
       'targets': [
         {
           'target_name': 'builtin_python',
+          'direct_dependent_settings': {
+            'defines': [
+              'CACERT_FILE="/cacert.pem"',
+            ]
+          },
           'type': 'none',
           'actions': [{
             'action_name': 'Python',
