@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { Worker } = require('worker_threads');
 const path = require('path');
 const Queue = require('async-await-queue');
@@ -22,7 +21,6 @@ function spawnWorker(script) {
 async function main() {
   let i = 0;
   console.log('start');
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const me = Symbol();
     queue.wait(me)

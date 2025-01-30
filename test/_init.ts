@@ -1,6 +1,5 @@
 process.env['PYTHONPATH'] = __dirname;
 
-import { assert } from 'chai';
 import { version, pymport } from 'pymport';
 
 console.log(`pymport: ` +
