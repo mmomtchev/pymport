@@ -118,10 +118,18 @@ jobs:
       - name: Install pymport from npm
         run: npm install pymport@${{ github.event.inputs.version }} --build-from-source
       - run: pip3 install -r test/requirements.txt
+      - name: Node options
+        shell: bash
+        run: echo 'MOCHA_NODE_OPTIONS=--v8-expose-gc' >> $GITHUB_ENV
+        if: matrix.node-version != '23.x'
+      - name: Node options
+        shell: bash
+        run: echo 'MOCHA_NODE_OPTIONS=--node-option=no-experimental-strip-types --node-option=expose-gc' >> $GITHUB_ENV
+        if: matrix.node-version == '23.x'
       - name: Run the unit tests
         run: |
           cd test
-          npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 --v8-expose-gc *.test.ts *.test.cjs *.test.mjs
+          npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 ${{ env.MOCHA_NODE_OPTIONS }} *.test.ts *.test.cjs *.test.mjs
         env:
           TS_NODE_PROJECT: tsconfig.test.json
       - name: Test rebuilding a Python package
