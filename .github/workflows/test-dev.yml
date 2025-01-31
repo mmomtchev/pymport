@@ -2,12 +2,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: main
+    branches: "1.6"
     paths-ignore:
       - '*.md'
       - 'wiki/**'
   pull_request:
-    branches: main
+    branches: "1.6"
     paths-ignore:
       - '*.md'
       - 'wiki/**'
