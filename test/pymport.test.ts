@@ -345,7 +345,8 @@ describe('pymport', () => {
 
   });
 
-  it('SSL module', () => {
+  it('SSL module', function () {
+    this.retries(3);
     const request = pymport('urllib.request');
     const contents = request.get('urlopen').call('https://www.github.com').get('read').call();
     assert.strictEqual(contents.type, 'bytes');
