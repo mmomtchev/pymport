@@ -100,7 +100,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.conan_home.outputs.CONAN_HOME }}
-          key: ${{ runner.os }}-${{ runner.arch }}
+          key: ${{ matrix.platform }}
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
       - run: npx @mapbox/node-pre-gyp build -j max
