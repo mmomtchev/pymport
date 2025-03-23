@@ -30,11 +30,6 @@ jobs:
         id: conan_home
         shell: bash
         run: echo CONAN_HOME=`conan config home` >> "$GITHUB_OUTPUT"
-      - name: Cache conan artifacts
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.conan_home.outputs.CONAN_HOME }}
-          key: ${{ runner.os }}-${{ runner.arch }}
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin_python=true
       - run: npx @mapbox/node-pre-gyp build -j max
