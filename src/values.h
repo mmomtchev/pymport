@@ -40,7 +40,7 @@
                                                  : info[arg].ToObject()))
 
 #ifdef DEBUG
-#define DEBUG_OPTS(V) V(REFS), V(INIT), V(OBJS), V(CALL), V(MEMV), V(PGIL), V(SHMX)
+#define DEBUG_OPTS(V) V(REFS), V(INIT), V(OBJS), V(CALL), V(MEMV), V(PGIL)
 extern bool debug_opt_enabled[];
 
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
