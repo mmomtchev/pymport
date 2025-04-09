@@ -27,9 +27,6 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
         include:
           - platform: ubuntu-22.04
-            python-version: "3.11"
-            node-version: 16
-          - platform: ubuntu-22.04
             python-version: "3.8"
             node-version: 18
           - platform: ubuntu-22.04
@@ -71,11 +68,7 @@ jobs:
         node-version: [18.x, 20.x, 22.x, 23.x]
         include:
           - platform: ubuntu-22.04
-            node-version: 16.x
-          - platform: ubuntu-22.04
             node-version: 20.x
-          - platform: macos-13
-            node-version: 16.x
           - platform: macos-13
             node-version: 22.x
 

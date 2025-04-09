@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Fix [#193](https://github.com/mmomtchev/pymport/issues/193), use the Node.js solution for cancelling exceptions thrown in a running asynchronous operation after the thread has been terminated
  - Fix [#324](https://github.com/mmomtchev/pymport/issues/324), reference counting error when accessing the Python constructor `.constr`
  - Drop Ubuntu 20.04 support
+ - Drop Node.js 16 support
  
 ### [1.5.1] 2024-04-01
  - Fix the build with recent Node.js versions after `node_api_nogc_env` in Node.js 18.20
