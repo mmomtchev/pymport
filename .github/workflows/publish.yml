@@ -3,7 +3,7 @@ name: Github packages publish
 on: workflow_dispatch
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.12.8
+  BUILTIN_PYTHON_VERSION: 3.12.10
 
 jobs:
   publish:
