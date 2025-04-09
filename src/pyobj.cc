@@ -27,7 +27,7 @@ PyObjectWrap::PyObjectWrap(const CallbackInfo &info) : ObjectWrap(info), self(nu
 
 void PyObjectWrap::Finalize(Napi::BasicEnv env) {
   // This is never contested unless running a thread creation stress test
-  shared_guard lock(pymport::init_and_shutdown_mutex);
+  std::shared_lock lock(pymport::init_and_shutdown_mutex);
 
   // Whether the object has been evicted or not, the adjusting happens here
   if (memory_hint > 0) Napi::MemoryManagement::AdjustExternalMemory(env, -static_cast<int64_t>(memory_hint));

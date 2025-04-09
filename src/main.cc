@@ -17,7 +17,7 @@ using namespace std::string_literals;
 #define STR(s) __STR(s)
 #define __STR(x) #x ""
 
-shared_mutex pymport::init_and_shutdown_mutex;
+std::shared_mutex pymport::init_and_shutdown_mutex;
 size_t pymport::active_environments = 0;
 // There is one V8 main thread per environment (EnvContext) and only one main Python thread (main.cc)
 PyThreadState *py_main;
