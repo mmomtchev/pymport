@@ -13,7 +13,7 @@ on:
       - 'wiki/**'
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.12.8
+  BUILTIN_PYTHON_VERSION: 3.12.10
 
 jobs:
   shared_python:
