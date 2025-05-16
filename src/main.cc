@@ -213,6 +213,8 @@ static Napi::Object PympInit(Env env, Object exports) {
 #ifdef CACERT_FILE
       auto cacert = std::string{pathPymport} + CACERT_FILE;
       setenv("SSL_CERT_FILE", cacert.c_str(), 0);
+      exports.Set("SSL_CERT_FILE", String::New(env, cacert));
+      exports.DefineProperty(PropertyDescriptor::Value("SSL_CERT_FILE", String::New(env, cacert), napi_default));
 #endif
     }
 #endif

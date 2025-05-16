@@ -4,6 +4,8 @@ const fs = require('fs');
 const cp = require('child_process');
 const os = require('os');
 
+const ssl_cert_file = require('pymport').SSL_CERT_FILE;
+
 const bin_dir = path.resolve(path.dirname(
   require('@mapbox/node-pre-gyp').find(path.join(__dirname, '..', 'package.json'))));
 const exe = os.platform() === 'win32' ? 'python.exe' : path.join('bin', 'python3');
@@ -13,7 +15,8 @@ if (fs.existsSync(python)) {
     stdio: 'inherit',
     env: {
       ...process.env,
-      PYTHONHOME: bin_dir
+      PYTHONHOME: bin_dir,
+      SSL_CERT_FILE: ssl_cert_file
     }
   });
 } else {
