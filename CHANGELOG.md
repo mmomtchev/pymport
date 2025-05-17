@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Fix [#3](https://github.com/mmomtchev/pymport/issues/3), allow Python objects to be garbage-collected in fully synchronous code
  - Fix [#193](https://github.com/mmomtchev/pymport/issues/193), use the Node.js solution for cancelling exceptions thrown in a running asynchronous operation after the thread has been terminated
  - Fix [#324](https://github.com/mmomtchev/pymport/issues/324), reference counting error when accessing the Python constructor `.constr`
+ - Fix [#396](https://github.com/mmomtchev/pymport/issues/396), certificate validation problems on macOS when using `https`
  - Drop Ubuntu 20.04 support
  - Drop Node.js 16 support
  
