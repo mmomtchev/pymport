@@ -5,3 +5,4 @@ dist
 coverage
 /Python*
 __pycache__
+.python-version
