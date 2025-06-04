@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-24.04, macos-14, windows-2019]
+        platform: [ubuntu-24.04, macos-14, windows-2022]
         node-version: [18.x, 20.x, 22.x, 23.x]
         python-version: ["3.11", "3.12", "3.13"]
         include:
@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-24.04, macos-14, windows-2019]
+        platform: [ubuntu-24.04, macos-14, windows-2022]
         node-version: [18.x, 20.x, 22.x, 23.x]
         include:
           - platform: ubuntu-22.04
@@ -172,7 +172,7 @@ jobs:
           MOCHA_SKIP_VERSION_CHECK: 1
 
   external_python_wo_rebuild_win:
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     steps:
       - uses: actions/checkout@v4
@@ -208,7 +208,7 @@ jobs:
 
     strategy:
       matrix:
-        platform: [macos-13, windows-2019]
+        platform: [macos-13, windows-2022]
 
     steps:
       - uses: actions/checkout@v4
