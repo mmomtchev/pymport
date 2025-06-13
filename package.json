@@ -71,7 +71,7 @@
     "@types/chai": "^4.3.11",
     "@types/chai-spies": "^1.0.6",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^22.0.2",
+    "@types/node": "^24.0.1",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
     "async-await-queue": "^2.1.4",
