@@ -41,6 +41,12 @@ jobs:
           - platform: macos-13
             python-version: "3.12"
             node-version: 20
+          - platform: windows-11-arm
+            python-version: "3.12"
+            node-version: 22
+          - platform: ubuntu-22.04-arm
+            python-version: "3.12"
+            node-version: 22
 
     steps:
       - uses: actions/checkout@v4
