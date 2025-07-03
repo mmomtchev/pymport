@@ -55,7 +55,7 @@ There is also a [medium stort](https://medium.com/@mmomtchev/using-numpy-and-pan
 | --------- | ------------------------------------------------------------------- |
 | OS        | Windows 2019 & 2022, Ubuntu 20.04, 22.04 and 24.04, macOS 13 and 14 |
 | CPU       | x86-64 and ARM64                                                    |
-| Node.js   | 16.x, 18.x, 20.x, 22.x and 23.x                                     |
+| Node.js   | 18.x, 20.x, 22.x and 23.x                                           |
 | Python    | 3.8, 3.9, 3.10, 3.11, 3.12 and 3.13                                 |
 
 except for the following combinations that are not supported:
