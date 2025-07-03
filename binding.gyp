@@ -53,10 +53,10 @@
         ['OS == "win"', {
           'conditions': [
             ['builtin_python == "false" and external_python == "false"', {
-              'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/include' ],
+              'include_dirs': [ '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")\include' ],
               'msvs_settings': {
                 'VCLinkerTool': {
-                  'AdditionalLibraryDirectories': '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")/libs'
+                  'AdditionalLibraryDirectories': '<!(python -c "import os, sys; print(os.path.dirname(sys.executable))")\libs'
                 }
               },
             }],
@@ -65,7 +65,7 @@
               'include_dirs': [ 'build\Python-$(BUILTIN_PYTHON_VERSION)\Include', 'build\Python-$(BUILTIN_PYTHON_VERSION)\PC' ],
               'msvs_settings': {
                 'VCLinkerTool': {
-                  'AdditionalLibraryDirectories': '<(module_path)'
+                  'AdditionalLibraryDirectories': '<(module_path)\libs'
                 }
               },
             }]]
