@@ -20,8 +20,10 @@ jobs:
         platform:
           - ubuntu-22.04
           - ubuntu-24.04
+          - ubuntu-22.04-arm
           - windows-2022
           - windows-2025
+          - windows-11-arm
           - macos-13
           - macos-13
           - macos-14
@@ -80,8 +82,10 @@ jobs:
         platform:
           - ubuntu-22.04
           - ubuntu-24.04
+          - ubuntu-22.04-arm
           - windows-2022
           - windows-2025
+          - windows-11-arm
           - macos-13
           - macos-13
           - macos-14
