@@ -32,6 +32,12 @@ jobs:
             python-version: "3.8"
           - platform: windows-11-arm
             node-version: 18.x
+          - platform: windows-11-arm
+            python-version: "3.8"
+          - platform: windows-11-arm
+            python-version: "3.9"
+          - platform: windows-11-arm
+            python-version: "3.10"
 
     steps:
       - uses: actions/checkout@v4

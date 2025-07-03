@@ -64,6 +64,8 @@ except for the following combinations that are not supported:
 
 * **Node.js 18.x and Windows 11 arm64**: Combination not supported by Node.js
 
+* **Python <3.11 and Windows 11 arm64**: Combination not supported by Github Actions
+
 | `pymport` | Built-in Python interpreter           |
 | --------- | ------------------------------------- |
 | 1.4.x     | Python 3.10                           |
