@@ -33,7 +33,7 @@ jobs:
           - platform: ubuntu-24.04
             python-version: 3.8
           - platform: windows-11-arm
-            node-version: 18
+            node-version: "18.x"
           - platform: windows-11-arm
             python-version: "3.8"
           - platform: windows-11-arm
@@ -103,7 +103,7 @@ jobs:
           - platform: ubuntu-24.04
             python-version: 8
           - platform: windows-11-arm
-            node-version: 18.x
+            node-version: "18.x"
           - platform: windows-11-arm
             python-version: "3.8"
           - platform: windows-11-arm
