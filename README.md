@@ -55,16 +55,14 @@ There is also a [medium stort](https://medium.com/@mmomtchev/using-numpy-and-pan
 | --------- | ------------------------------------------------------------------- |
 | OS        | Windows 2019 & 2022, Ubuntu 20.04, 22.04 and 24.04, macOS 13 and 14 |
 | CPU       | x86-64 and ARM64                                                    |
-| Node.js   | 18.x, 20.x, 22.x and 23.x                                           |
+| Node.js   | 18.x, 20.x, 22.x and 24.x                                           |
 | Python    | 3.8, 3.9, 3.10, 3.11, 3.12 and 3.13                                 |
 
 except for the following combinations that are not supported:
 
-* **Node.js 16.x on Ubuntu 22.04**: rebuilding from source against the system-installed Python is not possible due to Node.js containing a built-in OpenSSL 1.1 with exported symbols while the system-provided Python is built vs OpenSSL 3.0, upgrading Node.js or using the precompiled interpreter solves this issue
-
-* **Node.js 16.x and Python 3.12**: `node-gyp` from Node.js 16.x does not work if Python 3.12 is installed
-
 * **Python 3.11.x on Windows**: An upstream bug requires a specific workaround in this case [#44](https://github.com/mmomtchev/pymport/issues/44)
+
+* **Node.js 18.x and Windows 11 arm64**: Combination not supported by Node.js
 
 | `pymport` | Built-in Python interpreter           |
 | --------- | ------------------------------------- |

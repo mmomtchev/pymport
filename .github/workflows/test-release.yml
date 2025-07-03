@@ -25,11 +25,13 @@ jobs:
           - macos-13
           - macos-13
           - macos-14
-        node-version: [18.x, 20.x, 22.x, 23.x]
+        node-version: [18.x, 20.x, 22.x, 24.x]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
           - platform: ubuntu-24.04
             python-version: "3.8"
+          - platform: windows-11-arm
+            node-version: 18.x
 
     steps:
       - uses: actions/checkout@v4
