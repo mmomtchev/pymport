@@ -7,7 +7,7 @@ module.exports = {
   ],
   'node-option': +process.versions.node.split('.')[
     0
-  ] >= 23 ? [
+  ] >= 22 ? [
     'no-experimental-strip-types',
     'expose-gc'
   ] : [
