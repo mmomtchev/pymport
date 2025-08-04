@@ -27,13 +27,13 @@ jobs:
           - macos-13
           - macos-13
           - macos-14
-        node-version: [18.x, 20.x, 22.x, 24.x]
+        node-version: [18, 20, 22, 24]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
           - platform: ubuntu-24.04
             python-version: 3.8
           - platform: windows-11-arm
-            node-version: "18.x"
+            node-version: 18
           - platform: windows-11-arm
             python-version: "3.8"
           - platform: windows-11-arm
@@ -65,11 +65,11 @@ jobs:
       - name: Node options
         shell: bash
         run: echo 'MOCHA_NODE_OPTIONS=--v8-expose-gc' >> $GITHUB_ENV
-        if: matrix.node-version != '24.x'
+        if: matrix.node-version < 22
       - name: Node options
         shell: bash
         run: echo 'MOCHA_NODE_OPTIONS=--node-option=no-experimental-strip-types --node-option=expose-gc' >> $GITHUB_ENV
-        if: matrix.node-version == '24.x'
+        if: matrix.node-version >= 22
       - name: Run the unit tests
         run: |
           cd test
@@ -97,13 +97,13 @@ jobs:
           - macos-13
           - macos-13
           - macos-14
-        node-version: [18.x, 20.x, 22.x, 24.x]
+        node-version: [18, 20, 22, 24]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
           - platform: ubuntu-24.04
             python-version: 8
           - platform: windows-11-arm
-            node-version: "18.x"
+            node-version: 18
           - platform: windows-11-arm
             python-version: "3.8"
           - platform: windows-11-arm
@@ -135,11 +135,11 @@ jobs:
       - name: Node options
         shell: bash
         run: echo 'MOCHA_NODE_OPTIONS=--v8-expose-gc' >> $GITHUB_ENV
-        if: matrix.node-version != '24.x'
+        if: matrix.node-version < 22
       - name: Node options
         shell: bash
         run: echo 'MOCHA_NODE_OPTIONS=--node-option=no-experimental-strip-types --node-option=expose-gc' >> $GITHUB_ENV
-        if: matrix.node-version == '24.x'
+        if: matrix.node-version >= 22
       - name: Run the unit tests
         run: |
           cd test
