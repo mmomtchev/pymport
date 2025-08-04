@@ -83,7 +83,6 @@ static void RunInV8Context(uv_async_t *async) {
     context->v8_queue.jobs.front()();
     context->v8_queue.jobs.pop();
   }
-  uv_unref(reinterpret_cast<uv_handle_t *>(context->v8_queue.handle));
 }
 
 extern void MemInit();
