@@ -60,6 +60,9 @@ jobs:
       - run: |
           python3-config --cflags --embed
           python3-config --libs --embed
+      - run: |
+          pkg-config --cflags python3-embed
+          pkg-config --libs python3-embed
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure
       - run: npx @mapbox/node-pre-gyp build -j max
