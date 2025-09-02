@@ -1,6 +1,5 @@
-process.env['PYTHONPATH'] = __dirname;
-
 import { version, pymport } from 'pymport';
+import { pymport as pymportProxified } from 'pymport/proxified';
 
 console.log(`pymport: ` +
   `${version.pymport.major}.${version.pymport.minor}.${version.pymport.patch}` +
@@ -12,6 +11,9 @@ console.log(
 );
 console.log(`Python home: ${version.pythonHome || 'default from library'}`);
 console.log('');
+
+const sys = pymportProxified('sys');
+sys.path.insert(1, __dirname);
 
 exports.mochaHooks = {
   afterEach: global.gc,
