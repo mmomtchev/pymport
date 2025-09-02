@@ -73,10 +73,10 @@
         ['OS != "win"', {
           'conditions': [
             ['builtin_python == "false" and external_python == "false"', {
-              'cflags': [ '<!@(python-config --cflags --embed)' ],
-              'libraries': [ '<!@(python-config --libs --embed)' ],
+              'cflags': [ '<!@(python3-config --cflags --embed)' ],
+              'libraries': [ '<!@(python3-config --libs --embed)' ],
               'xcode_settings': {
-                'OTHER_CPLUSPLUSFLAGS': [ '<!@(python-config --cflags --embed)' ],
+                'OTHER_CPLUSPLUSFLAGS': [ '<!@(python3-config --cflags --embed)' ],
               }
             }],
             ['builtin_python == "false" and external_python == "true"', {
