@@ -1,6 +1,5 @@
-process.env['PYTHONPATH'] = __dirname;
-
-import { version, pymport } from 'pymport';
+import { version } from 'pymport';
+import { pymport } from 'pymport/proxified';
 
 console.log(`pymport: ` +
   `${version.pymport.major}.${version.pymport.minor}.${version.pymport.patch}` +
@@ -13,12 +12,15 @@ console.log(
 console.log(`Python home: ${version.pythonHome || 'default from library'}`);
 console.log('');
 
+const sys = pymport('sys');
+sys.path.insert(1, __dirname);
+
 exports.mochaHooks = {
   afterEach: global.gc,
   afterAll: function () {
     if (process.env['PYTHONDUMP']) {
       const dump = pymport('dump');
-      dump.get('memory_dump').call();
+      dump.memory_dump();
     }
   }
 };
