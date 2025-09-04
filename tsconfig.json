@@ -18,5 +18,8 @@
         "./proxified"
       ]
     }
-  }
+  },
+  "include": [
+    "test"
+  ]
 }
