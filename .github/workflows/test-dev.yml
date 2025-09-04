@@ -62,6 +62,7 @@ jobs:
       - run: npx @mapbox/node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
+      - run: npx tsc --noEmit
       - run: npx mocha --repeats 20
 
   builtin_python:

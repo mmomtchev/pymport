@@ -58,16 +58,15 @@ jobs:
           mv pymport-${{ github.event.inputs.version }}/test .
       - name: Install dependencies
         run: |
-          npm i @types/chai@4 @types/mocha @types/node chai@4 chai-spies @types/chai-spies mocha ts-node typescript
+          npm i @types/chai@4 @types/mocha @types/node chai@4 chai-spies @types/chai-spies mocha tsx typescript
       - name: Install pymport from npm
         run: npm install pymport@${{ github.event.inputs.version }}
       - run: npx pympip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
           cd test
-          npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 --node-option=expose-gc *.test.ts *.test.cjs *.test.mjs
-        env:
-          TS_NODE_PROJECT: tsconfig.test.json
+          npx tsc -p tsconfig.test.json --noEmit
+          npx mocha --reporter=tap -r tsx -r ./_init.ts --timeout 20000 --node-option=expose-gc *.test.ts *.test.cjs *.test.mjs
       - name: Test rebuilding a Python package
         run: |
           npx pympip3 install --no-binary :all: xxhash
@@ -120,16 +119,15 @@ jobs:
           mv pymport-${{ github.event.inputs.version }}/test .
       - name: Install dependencies
         run: |
-          npm i @types/chai@4 @types/mocha @types/node chai@4 chai-spies @types/chai-spies mocha ts-node typescript
+          npm i @types/chai@4 @types/mocha @types/node chai@4 chai-spies @types/chai-spies mocha tsx typescript
       - name: Install pymport from npm
         run: npm install pymport@${{ github.event.inputs.version }} --build-from-source
       - run: pip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
           cd test
-          npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 --node-option=expose-gc *.test.ts *.test.cjs *.test.mjs
-        env:
-          TS_NODE_PROJECT: tsconfig.test.json
+          npx tsc -p tsconfig.test.json --noEmit
+          npx mocha --reporter=tap -r tsx -r ./_init.ts --timeout 20000 --node-option=expose-gc *.test.ts *.test.cjs *.test.mjs
       - name: Test rebuilding a Python package
         run: |
           pip3 install --no-binary :all: xxhash
@@ -164,16 +162,15 @@ jobs:
           mv pymport-${{ github.event.inputs.version }}/test .
       - name: Install dependencies
         run: |
-          npm i @types/chai@4 @types/mocha @types/node chai@4 chai-spies @types/chai-spies mocha ts-node typescript
+          npm i @types/chai@4 @types/mocha @types/node chai@4 chai-spies @types/chai-spies mocha tsx typescript
       - name: Install pymport from npm
         run: npm install pymport@${{ github.event.inputs.version }} --build-from-source --external_python
       - run: pip3 install -r test/requirements.txt
       - name: Run the unit tests
         run: |
           cd test
-          npx mocha --reporter=tap -r ts-node/register -r ./_init.ts --timeout 20000 --v8-expose-gc *.test.ts *.test.cjs *.test.mjs
-        env:
-          TS_NODE_PROJECT: tsconfig.test.json
+          npx tsc -p tsconfig.test.json --noEmit
+          npx mocha --reporter=tap -r tsx -r ./_init.ts --timeout 20000 --v8-expose-gc *.test.ts *.test.cjs *.test.mjs
       - name: Test rebuilding a Python package
         run: |
           pip3 install --no-binary :all: xxhash
