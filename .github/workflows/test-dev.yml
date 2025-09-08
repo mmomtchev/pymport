@@ -54,7 +54,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - run: npm install --ignore-scripts
@@ -91,7 +91,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - name: Install conan
@@ -130,7 +130,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - name: set LIBS
@@ -159,7 +159,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
       # Testing installing wo rebuild still requires rebuilding to
@@ -193,7 +193,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
       # Testing installing wo rebuild still requires rebuilding to
@@ -229,7 +229,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - run: npm install --ignore-scripts
