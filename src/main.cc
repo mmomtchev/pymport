@@ -165,7 +165,6 @@ static Napi::Object PympInit(Env env, Object exports) {
           INIT,
           "Finalizing the finalizer (%lu)...\n",
           static_cast<unsigned long>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-        std::unique_lock lock(init_and_shutdown_mutex);
 
         auto hook = reinterpret_cast<napi_async_cleanup_hook_handle>(handle->data);
         delete reinterpret_cast<uv_async_t *>(handle);
