@@ -59,11 +59,16 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure
+        if: runner.os != 'macOS'
+      - run: npx @mapbox/node-pre-gyp configure --debug
+        if: runner.os == 'macOS'
       - run: npx @mapbox/node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npx tsc --noEmit
       - run: npx mocha --repeats 20
+        env:
+          PYMPORT_DEBUG_INIT: 1
 
   builtin_python:
     runs-on: ${{ matrix.platform }}
