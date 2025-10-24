@@ -73,6 +73,7 @@
     "@types/chai-spies": "^1.0.6",
     "@types/mocha": "^10.0.6",
     "@types/node": "^24.0.1",
+    "@types/wtfnode": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
     "async-await-queue": "^2.1.4",
@@ -88,7 +89,8 @@
     "node-gyp": "^11.0.0",
     "tsconfig-paths": "^4.1.2",
     "tsx": "^4.20.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "wtfnode": "^0.10.1"
   },
   "engines": {
     "node": ">= 16.0.0"

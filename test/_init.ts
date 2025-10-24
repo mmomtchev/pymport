@@ -1,5 +1,6 @@
 import { version } from 'pymport';
 import { pymport } from 'pymport/proxified';
+import wtf from 'wtfnode';
 
 console.log(`pymport: ` +
   `${version.pymport.major}.${version.pymport.minor}.${version.pymport.patch}` +
@@ -14,6 +15,9 @@ console.log('');
 
 const sys = pymport('sys');
 sys.path.insert(1, __dirname);
+
+const interval = setInterval(() => wtf.dump(), 5000);
+interval.unref();
 
 exports.mochaHooks = {
   afterEach: global.gc,
