@@ -69,6 +69,7 @@ jobs:
       - run: npx mocha --repeats 20
         env:
           PYMPORT_DEBUG_INIT: 1
+          PYMPORT_DEBUG_CALL: 1
 
   builtin_python:
     runs-on: ${{ matrix.platform }}
@@ -245,6 +246,7 @@ jobs:
       - run: npm test
         env:
           PYMPORT_DEBUG_INIT: 1
+          PYMPORT_DEBUG_CALL: 1
 
   codecov:
     runs-on: ubuntu-latest
@@ -266,6 +268,7 @@ jobs:
       - run: npx c8 npm test
         env:
           PYMPORT_DEBUG_INIT: 1
+          PYMPORT_DEBUG_CALL: 1
       - run: npm run gcov
       - run: npm run lcov
       - uses: codecov/codecov-action@v5
