@@ -76,7 +76,7 @@ Value Version(const CallbackInfo &info) {
 // Runs the queue of V8 tasks scheduled from Python contexts
 static void RunInV8Context(uv_async_t *async) {
   auto context = reinterpret_cast<EnvContext *>(async->data);
-  VERBOSE(CALL, "RunInV8Context, queue length %d\n", static_cast<int>(context->v8_queue.jobs.size()));
+  VERBOSE(ASYNC, "RunInV8Context, queue length %d\n", static_cast<int>(context->v8_queue.jobs.size()));
   // As the lambdas are very light, it is better to not release the lock at all
   std::lock_guard<std::mutex> lock(context->v8_queue.lock);
   while (!context->v8_queue.jobs.empty()) {
