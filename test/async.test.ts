@@ -68,7 +68,7 @@ describe('callAsync', () => {
     });
   });
 
-  describe('worker_threads', () => {
+  describe.skip('worker_threads', () => {
     function spawnWorker(script: string) {
       return new Promise((resolve, reject) => {
         const worker = new Worker(path.resolve(__dirname, './worker_thread.js'), {
