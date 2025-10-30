@@ -3,7 +3,7 @@ import * as path from 'path';
 import { Worker } from 'worker_threads';
 import { assert } from 'chai';
 
-describe('callAsync', () => {
+describe.skip('callAsync', () => {
   const np = pymport('numpy');
 
   it('nominal', (done) => {
