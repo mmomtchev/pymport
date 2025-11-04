@@ -57,6 +57,17 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+      - run: |
+          python3-config --cflags --embed
+          python3-config --libs --embed
+        if: runner.os != 'Windows'
+      - run: |
+          python-config --cflags --embed
+          python-config --libs --embed
+        if: runner.os == 'Windows'
+      - run: |
+          pkg-config --cflags python3-embed
+          pkg-config --libs python3-embed
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure
         if: runner.os != 'macOS'
