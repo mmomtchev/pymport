@@ -24,9 +24,8 @@ jobs:
           - windows-2022
           - windows-2025
           - windows-11-arm
-          - macos-13
-          - macos-13
-          - macos-14
+          - macos-15
+          - macos-15-intel
         node-version: [18, 20, 22, 24]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
@@ -85,9 +84,8 @@ jobs:
           - windows-2022
           - windows-2025
           - windows-11-arm
-          - macos-13
-          - macos-13
-          - macos-14
+          - macos-15
+          - macos-15-intel
         node-version: [18, 20, 22, 24]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
@@ -139,7 +137,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-13, macos-14]
+        platform: [ubuntu-latest, macos-15, macos-15-intel]
 
     steps:
       - name: Use Node.js 18.x

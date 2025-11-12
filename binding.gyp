@@ -91,7 +91,7 @@
           ],
           'xcode_settings': {
             'CLANG_CXX_LIBRARY': 'libc++',
-            'MACOSX_DEPLOYMENT_TARGET': '13.0',
+            'MACOSX_DEPLOYMENT_TARGET': '15.0',
           },
           'cflags': [ '-fvisibility=hidden '],
         }]

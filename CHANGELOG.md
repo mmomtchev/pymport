@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - macOS Apple Silicon prebuilt binaries
  - Windows arm64 and Linux arm64 binaries
  - Tested with Node.js 22 and 24
- - Drop macOS 11 and 12 support
+ - Drop macOS <15.0 support
  - Upgrade the built-in Python to 3.12.10
  - Improved build of the built-in Python ensuring that all Python modules do not assume anything about the host system - including working SSL without requiring Homebrew on macOS
  - Builtin Python environment on Windows is now more closely aligned to the one installed by the official Python install shield
