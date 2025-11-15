@@ -18,7 +18,7 @@ describe('callAsync', () => {
     }).catch((err) => done(err));
   });
 
-  it.skip('exception', (done) => {
+  it('exception', (done) => {
     const q = np.get('arange').callAsync('not a number');
 
     assert.instanceOf(q, Promise);
@@ -34,7 +34,7 @@ describe('callAsync', () => {
     });
   });
 
-  it.skip('async callback nominal', (done) => {
+  it('async callback nominal', (done) => {
     const py_call = pymport('python_helpers').get('dont_catch_exception');
     const fn = PyObject.fromJS(() => 14);
     const q = py_call.callAsync(fn);
@@ -50,7 +50,7 @@ describe('callAsync', () => {
     });
   });
 
-  it.skip('async callback w/exception', (done) => {
+  it('async callback w/exception', (done) => {
     const py_call = pymport('python_helpers').get('dont_catch_exception');
     const fn = PyObject.fromJS(() => { throw new Error('Bad news from JS'); });
     const q = py_call.callAsync(fn);
@@ -68,7 +68,7 @@ describe('callAsync', () => {
     });
   });
 
-  describe.skip('worker_threads', () => {
+  describe('worker_threads', () => {
     function spawnWorker(script: string) {
       return new Promise((resolve, reject) => {
         const worker = new Worker(path.resolve(__dirname, './worker_thread.js'), {
