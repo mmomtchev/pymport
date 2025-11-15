@@ -104,7 +104,6 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
 
     // Release the GIL - so that we can acquire it in the V8 main thread
     PyThreadState *python_state = PyEval_SaveThread();
-    me->js_tsfn->Ref(env);
     me->js_tsfn->BlockingCall([me, args, kw, &lock, &ready, &error, &cv, &ret](Napi::Env env, Function js_fn) {
       // This runs in the V8 main thread
       std::unique_lock<std::mutex> guard(lock);
@@ -120,7 +119,6 @@ static PyObject *JSCall_Trampoline_Call(PyObject *self, PyObject *args, PyObject
     });
     std::unique_lock<std::mutex> guard(lock);
     cv.wait(guard, [&ready] { return ready; });
-    me->js_tsfn->Unref(env);
     // Restore the GIL and thread state before returning back to Python
     PyEval_RestoreThread(python_state);
     if (ret == nullptr) { PyErr_SetString(PyExc_Exception, error.c_str()); }
@@ -368,6 +366,8 @@ PyStrongRef PyObjectWrap::NewJSFunction(Function js_fn) {
   raw->js_fn = new FunctionReference(Persistent(js_fn));
   raw->js_tsfn = new ThreadSafeFunction(ThreadSafeFunction::New(env, js_fn, "pymport.js_function", 0, 1));
   // Sometimes V8 won't destroy some objects - so these TSFN should not block the event loop's exit
+  // This means that the last call of the program cannot be an async Python call
+  // that callbacks a JS function - the event loop won't wait for it
   raw->js_tsfn->Unref(env);
 
   auto context = env.GetInstanceData<EnvContext>();
