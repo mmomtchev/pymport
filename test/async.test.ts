@@ -3,7 +3,7 @@ import * as path from 'path';
 import { Worker } from 'worker_threads';
 import { assert } from 'chai';
 
-describe.skip('callAsync', () => {
+describe('callAsync', () => {
   const np = pymport('numpy');
 
   it('nominal', (done) => {
@@ -18,7 +18,7 @@ describe.skip('callAsync', () => {
     }).catch((err) => done(err));
   });
 
-  it('exception', (done) => {
+  it.skip('exception', (done) => {
     const q = np.get('arange').callAsync('not a number');
 
     assert.instanceOf(q, Promise);
@@ -50,7 +50,7 @@ describe.skip('callAsync', () => {
     });
   });
 
-  it('async callback w/exception', (done) => {
+  it.skip('async callback w/exception', (done) => {
     const py_call = pymport('python_helpers').get('dont_catch_exception');
     const fn = PyObject.fromJS(() => { throw new Error('Bad news from JS'); });
     const q = py_call.callAsync(fn);
