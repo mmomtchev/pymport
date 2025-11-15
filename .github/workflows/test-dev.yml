@@ -13,7 +13,7 @@ on:
       - 'wiki/**'
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.12.10
+  BUILTIN_PYTHON_VERSION: 3.12.12
 
 jobs:
   shared_python:
@@ -166,9 +166,22 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
+          python-version: 3.12
       # Testing installing wo rebuild still requires rebuilding to
       # avoid using the previous version available on npm
+      # We build against the builtin Python and test against
+      # the system-installed Python which must be the same version
+      - name: Install conan
+        uses: turtlebrowser/get-conan@main
+      - name: Get conan home
+        id: conan_home
+        shell: bash
+        run: echo CONAN_HOME=`conan config home` >> "$GITHUB_OUTPUT"
+      - name: Cache conan artifacts
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.conan_home.outputs.CONAN_HOME }}
+          key: ${{ matrix.platform }}
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
       - run: npx @mapbox/node-pre-gyp build -j max
@@ -200,9 +213,22 @@ jobs:
           node-version: 18.x
       - uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.BUILTIN_PYTHON_VERSION }}
+          python-version: 3.12
       # Testing installing wo rebuild still requires rebuilding to
       # avoid using the previous version available on npm
+      # We build against the builtin Python and test against
+      # the system-installed Python which must be the same version
+      - name: Install conan
+        uses: turtlebrowser/get-conan@main
+      - name: Get conan home
+        id: conan_home
+        shell: bash
+        run: echo CONAN_HOME=`conan config home` >> "$GITHUB_OUTPUT"
+      - name: Cache conan artifacts
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.conan_home.outputs.CONAN_HOME }}
+          key: windows-2022
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure --builtin-python=true
       - run: npx @mapbox/node-pre-gyp build -j max
