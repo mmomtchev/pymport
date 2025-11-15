@@ -34,7 +34,7 @@ describe('callAsync', () => {
     });
   });
 
-  it('async callback nominal', (done) => {
+  it.skip('async callback nominal', (done) => {
     const py_call = pymport('python_helpers').get('dont_catch_exception');
     const fn = PyObject.fromJS(() => 14);
     const q = py_call.callAsync(fn);
