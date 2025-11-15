@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.12.10
+  BUILTIN_PYTHON_VERSION: 3.12.12
 
 jobs:
   test_published:
