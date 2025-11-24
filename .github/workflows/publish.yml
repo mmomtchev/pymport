@@ -20,7 +20,7 @@ jobs:
           - macos-15
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - name: Use Node.js 20.x
