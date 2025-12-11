@@ -72,7 +72,7 @@
     "@types/chai": "^4.3.11",
     "@types/chai-spies": "^1.0.6",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^24.0.1",
+    "@types/node": "^25.0.0",
     "@types/wtfnode": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
