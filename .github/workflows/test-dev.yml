@@ -4,13 +4,13 @@ on:
   push:
     branches: main
     paths-ignore:
-      - '*.md'
-      - 'wiki/**'
+      - "*.md"
+      - "wiki/**"
   pull_request:
     branches: main
     paths-ignore:
-      - '*.md'
-      - 'wiki/**'
+      - "*.md"
+      - "wiki/**"
 
 env:
   BUILTIN_PYTHON_VERSION: 3.12.12
@@ -301,7 +301,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
 
-
   asan:
     runs-on: ubuntu-22.04
 
@@ -317,6 +316,7 @@ jobs:
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npx mocha --repeats 20
+        working-directory: ${{ github.workspace }}/test
         env:
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.6
           LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt
