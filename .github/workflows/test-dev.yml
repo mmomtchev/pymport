@@ -4,13 +4,13 @@ on:
   push:
     branches: main
     paths-ignore:
-      - '*.md'
-      - 'wiki/**'
+      - "*.md"
+      - "wiki/**"
   pull_request:
     branches: main
     paths-ignore:
-      - '*.md'
-      - 'wiki/**'
+      - "*.md"
+      - "wiki/**"
 
 env:
   BUILTIN_PYTHON_VERSION: 3.12.12
@@ -65,8 +65,7 @@ jobs:
       - run: npx @mapbox/node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
-      - run: npx tsc --noEmit
-      - run: npx mocha --repeats 20
+      - run: npm test
         env:
           PYMPORT_DEBUG_INIT: 1
 
@@ -290,6 +289,7 @@ jobs:
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npx c8 npm test
+        working-directory: ${{ github.workspace }}/test
         env:
           PYMPORT_DEBUG_INIT: 1
       - run: npm run gcov
@@ -297,10 +297,9 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
-          directory: ${{ github.workspace }}/coverage
+          directory: ${{ github.workspace }}/test/coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
-
 
   asan:
     runs-on: ubuntu-22.04
@@ -317,10 +316,10 @@ jobs:
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npx mocha --repeats 20
+        working-directory: ${{ github.workspace }}/test
         env:
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.6
           LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt
-
 
   lint:
     runs-on: ubuntu-latest

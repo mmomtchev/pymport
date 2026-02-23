@@ -39,6 +39,10 @@
     "pympip": "./scripts/pympip",
     "pympip3": "./scripts/pympip"
   },
+  "workspaces": [
+    ".",
+    "test"
+  ],
   "binary": {
     "module_name": "pymport",
     "module_path": "./lib/binding/{platform}-{arch}",
@@ -52,14 +56,14 @@
   },
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build && node scripts/patch-prefix.js",
-    "test": "npx tsc --noEmit && npx mocha",
+    "test": "npm test -w test",
     "doc": "npx documentation readme --readme-file wiki/API.md  --section API --config=documentation.yml lib/*.d.ts",
     "wiki": "cd wiki && git add API.md && git diff-index --quiet HEAD || git commit -m 'update API'",
     "wiki:sidebar": "cd wiki && github-wiki-sidebar --silent",
     "build": "npx node-pre-gyp configure && npx node-pre-gyp build",
     "lint": "clang-format -i src/*.cc src/*.h && eslint lib/*.[tj]s test/*.[tj]s",
-    "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/pymport/src ../src/*.c*",
-    "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov",
+    "gcov": "npm run gcov -w test",
+    "lcov": "npm run lcov -w test",
     "codecov": "cd coverage && curl -s https://codecov.io/bash | bash",
     "preversion": "npm run lint && npm run test && npm run doc && npm run wiki && git add wiki",
     "postversion": "git push && git push --tags && node ./scripts/publish-packages.js",
@@ -69,28 +73,18 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.19.0",
-    "@types/chai": "^4.3.11",
-    "@types/chai-spies": "^1.0.6",
-    "@types/mocha": "^10.0.6",
     "@types/node": "^25.0.0",
-    "@types/wtfnode": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
-    "async-await-queue": "^2.1.4",
     "benny": "^3.7.1",
-    "chai": "^4.4.0",
-    "chai-spies": "^1.1.0",
     "documentation": "^14.0.0",
     "eslint": "^9.8.0",
     "eslint-plugin-mocha": "^11.0.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "globals": "^17.0.0",
-    "mocha": "github:mmomtchev/mocha#mmom",
     "node-gyp": "^12.0.0",
-    "tsconfig-paths": "^4.1.2",
     "tsx": "^4.20.5",
-    "typescript": "^5.3.3",
-    "wtfnode": "^0.10.1"
+    "typescript": "^5.3.3"
   },
   "engines": {
     "node": ">= 16.0.0"
