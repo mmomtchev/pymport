@@ -76,7 +76,6 @@
     "@types/node": "^25.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
-    "async-await-queue": "^2.1.4",
     "benny": "^3.7.1",
     "documentation": "^14.0.0",
     "eslint": "^9.8.0",
