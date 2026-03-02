@@ -20,6 +20,7 @@
     "@types/chai": "^4.3.11",
     "@types/chai-spies": "^1.0.6",
     "@types/mocha": "^10.0.6",
+    "@types/node": "^25.0.0",
     "@types/wtfnode": "^0.10.0",
     "async-await-queue": "^2.1.4",
     "c8": "^10.1.3",
