@@ -1,9 +1,8 @@
 {
-  "spec": "test/*.test.ts",
+  "spec": "*.test.ts",
   "require": [
     "tsx",
-    "tsconfig-paths/register",
-    "test/_init.ts"
+    "./_init.ts"
   ],
   "v8-expose-gc": true,
   "timeout": "30000",
