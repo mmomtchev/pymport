@@ -119,13 +119,11 @@ jobs:
       - name: Install pymport from npm
         run: npm install pymport@${{ github.event.inputs.version }} --build-from-source
         working-directory: ${{ github.workspace }}/test
-      - run: npx pympip3 install -r requirements.txt
+      - run: pip3 install -r requirements.txt
         working-directory: ${{ github.workspace }}/test
       - name: Run the unit tests
         working-directory: ${{ github.workspace }}/test
         run: npm test
-      - run: pip3 install -r requirements.txt
-        working-directory: ${{ github.workspace }}/test
       - name: Test rebuilding a Python package
         working-directory: ${{ github.workspace }}/test
         run: |
