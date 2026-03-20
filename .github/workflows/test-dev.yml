@@ -88,6 +88,15 @@ jobs:
             node-version: 22.x
 
     steps:
+      - name: Uninstall LLVM clang on macOS 15 Intel
+        # Remove Homebrew LLVM
+        # See https://github.com/actions/runner-images/issues/13816
+        if: matrix.platform == 'macos-15-intel'
+        run: |
+          llvm_pkgs=$(brew ls -1 | grep llvm || true)
+          if [ -n "$llvm_pkgs" ]; then
+            brew uninstall --ignore-dependencies $llvm_pkgs
+          fi
       - uses: actions/checkout@v6
         with:
           submodules: true
