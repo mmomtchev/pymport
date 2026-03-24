@@ -27,6 +27,6 @@
     "chai-spies": "^1.1.0",
     "mocha": "github:mmomtchev/mocha#mmom",
     "tsx": "^4.20.5",
-    "typescript": "^5.3.3"
+    "typescript": "^6.0.2"
   }
 }
