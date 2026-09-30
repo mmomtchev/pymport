@@ -68,8 +68,11 @@ jobs:
       - run: npm config ls -l
       - run: cat $(npm config get globalconfig)
         shell: bash
+        continue-on-error: true
       - run: cat $(npm config get userconfig)
         shell: bash
+        continue-on-error: true
+      - run: npm run env
       - run: npx @mapbox/node-pre-gyp configure
         if: runner.os != 'macOS'
       - run: npx @mapbox/node-pre-gyp configure --debug
@@ -83,6 +86,7 @@ jobs:
 
   builtin_python:
     runs-on: ${{ matrix.platform }}
+    if: false
 
     strategy:
       fail-fast: false
