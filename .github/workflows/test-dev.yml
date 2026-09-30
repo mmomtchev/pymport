@@ -66,9 +66,9 @@ jobs:
       - run: npm ls node-gyp
       - run: npm -g ls node-gyp
       - run: npm config ls -l
-      - run: cat /Users/runner/hostedtoolcache/node/20.20.2/arm64/etc/npmrc
+      - run: cat $(npm config get globalconfig)
         shell: bash
-      - run: cat /Users/runner/.npmrc
+      - run: cat $(npm config get userconfig)
         shell: bash
       - run: npx @mapbox/node-pre-gyp configure
         if: runner.os != 'macOS'
