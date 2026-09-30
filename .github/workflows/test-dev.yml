@@ -60,7 +60,7 @@ jobs:
       - run: npm install --ignore-scripts
       - run: echo npm_config_node_gyp=$(node -p 'require.resolve("node-gyp")') >> $GITHUB_ENV
         shell: bash
-      - run: npm exec node -- -p 'process.env'
+      - run: npm run env
       - run: npx @mapbox/node-pre-gyp configure
         if: runner.os != 'macOS'
       - run: npx @mapbox/node-pre-gyp configure --debug
