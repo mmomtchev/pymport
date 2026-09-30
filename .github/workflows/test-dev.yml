@@ -71,7 +71,6 @@ jobs:
 
   builtin_python:
     runs-on: ${{ matrix.platform }}
-    if: false
 
     strategy:
       fail-fast: false
