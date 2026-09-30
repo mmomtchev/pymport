@@ -43,10 +43,10 @@ jobs:
             node-version: 20
           - platform: windows-11-arm
             python-version: "3.12"
-            node-version: 22
+            node-version: 24
           - platform: ubuntu-22.04-arm
             python-version: "3.12"
-            node-version: 22
+            node-version: 24
 
     steps:
       - uses: actions/checkout@v6
@@ -58,9 +58,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: npm install --ignore-scripts
-      - run: echo npm_config_node_gyp=$(node -p 'require.resolve("node-gyp")') >> $GITHUB_ENV
-        shell: bash
-      - run: npm run env
       - run: npx @mapbox/node-pre-gyp configure
         if: runner.os != 'macOS'
       - run: npx @mapbox/node-pre-gyp configure --debug
