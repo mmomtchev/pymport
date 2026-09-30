@@ -65,6 +65,7 @@ jobs:
       - run: node -p "require.resolve('node-gyp')"
       - run: npm ls node-gyp
       - run: npm -g ls node-gyp
+      - run: npm config ls -l
       - run: npx @mapbox/node-pre-gyp configure
         if: runner.os != 'macOS'
       - run: npx @mapbox/node-pre-gyp configure --debug
