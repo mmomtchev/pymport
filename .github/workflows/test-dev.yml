@@ -58,6 +58,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: npm install --ignore-scripts
+      - run: env
+        shell: bash
+      - run: echo $npm_config_node_gyp
+        shell: bash
       - run: npx @mapbox/node-pre-gyp configure
         if: runner.os != 'macOS'
       - run: npx @mapbox/node-pre-gyp configure --debug
