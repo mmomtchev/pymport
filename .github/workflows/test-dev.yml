@@ -83,7 +83,7 @@ jobs:
           - platform: macos-15-intel
             node-version: 22.x
           - platform: windows-11-arm
-            node-version: 22.x
+            node-version: 24.x
           - platform: ubuntu-22.04-arm
             node-version: 22.x
 
