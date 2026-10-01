@@ -43,10 +43,10 @@ jobs:
             node-version: 20
           - platform: windows-11-arm
             python-version: "3.12"
-            node-version: 22
+            node-version: 24
           - platform: ubuntu-22.04-arm
             python-version: "3.12"
-            node-version: 22
+            node-version: 24
 
     steps:
       - uses: actions/checkout@v6
@@ -83,7 +83,7 @@ jobs:
           - platform: macos-15-intel
             node-version: 22.x
           - platform: windows-11-arm
-            node-version: 22.x
+            node-version: 24.x
           - platform: ubuntu-22.04-arm
             node-version: 22.x
 
@@ -97,6 +97,10 @@ jobs:
           if [ -n "$llvm_pkgs" ]; then
             brew uninstall --ignore-dependencies $llvm_pkgs
           fi
+      - name: Set MSVC tools to v145 on arm64
+        shell: bash
+        run: echo BUILD_OPTS="/p:PlatformToolset=v145" >> $GITHUB_ENV
+        if: runner.os == 'windows' && runner.arch == 'arm64'
       - uses: actions/checkout@v6
         with:
           submodules: true
