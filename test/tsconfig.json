@@ -3,8 +3,12 @@
     "esModuleInterop": true,
     "strict": true,
     "strictNullChecks": true,
-    "baseUrl": ".",
-    "resolveJsonModule": true,
-    "downlevelIteration": true,
+    "moduleResolution": "node16",
+    "module": "node16",
+    "target": "es2020",
+    "types": [
+      "mocha",
+      "node"
+    ]
   }
 }

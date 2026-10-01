@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { pymport, proxify, PyObject } = require('pymport');
 const { getPythonType } = require('pymport/array');
 const { assert } = require('chai');
