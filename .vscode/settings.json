@@ -3,5 +3,8 @@
   "editor.detectIndentation": false,
   "[markdown]": {
     "editor.formatOnSave": false
+  },
+  "[github-actions-workflow]": {
+    "prettier.singleQuote": false
   }
 }
