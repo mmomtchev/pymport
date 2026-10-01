@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Windows arm64 and Linux arm64 binaries
  - Tested with Node.js 22 and 24
  - Official macOS 14.0+ support with unofficial untested macOS 13 support
- - Upgrade the built-in Python to 3.12.12
+ - Upgrade the built-in Python to 3.12.14
  - Improved build of the built-in Python ensuring that all Python modules do not assume anything about the host system - including working SSL without requiring Homebrew on macOS
  - Builtin Python environment on Windows is now more closely aligned to the one installed by the official Python install shield
  - Support rebuilding against Python 3.13
