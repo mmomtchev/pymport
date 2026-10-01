@@ -59,15 +59,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: npm install --ignore-scripts
       - run: npx @mapbox/node-pre-gyp configure
-        if: runner.os != 'macOS'
-      - run: npx @mapbox/node-pre-gyp configure --debug
-        if: runner.os == 'macOS'
       - run: npx @mapbox/node-pre-gyp build -j max
       - run: python3 -m pip install --upgrade pip
       - run: pip3 install -r test/requirements.txt
       - run: npm test
-        env:
-          PYMPORT_DEBUG_INIT: 1
 
   builtin_python:
     runs-on: ${{ matrix.platform }}
@@ -303,8 +298,6 @@ jobs:
       - run: pip3 install -r test/requirements.txt
       - run: npx c8 npm test
         working-directory: ${{ github.workspace }}/test
-        env:
-          PYMPORT_DEBUG_INIT: 1
       - run: npm run gcov
       - run: npm run lcov
       - uses: codecov/codecov-action@v7
