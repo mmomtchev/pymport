@@ -3,12 +3,12 @@ name: Github packages publish
 on: workflow_dispatch
 
 env:
-  BUILTIN_PYTHON_VERSION: 3.12.12
+  BUILTIN_PYTHON_VERSION: 3.12.14
 
 jobs:
   publish:
     runs-on: ${{ matrix.platform }}
-    
+
     strategy:
       matrix:
         platform:
