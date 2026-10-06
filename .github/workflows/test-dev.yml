@@ -49,7 +49,7 @@ jobs:
             node-version: 24
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
         with:
@@ -96,7 +96,7 @@ jobs:
         shell: bash
         run: echo BUILD_OPTS="/p:PlatformToolset=v145" >> $GITHUB_ENV
         if: runner.os == 'windows' && runner.arch == 'arm64'
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Use Node.js ${{ matrix.node-version }}
@@ -135,7 +135,7 @@ jobs:
         platform: [ubuntu-latest, macos-15-intel, macos-15]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Use Node.js 18.x
@@ -164,7 +164,7 @@ jobs:
         platform: [ubuntu-latest, macos-15-intel, macos-15]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Use Node.js 18.x
@@ -211,7 +211,7 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Use Node.js 18.x
@@ -260,7 +260,7 @@ jobs:
         platform: [macos-15, windows-2022]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Use Node.js 18.x
@@ -283,7 +283,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
           submodules: true
@@ -311,7 +311,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 18.x
         uses: actions/setup-node@v6
         with:
@@ -331,7 +331,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 18.x
         uses: actions/setup-node@v6
         with:
