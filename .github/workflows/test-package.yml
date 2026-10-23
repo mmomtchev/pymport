@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
       - uses: actions/setup-python@v6
@@ -102,7 +102,7 @@ jobs:
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
       - uses: actions/setup-python@v6
@@ -140,7 +140,7 @@ jobs:
 
     steps:
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 18.x
       - uses: actions/setup-python@v6
